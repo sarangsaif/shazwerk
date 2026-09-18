@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
-import { ArrowLeft, ArrowUpRight, Check, Copy, Sparkles, Send } from "lucide-react";
+import { ArrowUpRight, Check, Copy, Send, Sparkles } from "lucide-react";
 import { trackClientEvent } from "@/lib/analytics-client";
 
 const PROJECT_TYPES = [
@@ -10,24 +9,16 @@ const PROJECT_TYPES = [
   "Enterprise AI & LLM",
   "Software modernization",
   "Architecture & Security Audit",
-  "Ongoing Engineering Pod",
 ];
 
 const BUDGET_RANGES = [
   "CHF 25k – 50k",
   "CHF 50k – 100k",
   "CHF 100k – 200k+",
-  "Enterprise / Custom",
+  "Ongoing Engineering Retainer",
 ];
 
-const TIMELINES = [
-  "Immediately",
-  "1 – 3 months",
-  "3 – 6 months",
-  "Flexible / Q4",
-];
-
-export default function ContactPage() {
+export default function MimosaContact() {
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -35,7 +26,7 @@ export default function ContactPage() {
     phone: "",
     project_type: PROJECT_TYPES[0],
     budget: BUDGET_RANGES[1],
-    timeline: TIMELINES[1],
+    timeline: "1 – 3 months",
     message: "",
     honeypot: "",
   });
@@ -48,13 +39,13 @@ export default function ContactPage() {
   const handleCopyEmail = () => {
     navigator.clipboard.writeText("hello@shazwerk.ch");
     setCopied(true);
-    trackClientEvent("copy_email", { source: "contact_page" });
+    trackClientEvent("copy_email", { source: "contact_section" });
     setTimeout(() => setCopied(false), 2500);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.honeypot) return;
+    if (formData.honeypot) return; // Silent bot rejection
 
     setLoading(true);
     setError(null);
@@ -75,7 +66,7 @@ export default function ContactPage() {
       setSubmitted(true);
       trackClientEvent("form_submit_success", { project_type: formData.project_type });
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred. Please contact hello@shazwerk.ch directly.");
+      setError(err.message || "An unexpected error occurred. Please write directly to hello@shazwerk.ch.");
       trackClientEvent("form_submit_error", { error: err.message });
     } finally {
       setLoading(false);
@@ -83,95 +74,62 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="bg-white text-neutral-900 min-h-screen pt-32 pb-24 px-6 sm:px-10 lg:px-16">
+    <section id="contact-section" className="py-24 sm:py-32 px-6 sm:px-10 lg:px-16 bg-white border-t border-neutral-200">
       <div className="max-w-7xl mx-auto">
-        {/* Breadcrumb */}
-        <div className="mb-8">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-xs font-mono text-neutral-500 hover:text-neutral-950 transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Studio</span>
-          </Link>
-        </div>
-
-        {/* Header */}
-        <div className="pb-16 border-b border-neutral-200">
-          <span className="text-xs font-mono uppercase tracking-wider text-neutral-500 block mb-3">
-            [ DIRECT STUDIO INQUIRY ]
-          </span>
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-normal tracking-tight text-neutral-950 leading-[1.05] max-w-4xl">
-            We would love to hear your ideas.
-          </h1>
-          <p className="mt-6 text-xl text-neutral-600 max-w-2xl font-normal leading-relaxed">
-            Tell us about what you are building. Every brief is reviewed directly by our senior technical partners within 24 business hours.
-          </p>
-        </div>
-
-        {/* Main Grid: Left Coordinates, Right Form */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 pt-16">
-          {/* Left Column */}
-          <div className="lg:col-span-5 flex flex-col gap-8">
-            <div className="bg-neutral-50 border border-neutral-200 rounded-3xl p-8">
-              <span className="text-xs font-mono uppercase text-neutral-500 block mb-3">Direct Channel</span>
-              <button
-                type="button"
-                onClick={handleCopyEmail}
-                className="group flex items-center gap-3 text-2xl font-medium tracking-tight text-neutral-950 hover:text-red-600 transition-colors"
-              >
-                <span>hello@shazwerk.ch</span>
-                <span className="p-1.5 rounded-lg bg-neutral-200/80 group-hover:bg-red-50 text-neutral-700 group-hover:text-red-600 transition-colors">
-                  {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+          {/* Left Column: Sticky Section Marker */}
+          <div className="lg:col-span-4">
+            <div className="lg:sticky lg:top-28 flex flex-col gap-6">
+              <div>
+                <span className="text-xs font-mono tracking-wider text-neutral-500 uppercase block mb-3">
+                  [ 05 / INQUIRIES ]
                 </span>
-              </button>
-              <div className="text-xs font-mono text-neutral-500 mt-2">
-                {copied ? <span className="text-emerald-600 font-medium">✓ Address copied!</span> : "Click to copy email"}
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight text-neutral-950 leading-[1.1]">
+                  Tell us about your project.
+                </h2>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-neutral-200 text-sm space-y-4 text-neutral-700">
-                <div>
-                  <span className="text-xs font-mono uppercase text-neutral-400 block mb-1">Phone (Direct)</span>
-                  <span className="font-mono text-neutral-900">+41 44 820 90 10</span>
-                </div>
-                <div>
-                  <span className="text-xs font-mono uppercase text-neutral-400 block mb-1">Zürich Studio</span>
-                  <span>Gotthardstrasse 26 · 8002 Zürich, Switzerland</span>
-                </div>
-                <div>
-                  <span className="text-xs font-mono uppercase text-neutral-400 block mb-1">Zug Presence</span>
-                  <span>Baarerstrasse 82 · 6300 Zug, Switzerland</span>
+              <p className="text-neutral-600 text-base leading-relaxed">
+                Whether you are scoping a greenfield digital product, modernizing high-risk legacy software, or architecting a private AI model, our team is ready to evaluate your requirements.
+              </p>
+
+              {/* Direct email card */}
+              <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-5 text-xs font-mono">
+                <div className="text-neutral-500 mb-1.5 uppercase tracking-wider">Direct Studio Channel</div>
+                <button
+                  type="button"
+                  onClick={handleCopyEmail}
+                  className="flex items-center gap-2 text-sm font-semibold text-neutral-900 hover:text-red-600 transition-colors"
+                >
+                  <span>hello@shazwerk.ch</span>
+                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                </button>
+                <div className="text-neutral-400 mt-2">
+                  {copied ? "Copied to clipboard!" : "Response guaranteed within 24 hours"}
                 </div>
               </div>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs font-mono space-y-2 text-neutral-600">
-              <div className="text-neutral-950 font-semibold uppercase tracking-wider mb-2">Our Standard</div>
-              <div>• Non-disclosure agreements signed prior to discovery</div>
-              <div>• Fixed-milestone proposals with clear deliverables</div>
-              <div>• Direct communication with principal engineers</div>
             </div>
           </div>
 
-          {/* Right Column: Interactive Form */}
-          <div className="lg:col-span-7">
+          {/* Right Column: Inquiry Form */}
+          <div className="lg:col-span-8">
             {submitted ? (
               <div className="bg-neutral-50 border border-neutral-200 rounded-3xl p-8 sm:p-12 text-center">
                 <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-6">
                   <Check className="w-6 h-6" />
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-medium tracking-tight text-neutral-950 mb-3">
-                  Thank you. Your brief has been received.
+                  Inquiry received.
                 </h3>
                 <p className="text-neutral-600 text-base max-w-md mx-auto mb-8">
-                  A partner will review your specifications and reach out within 24 business hours to schedule an initial technical conversation.
+                  Thank you for contacting SHAZWERK. A senior engineering strategist will review your technical specifications and contact you within 24 business hours.
                 </p>
                 <button
                   type="button"
                   onClick={() => setSubmitted(false)}
-                  className="px-6 py-2.5 rounded-full bg-neutral-950 text-white text-xs font-mono hover:bg-neutral-800 transition-colors"
+                  className="px-6 py-2.5 rounded-full bg-neutral-900 text-white text-xs font-mono hover:bg-neutral-800 transition-colors"
                 >
-                  Send another message
+                  Send another inquiry
                 </button>
               </div>
             ) : (
@@ -179,6 +137,7 @@ export default function ContactPage() {
                 onSubmit={handleSubmit}
                 className="bg-neutral-50 border border-neutral-200 rounded-3xl p-6 sm:p-10 flex flex-col gap-6"
               >
+                {/* Honeypot */}
                 <input
                   type="text"
                   name="honeypot"
@@ -192,7 +151,7 @@ export default function ContactPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-xs font-mono uppercase tracking-wider text-neutral-600 mb-2">
-                      Full Name *
+                      Your Name *
                     </label>
                     <input
                       type="text"
@@ -248,6 +207,7 @@ export default function ContactPage() {
                   </div>
                 </div>
 
+                {/* Project Type */}
                 <div>
                   <label className="block text-xs font-mono uppercase tracking-wider text-neutral-600 mb-2">
                     Scope of Engagement
@@ -270,42 +230,30 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-mono uppercase tracking-wider text-neutral-600 mb-2">
-                      Anticipated Budget Range
-                    </label>
-                    <select
-                      value={formData.budget}
-                      onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-white border border-neutral-200 text-neutral-900 focus:outline-hidden focus:border-neutral-950 text-sm"
-                    >
-                      {BUDGET_RANGES.map((b) => (
-                        <option key={b} value={b}>
-                          {b}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono uppercase tracking-wider text-neutral-600 mb-2">
-                      Target Delivery Horizon
-                    </label>
-                    <select
-                      value={formData.timeline}
-                      onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-white border border-neutral-200 text-neutral-900 focus:outline-hidden focus:border-neutral-950 text-sm"
-                    >
-                      {TIMELINES.map((t) => (
-                        <option key={t} value={t}>
-                          {t}
-                        </option>
-                      ))}
-                    </select>
+                {/* Budget Range */}
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-600 mb-2">
+                    Anticipated Budget Range
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {BUDGET_RANGES.map((b) => (
+                      <button
+                        key={b}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, budget: b })}
+                        className={`px-4 py-2.5 rounded-xl text-xs font-medium text-left border transition-all ${
+                          formData.budget === b
+                            ? "bg-neutral-950 text-white border-neutral-950 shadow-xs"
+                            : "bg-white text-neutral-700 border-neutral-200 hover:border-neutral-300"
+                        }`}
+                      >
+                        {b}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
+                {/* Message */}
                 <div>
                   <label className="block text-xs font-mono uppercase tracking-wider text-neutral-600 mb-2">
                     Project Brief & Technical Overview *
@@ -328,7 +276,7 @@ export default function ContactPage() {
 
                 <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div className="text-xs text-neutral-500 font-mono">
-                    Protected by Swiss confidentiality laws.
+                    Protected by Swiss confidentiality. Non-disclosure agreements honored.
                   </div>
 
                   <button
@@ -337,7 +285,7 @@ export default function ContactPage() {
                     className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-neutral-950 text-white text-sm font-medium hover:bg-neutral-800 disabled:opacity-50 transition-colors shadow-sm"
                   >
                     {loading ? (
-                      <span>Submitting brief...</span>
+                      <span>Sending inquiry...</span>
                     ) : (
                       <>
                         <span>Submit Project Brief</span>
@@ -351,6 +299,6 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

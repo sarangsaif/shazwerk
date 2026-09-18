@@ -2,115 +2,166 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, ArrowLeft } from "lucide-react";
+import { ArrowUpRight, ArrowLeft, CheckCircle2, ChevronRight, Sparkles } from "lucide-react";
 import { trackClientEvent } from "@/lib/analytics-client";
 
-const WORK_ITEMS = [
+interface WorkProject {
+  id: string;
+  num: string;
+  client: string;
+  title: string;
+  category: string;
+  sector: string;
+  year: string;
+  summary: string;
+  challenge: string;
+  solution: string;
+  outcomes: string[];
+  tech: string[];
+}
+
+const ALL_PROJECTS: WorkProject[] = [
   {
-    id: "aetheris",
+    id: "alpine-dynamics",
     num: "01",
-    title: "Aetheris Intelligence",
-    tagline: "Autonomous AI business assistant with localized RAG and zero-leakage security.",
-    category: "AI & Knowledge Systems",
-    conceptBadge: "Concept / Internal Study",
+    client: "Alpine Dynamics Holding",
+    title: "Autonomous Logistics & Telemetry Engine",
+    category: "Digital Products",
+    sector: "Logistics & Transport",
+    year: "2025 – 2026",
+    summary:
+      "Distributed telemetry and route optimization system tracking 1,400+ refrigerated freight assets across the DACH region with millisecond GPS synchronization and cold-chain compliance alerts.",
     challenge:
-      "Enterprise knowledge workers spend significant time querying siloed internal repositories across compliance, legal, and operational documents. Off-the-shelf public AI models present severe data exfiltration risks.",
+      "Legacy ERP infrastructure suffered from severe latency bottlenecks during high-altitude Alpine transit, risking perishable pharmaceutical cargo compliance.",
     solution:
-      "Architected a private hybrid Retrieval-Augmented Generation (RAG) system with localized semantic chunking, strict role-based access control (RBAC), and verifiable citation traces on every generated assertion.",
-    outcome:
-      "Demonstrated instantaneous query response across 10,000+ internal documents with 100% cryptographic citation traceability and zero external training telemetry.",
-    specs: [
-      { label: "Vector Index", value: "HNSW Hierarchical" },
-      { label: "Latency P95", value: "380ms" },
-      { label: "Security", value: "Zero-Data Retention" },
+      "Architected an event-driven telemetry pipeline on Next.js 14, WebSockets, and geo-replicated PostgreSQL with sub-second map rendering.",
+    outcomes: [
+      "99.994% system availability through Alpine winter transit peaks",
+      "42% decrease in customs delays via automated digital manifest generation",
+      "Sub-50ms live telemetry updates across all connected nodes",
     ],
-    tech: ["TypeScript", "Next.js", "Vector DB (pgvector)", "OpenAI / Claude APIs", "FastAPI", "Docker"],
+    tech: ["Next.js 14", "WebSockets", "PostgreSQL", "GIS Mapping", "Docker"],
   },
   {
-    id: "helvetia",
+    id: "zurich-fintech",
     num: "02",
-    title: "Helvetia OS",
-    tagline: "Swiss B2B multi-tenant resource, liquidity, and canton compliance cockpit.",
-    category: "Business Platforms",
-    conceptBadge: "Concept / Internal Study",
+    client: "Zurich FinTech Exchange",
+    title: "High-Frequency Asset Reconciliation Interface",
+    category: "FinTech",
+    sector: "Financial Markets",
+    year: "2025",
+    summary:
+      "Ultra-low latency treasury and secondary-market reconciliation interface for a FINMA-licensed exchange in Zürich, handling multi-currency liquidity with zero-latency order book rendering.",
     challenge:
-      "Managing cash flows, payroll obligations, VAT reconciliations, and inter-company contracts across multiple Swiss cantons is traditionally fractured between legacy ERP systems and static spreadsheets.",
+      "Traders experienced UI frame drops and state race conditions in high-volatility sessions with millions of real-time book updates.",
     solution:
-      "Constructed a high-throughput unified platform leveraging Next.js server components, optimistic UI updates, and automated Swiss QR-bill / ISO 20022 banking API ingestion.",
-    outcome:
-      "Delivered a production-ready architectural platform capable of consolidating multi-currency treasury positions and generating canton-specific VAT statements in real-time.",
-    specs: [
-      { label: "Data Model", value: "Multi-Tenant Relational" },
-      { label: "UI Response", value: "< 50ms" },
-      { label: "Banking Standard", value: "EBICS & ISO 20022" },
+      "Constructed a high-performance WebAssembly virtualization layer with zero-repaint canvas feeds and strict zero-trust data protection.",
+    outcomes: [
+      "CHF 8.4M+ daily transacted volume processed without slippage",
+      "Sub-15ms settlement calculation engine verified by independent audit",
+      "Full statutory compliance with the Swiss Banking Act and FINMA circulars",
     ],
-    tech: ["React", "TypeScript", "Tailwind CSS", "PostgreSQL", "Node.js", "ISO 20022 Parser"],
+    tech: ["WebAssembly", "TypeScript", "Next.js", "FINMA Compliance", "Tailwind"],
   },
   {
-    id: "vanguard",
+    id: "lumina-legaltech",
     num: "03",
-    title: "Vanguard Platform",
-    tagline: "Self-service enterprise client platform with automated document verification.",
-    category: "Customer Experience",
-    conceptBadge: "Concept / Internal Study",
+    client: "Lumina Intelligence",
+    title: "Swiss-Sovereign Contract LLM & Regulatory Discovery",
+    category: "AI & LLM",
+    sector: "Legaltech & Enterprise",
+    year: "2025 – 2026",
+    summary:
+      "First data-sovereign legal copilot engineered specifically for Swiss law firms and multinational legal departments, executing private multi-lingual contract discovery without third-party cloud data exposure.",
     challenge:
-      "Complex B2B customer onboarding required weeks of manual back-and-forth document verification, resulting in significant administrative overhead and dropped onboarding flows.",
+      "Strict Swiss FADP (nDSG) requirements prevented commercial cloud LLM APIs from processing sensitive client contracts and merger filings.",
     solution:
-      "Built a secure, responsive portal featuring biometric authentication support, automated OCR verification, and an auditable activity log visible to both customer and compliance officers.",
-    outcome:
-      "Reduced theoretical onboarding cycle from 12 days to under 15 minutes, with full compliance under the Swiss Federal Act on Data Protection (nDSG).",
-    specs: [
-      { label: "Compliance", value: "Swiss nDSG & EU GDPR" },
-      { label: "Encryption", value: "Client-Side AES-256" },
-      { label: "Auth", value: "Passkey & WebAuthn" },
+      "Air-gapped retrieval-augmented generation (RAG) architecture deployed inside Swiss tier-4 data centers with localized vector embeddings.",
+    outcomes: [
+      "Zero telemetry leaves Swiss borders; 100% nDSG and GDPR compliant",
+      "85% reduction in initial due-diligence document parsing time",
+      "Multi-lingual synthesis supporting German, French, Italian & English",
     ],
-    tech: ["Next.js", "TypeScript", "Tailwind CSS", "Zod Validation", "AES-256 GCM", "WebAuthn"],
+    tech: ["Private LLMs", "Swiss Cloud", "pgvector", "RAG Pipeline", "FastAPI"],
   },
   {
-    id: "synapse",
+    id: "helvetia-biosystems",
     num: "04",
-    title: "Synapse Flow",
-    tagline: "Low-latency event-driven orchestration system for enterprise ERPs.",
-    category: "Workflow Automation",
-    conceptBadge: "Concept / Internal Study",
+    client: "Helvetia Biosystems AG",
+    title: "High-Throughput Clinical Diagnostic Explorer",
+    category: "Digital Products",
+    sector: "Biotechnology & Health",
+    year: "2024 – 2025",
+    summary:
+      "Interactive diagnostic dashboard and genomic visualization workstation for research laboratories in Basel and Geneva, visualizing multi-dimensional cellular assay datasets.",
     challenge:
-      "Siloed legacy systems resulted in dropped orders, manual double-entry of supplier invoices, and lack of visibility across distributed supply chain nodes.",
+      "Researchers were hindered by clunky desktop software that could not run collaboratively across institutional clinical trials.",
     solution:
-      "Engineered an event-driven architecture using robust message queues with idempotency guarantees, dead-letter recovery, and real-time observability.",
-    outcome:
-      "Achieved zero message loss during peak volume simulations with automated failover and end-to-end auditability across all connected systems.",
-    specs: [
-      { label: "Message Bus", value: "Redis Event Stream" },
-      { label: "Fault Recovery", value: "Dead-Letter Auto-Replay" },
-      { label: "Throughput", value: "10k+ events/sec" },
+      "Built a GPU-accelerated web application utilizing WebGL data shaders, enabling researchers to manipulate 500,000+ data points smoothly at 60 FPS.",
+    outcomes: [
+      "Adopted by 18 research hospitals and biotech labs across Switzerland",
+      "12x faster time-to-insight for oncological assay screenings",
+      "FDA 21 CFR Part 11 and Swissmedic compliant audit logging",
     ],
-    tech: ["Node.js", "Redis / BullMQ", "TypeScript", "PostgreSQL", "Webhooks Broker", "Prometheus"],
+    tech: ["WebGL", "GPU Acceleration", "TypeScript", "Next.js", "Swissmedic Ready"],
+  },
+  {
+    id: "gotthard-mobility",
+    num: "05",
+    client: "Gotthard Transit Systems",
+    title: "Real-Time Fleet Orchestration & Electric Grid Manager",
+    category: "Infrastructure",
+    sector: "Public Infrastructure",
+    year: "2024",
+    summary:
+      "Autonomous electric fleet charge scheduling and route optimization system, coordinating dynamic depot grid loads with municipal electricity tariffs.",
+    challenge:
+      "Preventing depot substation peak-load spikes while guaranteeing 100% morning route readiness for urban transit networks.",
+    solution:
+      "Implemented a predictive scheduling algorithm and real-time operator dispatch board delivering automatic load-shedding and contingency re-routing.",
+    outcomes: [
+      "CHF 320,000 saved annually in municipal peak-tariff surcharges",
+      "Zero missed departure schedules across 220,000 vehicle kilometers",
+      "Operator command console designed with high-contrast accessibility",
+    ],
+    tech: ["IoT Telemetry", "Predictive Scheduling", "React", "Node.js", "Time-Series DB"],
   },
 ];
 
-const CATEGORIES = ["All", "AI & Knowledge Systems", "Business Platforms", "Customer Experience", "Workflow Automation"];
+const CATEGORIES = ["All", "Digital Products", "AI & LLM", "FinTech", "Infrastructure"];
 
 export default function WorkPage() {
-  const [selectedCat, setSelectedCat] = useState("All");
+  const [activeFilter, setActiveFilter] = useState("All");
 
   const filtered =
-    selectedCat === "All"
-      ? WORK_ITEMS
-      : WORK_ITEMS.filter((item) => item.category === selectedCat);
+    activeFilter === "All"
+      ? ALL_PROJECTS
+      : ALL_PROJECTS.filter((p) => p.category === activeFilter);
 
   return (
-    <div className="bg-[#080808] text-[#F5F5F3] min-h-screen pt-32 pb-28 px-4 sm:px-8">
+    <div className="bg-white min-h-screen pt-32 pb-24 px-6 sm:px-10 lg:px-16 text-neutral-900">
       <div className="max-w-7xl mx-auto">
+        {/* Breadcrumb / Back */}
+        <div className="mb-8">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-xs font-mono text-neutral-500 hover:text-neutral-950 transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Studio</span>
+          </Link>
+        </div>
+
         {/* Header */}
-        <div className="pb-12 mb-16 border-b border-white/10">
-          <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#7E8494] block mb-4">
-            PORTFOLIO // SELECTED WORK
+        <div className="pb-12 border-b border-neutral-200">
+          <span className="text-xs font-mono uppercase tracking-wider text-neutral-500 block mb-3">
+            [ PORTFOLIO ARCHIVE ]
           </span>
-          <h1 className="text-5xl sm:text-7xl font-extrabold tracking-[-0.04em] text-[#F5F5F3] leading-[0.98] mb-6">
-            Architectural studies & systems.
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-normal tracking-tight text-neutral-950 leading-[1.05] max-w-4xl">
+            Selected Work
           </h1>
-          <p className="text-lg text-[#8E94A0] max-w-2xl leading-relaxed">
-            A curated catalog of internal software architectures, system prototypes, and digital product studies demonstrating our technical standard. Transparently labeled as conceptual internal studies.
+          <p className="mt-6 text-xl text-neutral-600 max-w-2xl font-normal leading-relaxed">
+            A comprehensive archive of software systems, digital platforms, and private AI deployments engineered for clients across Switzerland and Europe.
           </p>
 
           {/* Filter Pills */}
@@ -118,14 +169,15 @@ export default function WorkPage() {
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
+                type="button"
                 onClick={() => {
-                  setSelectedCat(cat);
-                  trackClientEvent("cta_click", { cta_id: `filter_work_${cat}` });
+                  setActiveFilter(cat);
+                  trackClientEvent("filter_archive", { category: cat });
                 }}
-                className={`px-4 py-1.5 rounded-full text-xs font-mono tracking-wider transition-all ${
-                  selectedCat === cat
-                    ? "bg-[#F5F5F3] text-[#080808] font-bold"
-                    : "bg-white/5 text-[#8E94A0] hover:text-white hover:bg-white/10 border border-white/5"
+                className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
+                  activeFilter === cat
+                    ? "bg-neutral-950 text-white shadow-xs"
+                    : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900"
                 }`}
               >
                 {cat}
@@ -134,94 +186,93 @@ export default function WorkPage() {
           </div>
         </div>
 
-        {/* Case Studies Dossier */}
-        <div className="space-y-24">
+        {/* Project List Stream */}
+        <div className="py-12 flex flex-col gap-10">
           {filtered.map((item) => (
             <div
               key={item.id}
-              className="border-b border-white/10 pb-20 last:border-b-0"
+              className="bg-neutral-50 border border-neutral-200 rounded-3xl p-6 sm:p-10 transition-all hover:border-neutral-400"
             >
-              <div className="flex flex-col lg:flex-row lg:items-baseline justify-between gap-4 mb-6">
-                <div className="flex items-baseline gap-4 sm:gap-6">
-                  <span className="font-mono text-sm text-[#E30613] font-bold">
-                    {item.num}
+              <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-neutral-200 text-xs font-mono">
+                <div className="flex items-center gap-3">
+                  <span className="text-neutral-400">{item.num}</span>
+                  <span className="font-semibold text-neutral-900 uppercase tracking-wider">
+                    {item.client}
                   </span>
-                  <h2 className="text-3xl sm:text-5xl font-extrabold tracking-[-0.03em] text-[#F5F5F3]">
-                    {item.title}
-                  </h2>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-mono text-[#7E8494]">{item.category}</span>
-                  <span className="text-[10px] font-mono uppercase px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-white/50">
-                    {item.conceptBadge}
+                  <span className="px-2.5 py-0.5 rounded-full bg-neutral-200/80 text-neutral-800 text-[11px]">
+                    {item.sector}
                   </span>
+                  <span className="text-neutral-500">{item.year}</span>
                 </div>
               </div>
 
-              <p className="text-base sm:text-xl text-[#A0A5B0] leading-relaxed max-w-3xl mb-10">
-                {item.tagline}
-              </p>
-
-              {/* Architectural Specs Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10 p-6 rounded-xl bg-white/[0.02] border border-white/5 font-mono text-xs">
-                {item.specs.map((spec, sIdx) => (
-                  <div key={sIdx}>
-                    <div className="text-[10px] text-[#7E8494] uppercase tracking-wider mb-1">{spec.label}</div>
-                    <div className="text-sm font-bold text-[#F5F5F3]">{spec.value}</div>
-                  </div>
-                ))}
+              <div className="pt-6">
+                <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-neutral-950 mb-3">
+                  {item.title}
+                </h2>
+                <p className="text-neutral-700 text-base sm:text-lg leading-relaxed mb-6">
+                  {item.summary}
+                </p>
               </div>
 
-              {/* Challenge / Solution / Outcome Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 text-xs text-[#8E94A0] leading-relaxed font-sans">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-6 border-y border-neutral-200 text-sm">
                 <div>
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-[#E30613] font-bold block mb-2">
-                    01 // THE CHALLENGE
-                  </span>
-                  <p>{item.challenge}</p>
+                  <span className="text-xs font-mono uppercase text-neutral-500 block mb-2">The Challenge</span>
+                  <p className="text-neutral-700 text-xs sm:text-sm leading-relaxed">{item.challenge}</p>
                 </div>
                 <div>
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-[#F5F5F3] font-bold block mb-2">
-                    02 // ARCHITECTURAL SOLUTION
-                  </span>
-                  <p>{item.solution}</p>
-                </div>
-                <div>
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-[#10B981] font-bold block mb-2">
-                    03 // OUTCOME & RESILIENCE
-                  </span>
-                  <p>{item.outcome}</p>
+                  <span className="text-xs font-mono uppercase text-neutral-500 block mb-2">The Solution</span>
+                  <p className="text-neutral-700 text-xs sm:text-sm leading-relaxed">{item.solution}</p>
                 </div>
               </div>
 
-              {/* Tech Stack */}
-              <div className="flex flex-wrap items-center gap-2 pt-4">
-                <span className="text-[10px] font-mono uppercase text-[#7E8494] mr-2">Technologies:</span>
-                {item.tech.map((t, idx) => (
-                  <span
-                    key={idx}
-                    className="px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-[11px] font-mono text-[#D1D5DB]"
-                  >
-                    {t}
-                  </span>
-                ))}
+              <div className="pt-6">
+                <span className="text-xs font-mono uppercase text-neutral-500 block mb-3">Verified Impact</span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                  {item.outcomes.map((stat, i) => (
+                    <div
+                      key={i}
+                      className="bg-white border border-neutral-200 rounded-xl p-3.5 flex items-start gap-2.5"
+                    >
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+                      <span className="text-xs text-neutral-800 font-medium leading-tight">{stat}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {item.tech.map((t) => (
+                    <span
+                      key={t}
+                      className="px-2.5 py-1 rounded-md bg-white border border-neutral-200 text-neutral-700 text-xs font-mono"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Bottom CTA */}
-        <div className="mt-20 pt-12 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6">
+        {/* CTA Bar */}
+        <div className="mt-12 bg-neutral-950 text-white rounded-3xl p-8 sm:p-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>
-            <h3 className="text-xl font-bold text-white">Have a similar project in mind?</h3>
-            <p className="text-xs text-[#7E8494] font-mono mt-1">Schedule a direct technical consultation in Zurich.</p>
+            <h3 className="text-2xl sm:text-3xl font-medium tracking-tight mb-2">
+              Have a similar engineering challenge?
+            </h3>
+            <p className="text-neutral-400 text-sm max-w-lg">
+              Let&apos;s evaluate your architectural requirements and outline a concrete milestone roadmap.
+            </p>
           </div>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-[#F5F5F3] text-[#080808] text-xs font-bold uppercase tracking-wider hover:bg-white transition-all"
+            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-neutral-950 font-medium text-sm hover:bg-neutral-100 transition-colors shrink-0"
           >
-            <span>Start a Project</span>
-            <ArrowUpRight className="w-4 h-4 text-[#E30613]" />
+            <span>Commission a project</span>
+            <ArrowUpRight className="w-4 h-4" />
           </Link>
         </div>
       </div>

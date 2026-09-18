@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { ArrowUpRight, Menu, X, Sparkles } from "lucide-react";
 import { trackClientEvent } from "@/lib/analytics-client";
 
 const NAV_ITEMS = [
@@ -14,9 +14,9 @@ const NAV_ITEMS = [
 ];
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [zurichTime, setZurichTime] = useState("18:00");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [zurichTime, setZurichTime] = useState("");
+  const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -34,11 +34,12 @@ export default function Header() {
           timeZone: "Europe/Zurich",
           hour: "2-digit",
           minute: "2-digit",
+          second: "2-digit",
           hour12: false,
         }).format(new Date());
         setZurichTime(timeStr);
       } catch {
-        setZurichTime("12:00");
+        setZurichTime("18:00:00");
       }
     };
     updateTime();
@@ -51,104 +52,120 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 sm:px-8 py-5">
-      <div
-        className={`max-w-7xl mx-auto rounded-full transition-all duration-300 px-6 py-3.5 flex items-center justify-between border ${
-          isScrolled
-            ? "bg-[#0A0B0E]/85 backdrop-blur-xl border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-            : "bg-transparent border-transparent"
-        }`}
-      >
-        {/* Brand Wordmark */}
-        <Link
-          href="/"
-          className="group flex items-center gap-2.5 focus:outline-none"
-          onClick={() => trackClientEvent("cta_click", { cta_id: "logo_nav" })}
+    <header className="fixed top-0 left-0 right-0 z-50 pointer-events-none p-3 sm:p-5">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        {/* Left floating badge / Logo dock */}
+        <div
+          className={`pointer-events-auto flex items-center gap-3 bg-white/90 backdrop-blur-md border border-neutral-200/80 rounded-full px-4 py-2.5 shadow-sm transition-all duration-300 ${
+            isScrolled ? "shadow-md border-neutral-300/90" : ""
+          }`}
         >
-          <span className="w-2 h-2 rounded-full bg-[#E30613] transition-transform group-hover:scale-125"></span>
-          <span className="font-sans font-extrabold text-base tracking-[-0.03em] text-[#F5F5F3]">
-            SHAZWERK
-          </span>
-          <span className="hidden sm:inline-block text-[10px] font-mono uppercase tracking-[0.16em] text-[#7E8494] pl-2 border-l border-white/10">
-            CH — {zurichTime || "CET"}
-          </span>
-        </Link>
+          <Link
+            href="/"
+            onClick={() => trackClientEvent("nav_click", { destination: "home_logo" })}
+            className="flex items-center gap-2 group"
+          >
+            <span className="font-semibold text-neutral-900 tracking-tight text-base hover:text-black transition-colors">
+              shazwerk
+            </span>
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-600"></span>
+          </Link>
 
-        {/* Desktop Nav Links */}
-        <nav className="hidden md:flex items-center space-x-8 text-xs font-mono uppercase tracking-wider">
-          {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`relative py-1 transition-colors duration-200 ${
-                  isActive ? "text-[#F5F5F3] font-bold" : "text-[#8E94A0] hover:text-[#F5F5F3]"
-                }`}
-              >
-                <span>{item.label}</span>
-                {isActive && (
-                  <span className="absolute -bottom-0.5 left-0 right-0 h-[1.5px] bg-[#E30613]" />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
+          <span className="hidden md:inline-block text-neutral-300">|</span>
 
-        {/* Action Button */}
-        <div className="hidden md:flex items-center gap-4">
+          {/* Zurich Time & Status */}
+          <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-neutral-600">
+            <span>Zürich {zurichTime} CET</span>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="text-[11px] text-neutral-500 hidden lg:inline">Available Q3/Q4</span>
+          </div>
+        </div>
+
+        {/* Right floating Navigation pill */}
+        <div
+          className={`pointer-events-auto hidden md:flex items-center gap-1 bg-white/90 backdrop-blur-md border border-neutral-200/80 rounded-full p-1.5 shadow-sm transition-all duration-300 ${
+            isScrolled ? "shadow-md border-neutral-300/90" : ""
+          }`}
+        >
+          <nav className="flex items-center gap-1">
+            {NAV_ITEMS.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => trackClientEvent("nav_click", { destination: item.href })}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
+                    isActive
+                      ? "bg-neutral-900 text-white font-semibold shadow-xs"
+                      : "text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+
           <Link
             href="/contact"
-            onClick={() => trackClientEvent("cta_click", { cta_id: "header_start_project" })}
-            className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F5F5F3] hover:bg-white text-[#080808] text-xs font-semibold tracking-wide transition-all duration-200 active:scale-95"
+            onClick={() => trackClientEvent("cta_click", { location: "header_pill" })}
+            className="ml-1 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-red-600 text-white hover:bg-red-700 transition-colors shadow-xs"
           >
-            <span>Start a project</span>
-            <ArrowUpRight className="w-3.5 h-3.5 text-[#E30613] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            <span>Start a brief</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        {/* Mobile Hamburger */}
+        {/* Mobile menu button */}
         <button
+          type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden text-[#F5F5F3] p-1.5 focus:outline-none"
+          className="pointer-events-auto md:hidden p-2.5 rounded-full bg-white/95 backdrop-blur-md border border-neutral-200 text-neutral-900 shadow-sm"
           aria-label="Toggle menu"
         >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
-      {/* Mobile Fullscreen Kinetic Overlay */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-0 bg-[#080808]/98 backdrop-blur-2xl z-40 px-6 py-24 flex flex-col justify-between">
-          <div className="flex flex-col space-y-6">
-            <div className="text-[11px] font-mono uppercase tracking-widest text-[#7E8494] mb-2">
-              Menu
+        <div className="pointer-events-auto md:hidden fixed inset-x-3 top-20 bg-white/98 backdrop-blur-xl border border-neutral-200 rounded-2xl p-6 shadow-2xl transition-all">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-100 text-xs font-mono text-neutral-500">
+              <span>Zürich {zurichTime} CET</span>
+              <span className="flex items-center gap-1.5 text-emerald-600 font-medium">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+                Available for briefs
+              </span>
             </div>
-            {NAV_ITEMS.map((item, idx) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-4xl font-extrabold tracking-[-0.03em] text-[#F5F5F3] flex items-center justify-between py-2 border-b border-white/5"
-              >
-                <span>{item.label}</span>
-                <span className="text-sm font-mono text-[#7E8494]">0{idx + 1}</span>
-              </Link>
-            ))}
-          </div>
 
-          <div className="pt-8 flex flex-col gap-4">
-            <Link
-              href="/contact"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-4 rounded-full bg-[#F5F5F3] text-[#080808] text-center text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2"
-            >
-              <span>Start a project</span>
-              <ArrowUpRight className="w-4 h-4 text-[#E30613]" />
-            </Link>
-            <div className="flex justify-between items-center text-xs font-mono text-[#7E8494] pt-2">
-              <span>Zurich, Switzerland</span>
-              <span>CET {zurichTime}</span>
+            <nav className="flex flex-col gap-2 pt-2">
+              {NAV_ITEMS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-2xl font-medium tracking-tight text-neutral-900 hover:text-red-600 py-1 transition-colors flex items-center justify-between"
+                >
+                  <span>{item.label}</span>
+                  <ArrowUpRight className="w-5 h-5 text-neutral-400" />
+                </Link>
+              ))}
+            </nav>
+
+            <div className="pt-4 border-t border-neutral-100 flex flex-col gap-3">
+              <Link
+                href="/contact"
+                className="w-full py-3 text-center rounded-xl bg-neutral-950 text-white font-medium text-sm hover:bg-neutral-800 transition-colors"
+              >
+                Get in touch
+              </Link>
+              <div className="text-center text-xs text-neutral-500 font-mono">
+                hello@shazwerk.ch · Switzerland
+              </div>
             </div>
           </div>
         </div>

@@ -1,11 +1,14 @@
 "use client";
 
+import { AnalyticsEventType } from "./types";
+
 export function trackClientEvent(
-  eventType: "pageview" | "cta_click" | "form_start" | "form_submit" | "scroll",
+  eventType: AnalyticsEventType,
   payload: {
     path?: string;
     cta_id?: string;
     meta?: Record<string, string | number | boolean>;
+    [key: string]: any;
   } = {}
 ) {
   if (typeof window === "undefined") return;
@@ -14,13 +17,16 @@ export function trackClientEvent(
   const referrer = document.referrer ? document.referrer : "direct";
   const device = window.innerWidth < 768 ? "Mobile" : window.innerWidth < 1024 ? "Tablet" : "Desktop";
 
+  const { cta_id, meta, ...rest } = payload;
+  const combinedMeta = { ...meta, ...rest };
+
   const body = {
     event_type: eventType,
     path,
     referrer,
     device,
-    cta_id: payload.cta_id,
-    meta: payload.meta,
+    cta_id,
+    meta: combinedMeta,
   };
 
   try {

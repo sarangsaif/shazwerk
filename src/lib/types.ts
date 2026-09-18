@@ -19,7 +19,16 @@ export type AnalyticsEventType =
   | "cta_click"
   | "form_start"
   | "form_submit"
-  | "scroll";
+  | "form_submit_success"
+  | "form_submit_error"
+  | "nav_click"
+  | "copy_email"
+  | "project_toggle"
+  | "filter_work"
+  | "filter_archive"
+  | "faq_toggle"
+  | "scroll"
+  | (string & {});
 
 export interface AnalyticsEvent {
   id: string;

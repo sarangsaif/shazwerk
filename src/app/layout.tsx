@@ -87,7 +87,7 @@ export default function RootLayout({
       <head>
         <JsonLd />
       </head>
-      <body className="min-h-screen flex flex-col bg-[#FAFAF8] text-[#0C0E11] font-sans antialiased selection:bg-[#0C0E11] selection:text-[#FAFAF8]">
+      <body className="min-h-screen flex flex-col bg-white text-neutral-900 font-sans antialiased selection:bg-[#FFE252] selection:text-neutral-900">
         <PageViewTracker />
         <Header />
         <main className="flex-grow">{children}</main>

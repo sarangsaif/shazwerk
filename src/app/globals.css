@@ -3,14 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --background: #080808;
-  --foreground: #F5F5F3;
+  --background: #FFFFFF;
+  --foreground: #141416;
+  --surface: #F8F8F7;
+  --surface-hover: #F2F2F0;
+  --border: #E8E8E5;
+  --border-dark: #D4D4D0;
   --swiss-red: #E30613;
+  --mimosa-yellow: #FFE252;
+  --mimosa-lime: #44F33E;
+  --mimosa-cyan: #2CC5F9;
+  --mimosa-orange: #FF8E1D;
 }
 
 @layer base {
   * {
-    border-color: rgba(255, 255, 255, 0.08);
+    border-color: var(--border);
     box-sizing: border-box;
   }
 
@@ -32,45 +40,41 @@
   }
 
   ::selection {
-    background-color: #FAFAF8;
-    color: #080808;
+    background-color: var(--mimosa-yellow);
+    color: #141416;
   }
 }
 
-/* Subtle luxury grain */
-.bg-grain {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0);
-  background-size: 32px 32px;
+/* Editorial subtle paper texture / grain */
+.bg-editorial-dot {
+  background-image: radial-gradient(#D0D0CC 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-/* Kinetic text gradient */
-.text-gradient-subtle {
-  background: linear-gradient(180deg, #FFFFFF 0%, #A0A5B0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Subtle line pattern */
+.bg-grid-editorial {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
 }
 
-/* Smooth custom scrollbar */
+/* Custom minimal scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #080808;
+  background: #FAFAFA;
 }
 ::-webkit-scrollbar-thumb {
-  background: #202226;
-  border-radius: 3px;
+  background: #D4D4D0;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #353840;
+  background: #A0A09C;
 }
 
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+/* Smooth transitions */
+.transition-editorial {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }

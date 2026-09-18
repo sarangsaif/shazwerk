@@ -9,14 +9,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        agency: {
-          bg: "#080808",
-          surface: "#111215",
-          elevated: "#181A1F",
-          border: "rgba(255, 255, 255, 0.08)",
-          borderHover: "rgba(255, 255, 255, 0.2)",
-          ivory: "#F5F5F3",
-          muted: "#7E8494",
+        mimosa: {
+          bg: "#FFFFFF",
+          surface: "#F8F8F7",
+          surfaceHover: "#F1F1EE",
+          border: "#E8E8E5",
+          borderDark: "#D2D2CD",
+          text: "#141416",
+          muted: "#6A6A70",
+          light: "#8E8E93",
+          yellow: "#FFE252",
+          lime: "#44F33E",
+          cyan: "#2CC5F9",
+          orange: "#FF8E1D",
           red: "#E30613",
         },
       },
@@ -38,8 +43,8 @@ const config: Config = {
       },
       fontSize: {
         "7xl": ["4.5rem", { lineHeight: "1" }],
-        "8xl": ["6rem", { lineHeight: "0.96" }],
-        "9xl": ["7.5rem", { lineHeight: "0.94" }],
+        "8xl": ["6rem", { lineHeight: "0.95" }],
+        "9xl": ["8rem", { lineHeight: "0.92" }],
       },
       letterSpacing: {
         editorial: "-0.04em",
