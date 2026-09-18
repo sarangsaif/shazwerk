@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "PATH=\"/opt/homebrew/bin:$PATH\" next dev",
+    "build": "PATH=\"/opt/homebrew/bin:$PATH\" next build",
+    "start": "PATH=\"/opt/homebrew/bin:$PATH\" next start",
+    "lint": "PATH=\"/opt/homebrew/bin:$PATH\" next lint"
   },
   "dependencies": {
     "clsx": "^2.1.1",
