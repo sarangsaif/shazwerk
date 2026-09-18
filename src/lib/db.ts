@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
-import { ContactSubmission, SubmissionStatus, AnalyticsEvent, AnalyticsSummary } from "./types";
+import { ContactSubmission, SubmissionStatus, AnalyticsEvent, AnalyticsSummary, EmailSettings } from "./types";
 
 // Choose directory: fallback to /tmp in read-only serverless environments
 function getStorageDir(): string {
@@ -27,10 +27,28 @@ function getStorageDir(): string {
 const STORAGE_DIR = getStorageDir();
 const SUBMISSIONS_FILE = path.join(STORAGE_DIR, "contact_submissions.json");
 const ANALYTICS_FILE = path.join(STORAGE_DIR, "analytics_events.json");
+const SETTINGS_FILE = path.join(STORAGE_DIR, "email_settings.json");
+
+// Default Email Settings
+const DEFAULT_EMAIL_SETTINGS: EmailSettings = {
+  notificationEmail: process.env.NOTIFICATION_EMAIL || "hello@shazwerk.ch",
+  senderName: "SHAZWERK Studio",
+  senderEmail: process.env.SENDER_EMAIL || "notifications@shazwerk.ch",
+  provider: "auto",
+  smtpHost: process.env.SMTP_HOST || "",
+  smtpPort: Number(process.env.SMTP_PORT) || 587,
+  smtpUser: process.env.SMTP_USER || "",
+  smtpPass: process.env.SMTP_PASS || "",
+  smtpSecure: process.env.SMTP_SECURE === "true",
+  resendApiKey: process.env.RESEND_API_KEY || "",
+  webhookUrl: process.env.NOTIFICATION_WEBHOOK_URL || "",
+  notifyOnNewLead: true,
+};
 
 // In-memory fallback / cache
 let memorySubmissions: ContactSubmission[] = [];
 let memoryAnalytics: AnalyticsEvent[] = [];
+let memorySettings: EmailSettings = { ...DEFAULT_EMAIL_SETTINGS };
 
 // Initialize files if they don't exist
 function readSubmissions(): ContactSubmission[] {
@@ -115,6 +133,38 @@ export async function updateSubmissionStatus(
   submissions[index].status = status;
   writeSubmissions(submissions);
   return submissions[index];
+}
+
+export async function deleteSubmission(id: string): Promise<boolean> {
+  const submissions = readSubmissions();
+  const filtered = submissions.filter((s) => s.id !== id);
+  if (filtered.length === submissions.length) return false;
+  writeSubmissions(filtered);
+  return true;
+}
+
+export async function getEmailSettings(): Promise<EmailSettings> {
+  try {
+    if (fs.existsSync(SETTINGS_FILE)) {
+      const content = fs.readFileSync(SETTINGS_FILE, "utf-8");
+      return { ...DEFAULT_EMAIL_SETTINGS, ...JSON.parse(content) };
+    }
+  } catch (err) {
+    console.error("Error reading settings file:", err);
+  }
+  return memorySettings;
+}
+
+export async function updateEmailSettings(settings: Partial<EmailSettings>): Promise<EmailSettings> {
+  const current = await getEmailSettings();
+  const updated: EmailSettings = { ...current, ...settings };
+  memorySettings = updated;
+  try {
+    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(updated, null, 2), "utf-8");
+  } catch (err) {
+    console.error("Error writing settings file:", err);
+  }
+  return updated;
 }
 
 export async function recordAnalyticsEvent(

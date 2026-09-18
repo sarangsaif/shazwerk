@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createSubmission, recordAnalyticsEvent } from "@/lib/db";
+import { sendInquiryNotification } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
@@ -77,6 +78,13 @@ export async function POST(req: NextRequest) {
       timeline: data.timeline || undefined,
       message: data.message,
     });
+
+    // Send immediate email notification to the studio team
+    try {
+      await sendInquiryNotification(submission);
+    } catch (notifyErr) {
+      console.warn("Email notification dispatch warning:", notifyErr);
+    }
 
     // Record analytics event
     const country = req.headers.get("x-vercel-ip-country") || "CH (Estimated)";

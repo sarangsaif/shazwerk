@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, ArrowRight, AlertCircle } from "lucide-react";
+import Link from "next/link";
+import { Lock, ArrowRight, AlertCircle, ArrowLeft, ShieldCheck } from "lucide-react";
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
@@ -24,7 +25,7 @@ export default function AdminLoginPage() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Authentication failed.");
+        throw new Error(data.error || "Authentication failed. Invalid master password.");
       }
 
       router.push("/admin");
@@ -37,58 +38,86 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="bg-[#FAFAF8] min-h-[75vh] flex items-center justify-center px-4 py-16">
-      <div className="max-w-sm w-full bg-[#FFFFFF] border border-[#E0E0DA] p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
-        <div className="flex items-center gap-2 mb-6">
-          <div className="w-7 h-7 bg-[#0C0E11] text-[#FAFAF8] flex items-center justify-center font-mono text-xs font-bold">
-            <span className="text-[#E30613] mr-0.5">/</span>S
-          </div>
-          <span className="font-sans font-extrabold text-sm tracking-tight text-[#0C0E11]">
-            SHAZWERK STUDIO CONSOLE
-          </span>
-        </div>
-
-        <div className="text-[11px] font-mono text-[#6B7280] mb-6 pb-3 border-b border-[#F0F0EB]">
-          RESTRICTED ACCESS // INTERNAL TRIAGE & TELEMETRY
-        </div>
-
-        {error && (
-          <div className="p-3 mb-4 bg-[#FEF2F2] border border-[#F87171] text-xs text-[#B91C1C] flex items-start gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-            <span>{error}</span>
-          </div>
-        )}
-
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-[11px] font-mono uppercase tracking-wider text-[#0C0E11] font-semibold mb-1.5">
-              Passphrase
-            </label>
-            <div className="relative">
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter admin password..."
-                className="w-full px-3.5 py-2.5 bg-[#FAFAF8] border border-[#D5D5CF] focus:border-[#0C0E11] text-xs font-mono text-[#0C0E11] outline-none"
-              />
-              <Lock className="w-3.5 h-3.5 text-[#9CA3AF] absolute right-3 top-3.5" />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2.5 bg-[#0C0E11] hover:bg-[#1F242D] text-[#FAFAF8] text-xs font-mono uppercase font-bold tracking-wider transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+    <div className="bg-white min-h-screen flex flex-col justify-center items-center px-6 py-24 text-neutral-900">
+      <div className="max-w-md w-full">
+        <div className="mb-8">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-xs font-mono text-neutral-500 hover:text-neutral-950 transition-colors"
           >
-            <span>{loading ? "Authenticating..." : "Access Console"}</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#E30613]" />
-          </button>
-        </form>
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Return to public website</span>
+          </Link>
+        </div>
 
-        <div className="mt-6 pt-4 border-t border-[#F0F0EB] text-[10px] font-mono text-[#9CA3AF] text-center">
-          Default session security: 7 days · TLS 1.3
+        <div className="bg-neutral-50 border border-neutral-200 rounded-3xl p-8 sm:p-10 shadow-sm">
+          <div className="flex items-center justify-between pb-6 mb-6 border-b border-neutral-200">
+            <div className="flex items-center gap-2.5">
+              <span className="font-semibold text-base tracking-tight text-neutral-950">
+                shazwerk
+              </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+              <span className="text-xs font-mono text-neutral-400">/ admin</span>
+            </div>
+            <span className="px-2.5 py-0.5 rounded-full bg-neutral-200 text-[11px] font-mono text-neutral-700">
+              Staff Portal
+            </span>
+          </div>
+
+          <div className="mb-6">
+            <h1 className="text-2xl font-medium tracking-tight text-neutral-950 mb-2">
+              Studio Admin Console
+            </h1>
+            <p className="text-xs text-neutral-600 leading-relaxed font-mono">
+              Access project briefs, triage incoming client queries, manage traffic telemetry, and configure email notifications.
+            </p>
+          </div>
+
+          {error && (
+            <div className="p-3.5 mb-6 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-start gap-2.5 font-mono">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-xs font-mono uppercase tracking-wider text-neutral-700 mb-2">
+                Console Passphrase
+              </label>
+              <div className="relative">
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter admin password..."
+                  className="w-full px-4 py-3 bg-white border border-neutral-200 rounded-xl text-xs font-mono text-neutral-950 placeholder:text-neutral-400 focus:outline-hidden focus:border-neutral-950"
+                />
+                <Lock className="w-4 h-4 text-neutral-400 absolute right-3.5 top-3.5" />
+              </div>
+              <p className="text-[11px] text-neutral-500 font-mono mt-1.5">
+                Default: <code className="text-neutral-800 bg-neutral-200/70 px-1 py-0.5 rounded">shazwerk2026!admin</code>
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-mono uppercase font-semibold tracking-wider rounded-xl transition-colors flex items-center justify-center gap-2 disabled:opacity-50 shadow-xs"
+            >
+              <span>{loading ? "Authenticating..." : "Unlock Studio Console"}</span>
+              <ArrowRight className="w-3.5 h-3.5 text-neutral-400" />
+            </button>
+          </form>
+
+          <div className="mt-8 pt-6 border-t border-neutral-200 flex items-center justify-between text-[11px] font-mono text-neutral-400">
+            <span className="flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Session: 7 Days TLS 1.3</span>
+            </span>
+            <span>Zurich Data Center</span>
+          </div>
         </div>
       </div>
     </div>

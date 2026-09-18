@@ -51,3 +51,26 @@ export interface AnalyticsSummary {
   ctaClicks: { cta_id: string; count: number }[];
   formSubmissionsCount: number;
 }
+
+export interface EmailSettings {
+  notificationEmail: string;
+  senderName: string;
+  senderEmail: string;
+  provider: "auto" | "resend" | "smtp" | "webhook";
+  smtpHost?: string;
+  smtpPort?: number;
+  smtpUser?: string;
+  smtpPass?: string;
+  smtpSecure?: boolean;
+  resendApiKey?: string;
+  webhookUrl?: string;
+  notifyOnNewLead: boolean;
+}
+
+export interface EmailNotificationResult {
+  success: boolean;
+  provider: string;
+  messageId?: string;
+  error?: string;
+  timestamp: string;
+}
