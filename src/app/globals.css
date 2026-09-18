@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --background: #FAFAF8;
-  --foreground: #0C0E11;
+  --background: #080808;
+  --foreground: #F5F5F3;
   --swiss-red: #E30613;
 }
 
 @layer base {
   * {
-    border-color: #E5E5E0;
+    border-color: rgba(255, 255, 255, 0.08);
     box-sizing: border-box;
   }
 
@@ -32,53 +32,40 @@
   }
 
   ::selection {
-    background-color: #0C0E11;
-    color: #FAFAF8;
+    background-color: #FAFAF8;
+    color: #080808;
   }
 }
 
-/* Custom architectural hairline grid utilities */
-.grid-bg-hairline {
-  background-size: 40px 40px;
-  background-image: 
-    linear-gradient(to right, rgba(17, 20, 24, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(17, 20, 24, 0.04) 1px, transparent 1px);
+/* Subtle luxury grain */
+.bg-grain {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0);
+  background-size: 32px 32px;
 }
 
-.grid-bg-dots {
-  background-size: 24px 24px;
-  background-image: radial-gradient(rgba(17, 20, 24, 0.08) 1px, transparent 1px);
+/* Kinetic text gradient */
+.text-gradient-subtle {
+  background: linear-gradient(180deg, #FFFFFF 0%, #A0A5B0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Precise Crosshairs */
-.crosshair {
-  position: relative;
+/* Smooth custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
 }
-.crosshair::before,
-.crosshair::after {
-  content: "";
-  position: absolute;
-  background-color: #A0A4AC;
+::-webkit-scrollbar-track {
+  background: #080808;
 }
-.crosshair::before {
-  top: -4px;
-  bottom: -4px;
-  left: 0;
-  width: 1px;
+::-webkit-scrollbar-thumb {
+  background: #202226;
+  border-radius: 3px;
 }
-.crosshair::after {
-  left: -4px;
-  right: -4px;
-  top: 0;
-  height: 1px;
+::-webkit-scrollbar-thumb:hover {
+  background: #353840;
 }
 
-/* Tabular numbers for architectural precision */
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
-}
-
-/* Reduced motion preference */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

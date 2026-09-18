@@ -6,18 +6,9 @@ import {
   Inbox,
   BarChart3,
   LogOut,
-  Mail,
-  Building,
-  Calendar,
-  DollarSign,
-  Tag,
-  CheckCircle2,
-  Clock,
-  Archive,
-  Eye,
-  Activity,
   Globe,
   MousePointer,
+  CheckCircle2,
 } from "lucide-react";
 import { ContactSubmission, SubmissionStatus, AnalyticsSummary } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
@@ -81,41 +72,40 @@ export default function AdminDashboardView({ initialSubmissions, analytics }: Pr
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Top Admin Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-8 border-b border-[#E5E5E0] gap-4">
+    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-32 text-[#F5F5F3]">
+      {/* Top Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-8 mb-10 border-b border-white/10 gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2 mb-2">
             <span className="w-2 h-2 rounded-full bg-[#E30613]"></span>
-            <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#6B7280]">
-              SHAZWERK INTERNAL
+            <span className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-[#7E8494]">
+              SHAZWERK STUDIO CONSOLE
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0C0E11] tracking-tight">
-            Studio Management Console
+          <h1 className="text-3xl font-extrabold text-white tracking-tight">
+            Inquiries & Telemetry
           </h1>
         </div>
 
         <div className="flex items-center gap-3">
-          {/* View Tab Buttons */}
-          <div className="flex items-center bg-[#FFFFFF] border border-[#E0E0DA] p-1 font-mono text-xs">
+          <div className="flex items-center rounded-full bg-white/5 border border-white/10 p-1 font-mono text-xs">
             <button
               onClick={() => setActiveTab("inquiries")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 transition-colors ${
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full transition-colors ${
                 activeTab === "inquiries"
-                  ? "bg-[#0C0E11] text-[#FAFAF8] font-bold"
-                  : "text-[#4B5563] hover:text-[#0C0E11]"
+                  ? "bg-[#F5F5F3] text-[#080808] font-bold"
+                  : "text-[#8E94A0] hover:text-white"
               }`}
             >
               <Inbox className="w-3.5 h-3.5" />
-              <span>Inquiries ({counts.new} new)</span>
+              <span>Inquiries ({counts.new})</span>
             </button>
             <button
               onClick={() => setActiveTab("analytics")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 transition-colors ${
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full transition-colors ${
                 activeTab === "analytics"
-                  ? "bg-[#0C0E11] text-[#FAFAF8] font-bold"
-                  : "text-[#4B5563] hover:text-[#0C0E11]"
+                  ? "bg-[#F5F5F3] text-[#080808] font-bold"
+                  : "text-[#8E94A0] hover:text-white"
               }`}
             >
               <BarChart3 className="w-3.5 h-3.5" />
@@ -125,7 +115,7 @@ export default function AdminDashboardView({ initialSubmissions, analytics }: Pr
 
           <button
             onClick={handleLogout}
-            className="p-2 border border-[#E0E0DA] hover:border-[#0C0E11] hover:bg-[#FFFFFF] text-[#6B7280] hover:text-[#0C0E11] transition-colors"
+            className="p-2.5 rounded-full border border-white/10 hover:border-white/30 text-[#7E8494] hover:text-white transition-colors"
             title="Sign Out"
           >
             <LogOut className="w-4 h-4" />
@@ -133,19 +123,19 @@ export default function AdminDashboardView({ initialSubmissions, analytics }: Pr
         </div>
       </div>
 
-      {/* Tab 1: Inquiries Triage */}
+      {/* Tab 1: Inquiries */}
       {activeTab === "inquiries" && (
         <div>
-          {/* Sub-Filter Bar */}
-          <div className="flex flex-wrap gap-2 mb-6">
+          {/* Sub Filters */}
+          <div className="flex flex-wrap gap-2 mb-8">
             {(["all", "new", "contacted", "qualified", "archived"] as const).map((status) => (
               <button
                 key={status}
                 onClick={() => setStatusFilter(status)}
-                className={`px-3 py-1 text-xs font-mono uppercase tracking-wider border transition-colors ${
+                className={`px-3.5 py-1 rounded-full text-xs font-mono uppercase tracking-wider transition-colors ${
                   statusFilter === status
-                    ? "bg-[#0C0E11] text-[#FAFAF8] border-[#0C0E11] font-bold"
-                    : "bg-[#FFFFFF] text-[#4B5563] border-[#E0E0DA] hover:border-[#9CA3AF]"
+                    ? "bg-[#F5F5F3] text-[#080808] font-bold"
+                    : "bg-white/5 text-[#8E94A0] hover:text-white border border-white/5"
                 }`}
               >
                 {status} ({counts[status]})
@@ -154,17 +144,16 @@ export default function AdminDashboardView({ initialSubmissions, analytics }: Pr
           </div>
 
           {filteredSubmissions.length === 0 ? (
-            /* Empty State */
-            <div className="bg-[#FFFFFF] border border-[#E0E0DA] p-12 text-center">
-              <Inbox className="w-8 h-8 text-[#9CA3AF] mx-auto mb-3" />
-              <h3 className="text-base font-bold text-[#0C0E11] mb-1">No Inquiries Found</h3>
-              <p className="text-xs text-[#6B7280] font-mono">
+            <div className="p-16 rounded-2xl bg-white/[0.02] border border-white/5 text-center">
+              <Inbox className="w-8 h-8 text-[#7E8494] mx-auto mb-3" />
+              <h3 className="text-base font-bold text-white mb-1">No Inquiries</h3>
+              <p className="text-xs text-[#7E8494] font-mono">
                 No project briefs match the &quot;{statusFilter}&quot; filter.
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              {/* Left Column: Submissions List */}
+              {/* List */}
               <div className="lg:col-span-5 space-y-3">
                 {filteredSubmissions.map((sub) => {
                   const isSelected = selectedSubmission?.id === sub.id;
@@ -172,71 +161,68 @@ export default function AdminDashboardView({ initialSubmissions, analytics }: Pr
                     <div
                       key={sub.id}
                       onClick={() => setSelectedSubmission(sub)}
-                      className={`p-4 border cursor-pointer transition-all ${
+                      className={`p-5 rounded-xl cursor-pointer transition-all border ${
                         isSelected
-                          ? "bg-[#FFFFFF] border-[#0C0E11] shadow-sm ring-1 ring-[#0C0E11]"
-                          : "bg-[#FFFFFF] border-[#E0E0DA] hover:border-[#9CA3AF]"
+                          ? "bg-white/10 border-white/30 shadow-lg"
+                          : "bg-white/[0.02] border-white/5 hover:border-white/20 hover:bg-white/[0.04]"
                       }`}
                     >
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="font-bold text-sm text-[#0C0E11] tracking-tight">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-sm text-white tracking-tight">
                           {sub.company}
                         </span>
                         <span
-                          className={`text-[10px] font-mono uppercase px-2 py-0.5 ${
+                          className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-full ${
                             sub.status === "new"
-                              ? "bg-[#FEF2F2] text-[#E30613] font-bold border border-[#FCA5A5]"
+                              ? "bg-[#E30613]/20 text-[#E30613] font-bold border border-[#E30613]/40"
                               : sub.status === "contacted"
-                              ? "bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]"
+                              ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
                               : sub.status === "qualified"
-                              ? "bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]"
-                              : "bg-[#F3F4F6] text-[#6B7280] border border-[#E5E7EB]"
+                              ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                              : "bg-white/10 text-white/50 border border-white/10"
                           }`}
                         >
                           {sub.status}
                         </span>
                       </div>
-
-                      <div className="text-xs text-[#4B5563] mb-2">{sub.name} · {sub.project_type}</div>
-
-                      <div className="flex items-center justify-between text-[11px] font-mono text-[#9CA3AF] pt-2 border-t border-[#F0F0EB]">
+                      <div className="text-xs text-[#A0A5B0] mb-2">{sub.name} · {sub.project_type}</div>
+                      <div className="flex items-center justify-between text-[11px] font-mono text-[#7E8494] pt-2 border-t border-white/5">
                         <span>{formatDate(sub.created_at)}</span>
-                        <span>{sub.budget || "No budget specified"}</span>
+                        <span>{sub.budget || "Unspecified"}</span>
                       </div>
                     </div>
                   );
                 })}
               </div>
 
-              {/* Right Column: Selected Submission Detail */}
+              {/* Selected Detail */}
               {selectedSubmission && (
-                <div className="lg:col-span-7 bg-[#FFFFFF] border border-[#E0E0DA] p-6 sm:p-8 sticky top-24">
-                  <div className="flex flex-wrap items-center justify-between pb-4 mb-6 border-b border-[#E5E5E0] gap-3">
+                <div className="lg:col-span-7 rounded-2xl bg-white/[0.02] border border-white/10 p-8 sticky top-32">
+                  <div className="flex flex-wrap items-center justify-between pb-6 mb-6 border-b border-white/10 gap-3">
                     <div>
-                      <div className="text-[10px] font-mono text-[#9CA3AF] uppercase mb-1">
-                        INQUIRY REF: {selectedSubmission.id.slice(0, 8).toUpperCase()}
+                      <div className="text-[10px] font-mono text-[#7E8494] uppercase mb-1">
+                        REF: {selectedSubmission.id.slice(0, 8).toUpperCase()}
                       </div>
-                      <h2 className="text-xl font-bold text-[#0C0E11]">
+                      <h2 className="text-2xl font-bold text-white">
                         {selectedSubmission.company}
                       </h2>
                     </div>
 
-                    {/* Action Buttons to update status */}
-                    <div className="flex items-center gap-1.5 font-mono text-xs">
+                    <div className="flex items-center gap-2 font-mono text-xs">
                       {selectedSubmission.status !== "contacted" && (
                         <button
                           disabled={updatingId === selectedSubmission.id}
                           onClick={() => handleStatusChange(selectedSubmission.id, "contacted")}
-                          className="px-2.5 py-1 bg-[#F4F4F0] hover:bg-[#E5E5E0] text-[#0C0E11] border border-[#D5D5CF] transition-colors"
+                          className="px-3 py-1 rounded-full bg-white/5 hover:bg-white/15 text-white border border-white/10"
                         >
-                          Mark Contacted
+                          Contacted
                         </button>
                       )}
                       {selectedSubmission.status !== "qualified" && (
                         <button
                           disabled={updatingId === selectedSubmission.id}
                           onClick={() => handleStatusChange(selectedSubmission.id, "qualified")}
-                          className="px-2.5 py-1 bg-[#059669] hover:bg-[#047857] text-white transition-colors"
+                          className="px-3 py-1 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
                         >
                           Qualify
                         </button>
@@ -245,7 +231,7 @@ export default function AdminDashboardView({ initialSubmissions, analytics }: Pr
                         <button
                           disabled={updatingId === selectedSubmission.id}
                           onClick={() => handleStatusChange(selectedSubmission.id, "archived")}
-                          className="px-2.5 py-1 bg-[#FFFFFF] hover:bg-[#FEF2F2] text-[#6B7280] hover:text-[#B91C1C] border border-[#D5D5CF] transition-colors"
+                          className="px-3 py-1 rounded-full bg-white/5 hover:bg-white/15 text-[#7E8494] hover:text-white"
                         >
                           Archive
                         </button>
@@ -253,54 +239,49 @@ export default function AdminDashboardView({ initialSubmissions, analytics }: Pr
                     </div>
                   </div>
 
-                  {/* Metadata Specs Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6 p-4 bg-[#FAFAF8] border border-[#E5E5E0] font-mono text-xs">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6 p-4 rounded-xl bg-black/40 border border-white/5 font-mono text-xs">
                     <div>
-                      <div className="text-[10px] text-[#9CA3AF] uppercase">Contact Person</div>
-                      <div className="font-bold text-[#0C0E11] mt-0.5">{selectedSubmission.name}</div>
+                      <div className="text-[10px] text-[#7E8494] uppercase">Contact</div>
+                      <div className="font-bold text-white mt-0.5">{selectedSubmission.name}</div>
                     </div>
                     <div>
-                      <div className="text-[10px] text-[#9CA3AF] uppercase">Direct Email</div>
-                      <a
-                        href={`mailto:${selectedSubmission.email}`}
-                        className="text-[#E30613] underline truncate block mt-0.5"
-                      >
+                      <div className="text-[10px] text-[#7E8494] uppercase">Email</div>
+                      <a href={`mailto:${selectedSubmission.email}`} className="text-[#E30613] truncate block mt-0.5">
                         {selectedSubmission.email}
                       </a>
                     </div>
                     <div>
-                      <div className="text-[10px] text-[#9CA3AF] uppercase">Phone</div>
-                      <div className="text-[#0C0E11] mt-0.5">{selectedSubmission.phone || "Not provided"}</div>
+                      <div className="text-[10px] text-[#7E8494] uppercase">Phone</div>
+                      <div className="text-white mt-0.5">{selectedSubmission.phone || "None"}</div>
                     </div>
                     <div>
-                      <div className="text-[10px] text-[#9CA3AF] uppercase">Project Scope</div>
-                      <div className="text-[#0C0E11] font-semibold mt-0.5">{selectedSubmission.project_type}</div>
+                      <div className="text-[10px] text-[#7E8494] uppercase">Scope</div>
+                      <div className="text-white mt-0.5">{selectedSubmission.project_type}</div>
                     </div>
                     <div>
-                      <div className="text-[10px] text-[#9CA3AF] uppercase">Target Budget</div>
-                      <div className="text-[#0C0E11] font-semibold mt-0.5">{selectedSubmission.budget || "Unspecified"}</div>
+                      <div className="text-[10px] text-[#7E8494] uppercase">Budget</div>
+                      <div className="text-white mt-0.5">{selectedSubmission.budget || "None"}</div>
                     </div>
                     <div>
-                      <div className="text-[10px] text-[#9CA3AF] uppercase">Target Timeline</div>
-                      <div className="text-[#0C0E11] font-semibold mt-0.5">{selectedSubmission.timeline || "Unspecified"}</div>
+                      <div className="text-[10px] text-[#7E8494] uppercase">Timeline</div>
+                      <div className="text-white mt-0.5">{selectedSubmission.timeline || "None"}</div>
                     </div>
                   </div>
 
-                  {/* Message Content */}
                   <div>
-                    <div className="text-[11px] font-mono uppercase tracking-wider text-[#6B7280] mb-2 font-bold">
-                      Project Brief & Technical Scope
+                    <div className="text-[11px] font-mono uppercase tracking-wider text-[#7E8494] mb-2 font-bold">
+                      Message
                     </div>
-                    <div className="p-5 bg-[#FAFAF8] border border-[#E5E5E0] text-xs text-[#1F242D] leading-relaxed whitespace-pre-wrap font-sans">
+                    <div className="p-5 rounded-xl bg-black/40 border border-white/5 text-sm text-[#D1D5DB] leading-relaxed whitespace-pre-wrap font-sans">
                       {selectedSubmission.message}
                     </div>
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-[#F0F0EB] flex items-center justify-between text-[11px] font-mono text-[#9CA3AF]">
-                    <span>RECEIVED: {formatDate(selectedSubmission.created_at)}</span>
+                  <div className="mt-6 pt-6 border-t border-white/10 flex items-center justify-between text-xs font-mono">
+                    <span className="text-[#7E8494]">RECEIVED: {formatDate(selectedSubmission.created_at)}</span>
                     <a
                       href={`mailto:${selectedSubmission.email}?subject=Regarding%20your%20inquiry%20with%20SHAZWERK`}
-                      className="px-4 py-2 bg-[#0C0E11] text-[#FAFAF8] hover:bg-[#1F242D] font-bold tracking-wider"
+                      className="px-4 py-2 rounded-full bg-[#F5F5F3] text-[#080808] font-bold tracking-wider hover:bg-white"
                     >
                       Reply via Email &rarr;
                     </a>
@@ -312,128 +293,71 @@ export default function AdminDashboardView({ initialSubmissions, analytics }: Pr
         </div>
       )}
 
-      {/* Tab 2: Privacy-Conscious Telemetry & Analytics */}
+      {/* Tab 2: Analytics */}
       {activeTab === "analytics" && (
         <div className="space-y-8">
-          {/* High-Level Overview Metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="bg-[#FFFFFF] border border-[#E0E0DA] p-5">
-              <div className="text-[10px] font-mono text-[#6B7280] uppercase">Total Pageviews</div>
-              <div className="text-3xl font-extrabold font-mono text-[#0C0E11] mt-1">
+            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="text-[10px] font-mono text-[#7E8494] uppercase">Total Views</div>
+              <div className="text-4xl font-extrabold font-mono text-white mt-1">
                 {analytics.totalPageviews}
               </div>
-              <div className="text-[10px] font-mono text-[#9CA3AF] mt-1">First-party edge telemetry</div>
             </div>
-
-            <div className="bg-[#FFFFFF] border border-[#E0E0DA] p-5">
-              <div className="text-[10px] font-mono text-[#6B7280] uppercase">Estimated Unique Visitors</div>
-              <div className="text-3xl font-extrabold font-mono text-[#0C0E11] mt-1">
+            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="text-[10px] font-mono text-[#7E8494] uppercase">Est. Unique Visitors</div>
+              <div className="text-4xl font-extrabold font-mono text-white mt-1">
                 {analytics.uniqueVisitorsEstimate}
               </div>
-              <div className="text-[10px] font-mono text-[#9CA3AF] mt-1">Zero-fingerprinting heuristic</div>
             </div>
-
-            <div className="bg-[#FFFFFF] border border-[#E0E0DA] p-5">
-              <div className="text-[10px] font-mono text-[#6B7280] uppercase">Inquiries Transmitted</div>
-              <div className="text-3xl font-extrabold font-mono text-[#0C0E11] mt-1">
+            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="text-[10px] font-mono text-[#7E8494] uppercase">Inquiries</div>
+              <div className="text-4xl font-extrabold font-mono text-white mt-1">
                 {submissions.length}
               </div>
-              <div className="text-[10px] font-mono text-[#10B981] mt-1">Active project pipeline</div>
             </div>
-
-            <div className="bg-[#FFFFFF] border border-[#E0E0DA] p-5">
-              <div className="text-[10px] font-mono text-[#6B7280] uppercase">Conversion Rate</div>
-              <div className="text-3xl font-extrabold font-mono text-[#0C0E11] mt-1">
+            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="text-[10px] font-mono text-[#7E8494] uppercase">Conversion Rate</div>
+              <div className="text-4xl font-extrabold font-mono text-white mt-1">
                 {analytics.totalPageviews > 0
                   ? `${((submissions.length / analytics.totalPageviews) * 100).toFixed(1)}%`
                   : "0.0%"}
               </div>
-              <div className="text-[10px] font-mono text-[#9CA3AF] mt-1">Inquiry / view ratio</div>
             </div>
           </div>
 
-          {/* Breakdown Tables */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Top Pages */}
-            <div className="bg-[#FFFFFF] border border-[#E0E0DA] p-6">
-              <h3 className="text-sm font-bold text-[#0C0E11] mb-4 font-mono uppercase tracking-wider flex items-center gap-2">
+            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+              <h3 className="text-sm font-bold text-white mb-4 font-mono uppercase tracking-wider flex items-center gap-2">
                 <Globe className="w-4 h-4 text-[#E30613]" />
-                <span>Top Viewed Routes</span>
+                <span>Top Routes</span>
               </h3>
               {analytics.topPages.length === 0 ? (
-                <div className="text-xs text-[#9CA3AF] font-mono py-4">
-                  No telemetry recorded yet. Live visits will register automatically.
-                </div>
+                <div className="text-xs text-[#7E8494] font-mono py-4">No data recorded yet.</div>
               ) : (
                 <div className="space-y-2 font-mono text-xs">
                   {analytics.topPages.map((p) => (
-                    <div key={p.path} className="flex justify-between p-2.5 bg-[#FAFAF8] border border-[#EAEAE5]">
-                      <span className="font-semibold text-[#0C0E11]">{p.path}</span>
-                      <span className="text-[#6B7280]">{p.count} views</span>
+                    <div key={p.path} className="flex justify-between p-2.5 rounded-lg bg-black/40 border border-white/5">
+                      <span className="font-semibold text-white">{p.path}</span>
+                      <span className="text-[#7E8494]">{p.count} views</span>
                     </div>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* CTA Click Interactions */}
-            <div className="bg-[#FFFFFF] border border-[#E0E0DA] p-6">
-              <h3 className="text-sm font-bold text-[#0C0E11] mb-4 font-mono uppercase tracking-wider flex items-center gap-2">
+            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+              <h3 className="text-sm font-bold text-white mb-4 font-mono uppercase tracking-wider flex items-center gap-2">
                 <MousePointer className="w-4 h-4 text-[#E30613]" />
-                <span>Most Interacted Actions (CTAs)</span>
+                <span>CTA Interactions</span>
               </h3>
               {analytics.ctaClicks.length === 0 ? (
-                <div className="text-xs text-[#9CA3AF] font-mono py-4">
-                  No CTA interactions recorded yet.
-                </div>
+                <div className="text-xs text-[#7E8494] font-mono py-4">No CTA data yet.</div>
               ) : (
                 <div className="space-y-2 font-mono text-xs">
                   {analytics.ctaClicks.map((c) => (
-                    <div key={c.cta_id} className="flex justify-between p-2.5 bg-[#FAFAF8] border border-[#EAEAE5]">
-                      <span className="font-semibold text-[#0C0E11]">{c.cta_id}</span>
-                      <span className="text-[#6B7280]">{c.count} clicks</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Geographic Distribution (Edge Country Headers) */}
-            <div className="bg-[#FFFFFF] border border-[#E0E0DA] p-6">
-              <h3 className="text-sm font-bold text-[#0C0E11] mb-4 font-mono uppercase tracking-wider">
-                Geographic Traffic (Edge Headers)
-              </h3>
-              {analytics.countries.length === 0 ? (
-                <div className="text-xs text-[#9CA3AF] font-mono py-4">
-                  No regional data yet.
-                </div>
-              ) : (
-                <div className="space-y-2 font-mono text-xs">
-                  {analytics.countries.map((c) => (
-                    <div key={c.country} className="flex justify-between p-2.5 bg-[#FAFAF8] border border-[#EAEAE5]">
-                      <span>{c.country}</span>
-                      <span className="text-[#6B7280]">{c.count}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Referrers */}
-            <div className="bg-[#FFFFFF] border border-[#E0E0DA] p-6">
-              <h3 className="text-sm font-bold text-[#0C0E11] mb-4 font-mono uppercase tracking-wider">
-                Traffic Sources & Referrers
-              </h3>
-              {analytics.referrers.length === 0 ? (
-                <div className="text-xs text-[#9CA3AF] font-mono py-4">
-                  No external referral sources recorded yet.
-                </div>
-              ) : (
-                <div className="space-y-2 font-mono text-xs">
-                  {analytics.referrers.map((r) => (
-                    <div key={r.source} className="flex justify-between p-2.5 bg-[#FAFAF8] border border-[#EAEAE5]">
-                      <span>{r.source}</span>
-                      <span className="text-[#6B7280]">{r.count}</span>
+                    <div key={c.cta_id} className="flex justify-between p-2.5 rounded-lg bg-black/40 border border-white/5">
+                      <span className="font-semibold text-white">{c.cta_id}</span>
+                      <span className="text-[#7E8494]">{c.count}</span>
                     </div>
                   ))}
                 </div>

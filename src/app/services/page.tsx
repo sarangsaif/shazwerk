@@ -1,326 +1,190 @@
 import React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, CheckCircle2, Cpu, Database, Layers, ShieldCheck, Terminal, Workflow } from "lucide-react";
+import { ArrowUpRight, Check } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Services & Technical Capabilities",
+  title: "Capabilities & Technical Stack",
   description:
     "Comprehensive digital product engineering, software architecture, AI automation, and UX systems built with Swiss precision.",
 };
 
-const DETAILED_SERVICES = [
+const CAPABILITIES = [
   {
-    id: "digital-products",
-    code: "SRV-01",
-    title: "Digital Products",
-    lead: "From initial validation to fully operational web and mobile products.",
-    description:
-      "We partner with businesses to turn product concepts into scalable, commercial reality. Rather than building bloated MVPs, we craft lean, high-fidelity products engineered for market traction and operational reliability.",
-    capabilities: [
-      "End-to-End Product Engineering",
-      "Next-Generation Web Applications",
-      "Cross-Platform Mobile Applications",
-      "Multi-Tenant SaaS Infrastructure",
-      "Customer Self-Service Portals",
-      "Billing & Payment Gateway Integration (Stripe, Swiss QR-Bill)",
-    ],
-    stack: ["Next.js (App Router)", "TypeScript", "React Native", "Tailwind CSS", "PostgreSQL", "Node.js"],
+    num: "01",
+    title: "Digital Products & Platforms",
+    lead: "Complete web and mobile products engineered from concept to market reality.",
+    body: "We partner with businesses to turn product concepts into scalable, commercial reality. Rather than building bloated MVPs, we craft lean, high-fidelity products engineered for market traction and operational reliability.",
+    deliverables: ["Full-Stack Architecture", "Next.js Web Applications", "Mobile Applications", "Multi-Tenant SaaS Infrastructure", "Customer Self-Service Portals", "Payment & Billing Gateways"],
+    tech: ["Next.js (App Router)", "TypeScript", "React Native", "Tailwind CSS", "PostgreSQL", "Node.js"],
   },
   {
-    id: "software-dev",
-    code: "SRV-02",
-    title: "Software Engineering & Backend Platforms",
-    lead: "Resilient distributed systems, robust data pipelines, and clean APIs.",
-    description:
-      "We design backends that operate quietly and reliably under load. Clean domain modeling, strict type-safety, ACID transactions, and thorough automated test suites guarantee that your systems remain maintainable for years.",
-    capabilities: [
-      "Domain-Driven Architecture (DDD)",
-      "High-Throughput REST & GraphQL APIs",
-      "Event-Driven Architecture & Message Queues",
-      "Relational & Time-Series Data Modeling",
-      "Cloud Infrastructure as Code (IaC)",
-      "Zero-Downtime Migration & Database Hardening",
-    ],
-    stack: ["TypeScript", "Go / Python", "PostgreSQL", "Redis", "Docker", "Vercel / AWS", "Prisma / Drizzle"],
+    num: "02",
+    title: "Software Engineering & Backends",
+    lead: "Resilient distributed systems, robust data pipelines, and hardened APIs.",
+    body: "We design backends that operate quietly and reliably under load. Clean domain modeling, strict type-safety, ACID transactions, and thorough automated test suites guarantee that your systems remain maintainable for years.",
+    deliverables: ["Domain-Driven Architecture (DDD)", "High-Throughput REST & GraphQL", "Event-Driven Message Queues", "Relational & Time-Series Data Modeling", "Cloud Infrastructure as Code", "Zero-Downtime Releases"],
+    tech: ["TypeScript", "Go / Python", "PostgreSQL", "Redis", "Docker", "Vercel / AWS", "Prisma / Drizzle"],
   },
   {
-    id: "ai-automation",
-    code: "SRV-03",
-    title: "AI Integration & Workflow Automation",
+    num: "03",
+    title: "AI Integration & Automation",
     lead: "Pragmatic machine intelligence engineered into real operational workflows.",
-    description:
-      "We bypass AI hype to deliver tangible productivity gains. By integrating state-of-the-art LLMs, deterministic data extraction pipelines, and automated business logic, we automate repetitive knowledge tasks while strictly preserving data sovereignty.",
-    capabilities: [
-      "Private Retrieval-Augmented Generation (RAG)",
-      "Document Understanding & Automated OCR",
-      "Autonomous Decision & Dispatch Workflows",
-      "Local Vector Indexing & Semantic Search",
-      "AI Safety, Guardrails & Audit Verification",
-      "Internal Operational Copilots",
-    ],
-    stack: ["OpenAI API", "Anthropic Claude", "pgvector", "LangChain / LlamaIndex", "FastAPI", "Python", "Redis"],
+    body: "We bypass AI hype to deliver tangible productivity gains. By integrating state-of-the-art LLMs, deterministic data extraction pipelines, and automated business logic, we automate repetitive knowledge tasks while strictly preserving Swiss data sovereignty.",
+    deliverables: ["Private Local RAG Systems", "Document OCR & Extraction", "Autonomous Decision Pipelines", "Local Vector Indexing", "AI Safety & Guardrails", "Internal Operational Copilots"],
+    tech: ["OpenAI API", "Anthropic Claude", "pgvector", "LangChain", "FastAPI", "Python", "Redis"],
   },
   {
-    id: "ux-ui",
-    code: "SRV-04",
+    num: "04",
     title: "UX / UI Architecture & Design Systems",
-    lead: "Swiss industrial interface design: clarity, density, and precision.",
-    description:
-      "Inspired by the Swiss International Typographic Style, our interfaces eliminate cognitive friction. We prioritize information hierarchy, rapid keyboard navigation, legible typography, and robust component tokens that developers love building with.",
-    capabilities: [
-      "Comprehensive Design Systems in Figma & Code",
-      "High-Density Dashboard UX",
-      "Complex Form Architecture & Instant Validation",
-      "Accessibility Standards (WCAG 2.1 AA)",
-      "Micro-Interactions & Kinetic Feedback",
-      "Interactive Prototyping & User Flow Audits",
-    ],
-    stack: ["Figma Tokens", "Tailwind CSS", "Radix UI Primitives", "CSS Micro-Animations", "Design Tokens"],
+    lead: "Swiss industrial interface design prioritizing density, clarity, and speed.",
+    body: "Inspired by the Swiss International Typographic Style, our interfaces eliminate cognitive friction. We prioritize information hierarchy, rapid keyboard navigation, legible typography, and robust component tokens that developers love building with.",
+    deliverables: ["Design Systems in Code & Figma", "High-Density Dashboard UX", "Complex Form Systems", "Accessibility (WCAG 2.1 AA)", "Micro-Interactions", "User Flow Audits"],
+    tech: ["Figma Tokens", "Tailwind CSS", "Radix UI Primitives", "CSS Micro-Animations", "Design Tokens"],
   },
   {
-    id: "product-strategy",
-    code: "SRV-05",
-    title: "Product Strategy & Technical Architecture",
-    lead: "Aligning technical architecture directly with commercial objectives.",
-    description:
-      "Before writing code, we de-risk the investment. We conduct architectural audits, evaluate build-vs-buy decisions, plan database scalability, and establish milestone roadmaps with predictable timelines and budgets.",
-    capabilities: [
-      "Technical Feasibility & Architecture Blueprinting",
-      "Legacy Codebase & Cloud Infrastructure Audits",
-      "Cloud Cost & Scalability Modeling",
-      "Security & Swiss nDSG Compliance Audits",
-      "Milestone Planning & Scope Pruning",
-      "Fractional CTO & Advisory Services",
-    ],
-    stack: ["Architecture Diagrams (C4 Model)", "Technical PRDs", "Risk Matrices", "Cloud Cost Optimization"],
-  },
-  {
-    id: "continuous-dev",
-    code: "SRV-06",
-    title: "Continuous Product Development Squads",
-    lead: "Dedicated senior engineering capacity for ongoing iteration.",
-    description:
-      "Technology requires continuous stewardship. We act as your long-term product squad, delivering bi-weekly release cycles, performance monitoring, security patches, and strategic feature expansion.",
-    capabilities: [
-      "Dedicated Senior Engineering Squads",
-      "Guaranteed SLA Response Times",
-      "Continuous CI/CD Testing & Release Management",
-      "Proactive Security & Dependency Maintenance",
-      "Observability & Real-Time Performance Tuning",
-      "Transparent Sprints & Sprint Demos",
-    ],
-    stack: ["GitHub Actions", "Sentry Observability", "Vercel Enterprise", "Automated Playwright QA"],
+    num: "05",
+    title: "Strategic Technical Advisory",
+    lead: "Aligning technical architecture directly with commercial milestones.",
+    body: "Before writing code, we de-risk the investment. We conduct architectural audits, evaluate build-vs-buy decisions, plan database scalability, and establish milestone roadmaps with predictable timelines and budgets.",
+    deliverables: ["Technical Roadmaps", "Architecture Audits", "Cost & Scalability Modeling", "Swiss nDSG Compliance Audits", "Milestone Planning", "Fractional CTO Advisory"],
+    tech: ["C4 Model Architecture", "Technical PRDs", "Risk Matrices", "Cloud Cost Optimization"],
   },
 ];
 
-const ENGAGEMENT_MODELS = [
+const ENGAGEMENTS = [
   {
+    num: "01",
     title: "Fixed-Scope Product Build",
-    lead: "Ideal for well-defined new digital products, platforms, or MVPs.",
-    features: [
-      "Clear scope, milestones, and deliverable commitments",
-      "Transparent, predictable budget in CHF",
-      "Weekly staging demos and codebase access",
-      "Full IP and documentation handoff upon completion",
-    ],
+    lead: "For well-defined new digital products, platforms, or MVPs.",
+    details: "Clear deliverables, non-negotiable timelines, and transparent budget in CHF. Weekly staging releases and full IP handoff.",
   },
   {
+    num: "02",
     title: "Dedicated Engineering Squad",
-    lead: "Ideal for continuous product development and scaling platforms.",
-    features: [
-      "Dedicated senior engineers & UX architect",
-      "Agile 2-week sprint cadence with sprint reviews",
-      "Direct communication in Slack/Teams and Swiss business hours",
-      "Flexible roadmap adaptation as business requirements evolve",
-    ],
+    lead: "For continuous product evolution and scaling platforms.",
+    details: "Dedicated senior software squad acting as an extension of your company. Agile 2-week sprint cadence aligned with Swiss business hours.",
   },
   {
+    num: "03",
     title: "Technical Advisory & Architecture",
-    lead: "Ideal for companies needing senior technical steering or code audits.",
-    features: [
-      "Comprehensive system architecture and risk audits",
-      "Vendor and technology evaluation (build vs. buy)",
-      "Fractional CTO guidance for executive teams",
-      "Data sovereignty and nDSG privacy roadmap",
-    ],
+    lead: "For leadership teams needing senior technical steering.",
+    details: "System audits, vendor evaluation, Fractional CTO guidance, and data sovereignty roadmaps.",
   },
 ];
 
 export default function ServicesPage() {
   return (
-    <div className="bg-[#FAFAF8] min-h-screen">
-      {/* Services Hero */}
-      <section className="border-b border-[#E5E5E0] pt-16 pb-20 bg-[#FAFAF8] relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EFEFEA] border border-[#E0E0DA] text-[11px] font-mono uppercase tracking-[0.16em] text-[#4B5563] mb-6">
-              <span className="w-1.5 h-1.5 bg-[#E30613] rounded-full"></span>
-              <span>SERVICES & CORE CAPABILITIES</span>
-            </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-[-0.04em] text-[#0C0E11] leading-[1.08] mb-6">
-              Engineering with Swiss precision across the product lifecycle.
-            </h1>
-            <p className="text-base sm:text-lg text-[#4B5563] leading-relaxed">
-              We eliminate technical ambiguity. Whether you need a ground-up digital product, an enterprise backend platform, or pragmatic AI integration, we deliver robust, production-grade systems engineered for real commercial outcomes.
-            </p>
-          </div>
+    <div className="bg-[#080808] text-[#F5F5F3] min-h-screen pt-32 pb-28 px-4 sm:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="pb-12 mb-16 border-b border-white/10">
+          <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#7E8494] block mb-4">
+            CAPABILITIES // TECHNICAL MATRIX
+          </span>
+          <h1 className="text-5xl sm:text-7xl font-extrabold tracking-[-0.04em] text-[#F5F5F3] leading-[0.98] mb-6">
+            Engineering across the lifecycle.
+          </h1>
+          <p className="text-lg text-[#8E94A0] max-w-2xl leading-relaxed">
+            We eliminate technical ambiguity. Whether you need a ground-up digital product, an enterprise software platform, or pragmatic AI automation, we deliver robust, production-grade systems engineered for real commercial outcomes.
+          </p>
         </div>
-      </section>
 
-      {/* Detailed Services Breakdown */}
-      <section className="py-20 bg-[#FFFFFF] border-b border-[#E5E5E0]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-16">
-            {DETAILED_SERVICES.map((srv, idx) => (
-              <div
-                key={srv.id}
-                id={srv.id}
-                className="scroll-mt-28 border border-[#E0E0DA] bg-[#FAFAF8] p-6 sm:p-10 transition-all hover:border-[#0C0E11]"
-              >
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                  {/* Left Column: Title and Lead */}
-                  <div className="lg:col-span-5">
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="font-mono text-xs font-bold text-[#E30613]">
-                        {srv.code}
-                      </span>
-                      <span className="text-xs font-mono text-[#9CA3AF]">
-                        CAPABILITY 0{idx + 1} / 06
-                      </span>
-                    </div>
-                    <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0C0E11] tracking-tight mb-3">
-                      {srv.title}
-                    </h2>
-                    <p className="text-xs font-semibold text-[#1F242D] mb-4 leading-relaxed">
-                      {srv.lead}
-                    </p>
-                    <p className="text-xs text-[#6B7280] leading-relaxed mb-6">
-                      {srv.description}
-                    </p>
-                    <Link
-                      href="/contact"
-                      className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase text-[#0C0E11] hover:text-[#E30613] transition-colors"
-                    >
-                      <span>Inquire regarding this capability</span>
-                      <ArrowUpRight className="w-4 h-4" />
-                    </Link>
-                  </div>
+        {/* Capabilities List */}
+        <div className="space-y-24">
+          {CAPABILITIES.map((cap) => (
+            <div key={cap.num} className="border-b border-white/10 pb-20 last:border-b-0">
+              <div className="flex items-baseline gap-4 sm:gap-6 mb-4">
+                <span className="font-mono text-sm text-[#E30613] font-bold">
+                  {cap.num}
+                </span>
+                <h2 className="text-3xl sm:text-5xl font-extrabold tracking-[-0.03em] text-[#F5F5F3]">
+                  {cap.title}
+                </h2>
+              </div>
 
-                  {/* Right Column: Capabilities and Tech Stack */}
-                  <div className="lg:col-span-7 bg-[#FFFFFF] border border-[#E5E5E0] p-6">
-                    <div className="text-[11px] font-mono uppercase tracking-widest text-[#6B7280] mb-4">
-                      Core Engineering Scope:
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                      {srv.capabilities.map((cap, cIdx) => (
-                        <div
-                          key={cIdx}
-                          className="flex items-start gap-2 text-xs font-medium text-[#1F242D]"
+              <p className="text-lg sm:text-xl text-[#A0A5B0] leading-relaxed max-w-3xl mb-8">
+                {cap.lead}
+              </p>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div className="lg:col-span-7">
+                  <p className="text-sm text-[#8E94A0] leading-relaxed mb-6 font-normal">
+                    {cap.body}
+                  </p>
+                  <div className="pt-2">
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-[#7E8494] block mb-3">
+                      Technologies Applied
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {cap.tech.map((t, idx) => (
+                        <span
+                          key={idx}
+                          className="px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-[11px] font-mono text-[#D1D5DB]"
                         >
-                          <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0 mt-0.5" />
-                          <span>{cap}</span>
-                        </div>
+                          {t}
+                        </span>
                       ))}
                     </div>
+                  </div>
+                </div>
 
-                    <div className="pt-4 border-t border-[#F0F0EB]">
-                      <div className="text-[10px] font-mono uppercase tracking-widest text-[#9CA3AF] mb-2">
-                        Primary Technologies:
+                <div className="lg:col-span-5 p-6 rounded-xl bg-white/[0.02] border border-white/5">
+                  <span className="text-[11px] font-mono uppercase tracking-widest text-[#7E8494] block mb-4">
+                    Core Deliverables
+                  </span>
+                  <div className="space-y-2.5 text-xs text-[#D1D5DB]">
+                    {cap.deliverables.map((deliv, dIdx) => (
+                      <div key={dIdx} className="flex items-center gap-2.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#E30613]"></span>
+                        <span>{deliv}</span>
                       </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {srv.stack.map((item, sIdx) => (
-                          <span
-                            key={sIdx}
-                            className="px-2 py-0.5 bg-[#F4F4F0] border border-[#E0E0DA] text-[10px] font-mono text-[#4B5563]"
-                          >
-                            {item}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Engagement Models Section */}
-      <section className="py-20 lg:py-28 bg-[#FAFAF8] border-b border-[#E5E5E0]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xl mb-16">
-            <div className="text-[11px] font-mono uppercase tracking-[0.16em] text-[#6B7280] mb-2">
-              ENGAGEMENT FRAMEWORKS
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-[-0.03em] text-[#0C0E11]">
-              How we collaborate.
-            </h2>
-            <p className="text-xs text-[#4B5563] mt-3 font-mono">
-              Transparent, accountable structures designed for Swiss business reliability.
-            </p>
-          </div>
+          ))}
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {ENGAGEMENT_MODELS.map((model, mIdx) => (
-              <div
-                key={mIdx}
-                className="bg-[#FFFFFF] border border-[#E0E0DA] p-7 flex flex-col justify-between hover:border-[#0C0E11] transition-colors"
-              >
-                <div>
-                  <span className="font-mono text-xs text-[#E30613] font-bold block mb-3">
-                    MODEL 0{mIdx + 1}
-                  </span>
-                  <h3 className="text-xl font-bold text-[#0C0E11] mb-2 tracking-tight">
-                    {model.title}
-                  </h3>
-                  <p className="text-xs text-[#6B7280] mb-6 leading-relaxed">
-                    {model.lead}
-                  </p>
-                  <ul className="space-y-2.5 mb-6 text-xs text-[#374151]">
-                    {model.features.map((feat, fIdx) => (
-                      <li key={fIdx} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981] shrink-0 mt-0.5" />
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+        {/* Engagement Frameworks */}
+        <div className="mt-28 pt-16 border-t border-white/10">
+          <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#7E8494] block mb-4">
+            ENGAGEMENT MODELS
+          </span>
+          <h3 className="text-3xl sm:text-4xl font-extrabold text-[#F5F5F3] mb-12">
+            How we collaborate.
+          </h3>
 
-                <div className="pt-4 border-t border-[#F0F0EB]">
-                  <Link
-                    href="/contact"
-                    className="inline-flex items-center justify-between w-full text-xs font-mono font-bold uppercase text-[#0C0E11] hover:text-[#E30613]"
-                  >
-                    <span>Request Proposal</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {ENGAGEMENTS.map((eng) => (
+              <div key={eng.num} className="p-8 rounded-xl bg-white/[0.02] border border-white/5">
+                <span className="font-mono text-xs text-[#E30613] font-bold block mb-3">
+                  MODEL {eng.num}
+                </span>
+                <h4 className="text-xl font-bold text-white mb-2">{eng.title}</h4>
+                <p className="text-xs font-semibold text-[#A0A5B0] mb-4 leading-relaxed">{eng.lead}</p>
+                <p className="text-xs text-[#7E8494] leading-relaxed">{eng.details}</p>
               </div>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* Services Bottom CTA */}
-      <section className="py-20 bg-[#0C0E11] text-[#FAFAF8]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-2xl">
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4 text-[#FAFAF8]">
-            Ready to define your product architecture?
-          </h2>
-          <p className="text-sm text-[#9CA3AF] mb-8 font-normal">
-            Schedule a direct technical consultation with our senior engineering team in Zurich.
-          </p>
+        {/* Bottom Action */}
+        <div className="mt-20 pt-12 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div>
+            <h3 className="text-xl font-bold text-white">Ready to define your product architecture?</h3>
+            <p className="text-xs text-[#7E8494] font-mono mt-1">Book an initial technical briefing with our team.</p>
+          </div>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#FAFAF8] hover:bg-white text-[#0C0E11] text-xs font-bold uppercase tracking-wider transition-all"
+            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-[#F5F5F3] text-[#080808] text-xs font-bold uppercase tracking-wider hover:bg-white transition-all"
           >
-            <span>Start the conversation</span>
+            <span>Start an Inquiry</span>
             <ArrowUpRight className="w-4 h-4 text-[#E30613]" />
           </Link>
         </div>
-      </section>
+      </div>
     </div>
   );
 }

@@ -1,42 +1,31 @@
 import React from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="bg-[#FAFAF8] min-h-[70vh] flex items-center justify-center px-4 py-20">
-      <div className="max-w-md w-full border border-[#E0E0DA] bg-[#FFFFFF] p-8 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.02)] text-center">
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#FEF2F2] border border-[#FCA5A5] text-[#E30613] font-mono text-xs font-bold mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#E30613]"></span>
-          <span>HTTP ERROR 404 // ROUTE NOT FOUND</span>
-        </div>
+    <div className="bg-[#080808] text-[#F5F5F3] min-h-[80vh] flex items-center justify-center px-4 py-32">
+      <div className="max-w-md w-full text-center space-y-6">
+        <span className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-mono uppercase tracking-[0.2em] text-[#E30613]">
+          HTTP 404 // NOT FOUND
+        </span>
 
-        <h1 className="text-3xl font-extrabold text-[#0C0E11] tracking-tight mb-3">
-          System Endpoint Missing
+        <h1 className="text-5xl sm:text-6xl font-extrabold tracking-[-0.04em] text-white">
+          Route Missing.
         </h1>
-        <p className="text-xs text-[#6B7280] leading-relaxed mb-8">
-          The requested coordinate does not map to an active architectural subsystem or published resource on the SHAZWERK platform.
+
+        <p className="text-sm text-[#8E94A0] leading-relaxed">
+          The requested coordinate does not map to an active architectural subsystem or resource on the SHAZWERK platform.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-center font-mono text-xs">
+        <div className="pt-4">
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#0C0E11] text-[#FAFAF8] font-bold uppercase tracking-wider hover:bg-[#1F242D] transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#F5F5F3] text-[#080808] text-xs font-mono uppercase font-bold tracking-wider hover:bg-white transition-all"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
+            <ArrowLeft className="w-4 h-4" />
             <span>Return to Core</span>
           </Link>
-          <Link
-            href="/contact"
-            className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-transparent text-[#0C0E11] border border-[#D5D5CF] font-bold uppercase tracking-wider hover:bg-[#F4F4F0] transition-colors"
-          >
-            <span>Inquire</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="mt-8 pt-6 border-t border-[#F0F0EB] text-[10px] font-mono text-[#9CA3AF]">
-          DNS: SHAZWERK.CH · STATUS: UNRESOLVED PATH
         </div>
       </div>
     </div>
