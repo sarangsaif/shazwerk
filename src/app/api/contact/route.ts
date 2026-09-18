@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createSubmission, recordAnalyticsEvent } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100),
   company: z.string().min(2, "Company name must be at least 2 characters").max(100),

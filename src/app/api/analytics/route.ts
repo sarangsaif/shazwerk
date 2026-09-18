@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { recordAnalyticsEvent } from "@/lib/db";
 import { AnalyticsEventType } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
