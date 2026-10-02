@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Referenzen & Fallstudien — Software & AI Studio Zürich | SHAZWERK",
+  title: "Referenzen & Fallstudien — Software & AI Studio Zürich",
   description:
     "Ausgewählte Software- und KI-Systeme im produktiven Einsatz: Echtzeit-Telemetrie, FINMA-Handelsabwicklung und souveräne Enterprise LLMs in der Schweiz.",
   keywords: [

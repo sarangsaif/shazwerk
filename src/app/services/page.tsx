@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowUpRight, ArrowLeft, Check } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Dienstleistungen & Technologie-Stack — Software Studio Zürich | SHAZWERK",
+  title: "Dienstleistungen & Technologie-Stack — Software Studio Zürich",
   description:
     "Schweizer Softwareentwicklung, Next.js Webplattformen, souveräne Enterprise AI (nDSG) und Cloud-Infrastruktur mit Schweizer Präzision.",
   alternates: {

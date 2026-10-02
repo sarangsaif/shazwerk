@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Kontakt & Projektanfrage — Studio Zürich & Zug | SHAZWERK",
+  title: "Kontakt & Projektanfrage — Studio Zürich & Zug",
   description:
     "Projektanfrage oder technische Discovery mit SHAZWERK Senior Systemarchitekten. Gotthardstrasse 26, 8002 Zürich. Schnelle technische Ersteinschätzung innerhalb von 24h.",
   keywords: [
