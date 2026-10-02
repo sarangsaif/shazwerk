@@ -15,7 +15,7 @@ export default function JsonLd() {
     vatID: "CHE-419.820.104",
     foundingLocation: {
       "@type": "Place",
-      name: "Zurich, Switzerland",
+      name: "Zürich, Schweiz",
     },
     address: {
       "@type": "PostalAddress",
@@ -31,25 +31,36 @@ export default function JsonLd() {
         telephone: "+41448209010",
         contactType: "customer service",
         areaServed: ["CH", "DE", "AT", "LI"],
-        availableLanguage: ["German", "English", "Swiss German"],
+        availableLanguage: ["German", "Swiss German", "English"],
       },
     ],
     sameAs: [
       "https://github.com/sarangsaif/shazwerk",
     ],
     description:
-      "Swiss digital products, software, AI engineering and technology studio in Zurich and Zug. Building high-load web platforms and sovereign AI systems with Swiss precision.",
+      "Schweizer Software Agentur und Digital Engineering Studio in Zürich. Entwicklung von massgeschneiderten Webplattformen, SaaS-Systemen und souveräner Enterprise AI mit Schweizer Präzision und 100% nDSG-Konformität.",
+    knowsAbout: [
+      "Software Agentur Zürich",
+      "Softwareentwicklung Schweiz",
+      "Webagentur Zürich",
+      "App Entwicklung Zürich",
+      "Next.js Agentur Schweiz",
+      "AI Agentur Zürich",
+      "Enterprise AI Schweiz",
+      "Souveräne AI nDSG",
+      "FINMA konforme Software",
+    ],
   };
 
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "@id": "https://shazwerk.ch/#localservice",
-    name: "SHAZWERK — Swiss Software & AI Engineering Studio",
+    name: "SHAZWERK — Software Agentur Zürich & Digital Product Studio",
     url: "https://shazwerk.ch",
     telephone: "+41448209010",
-    priceRange: "CHF",
-    currenciesAccepted: "CHF, EUR, USD",
+    priceRange: "$$$",
+    currenciesAccepted: "CHF, EUR",
     paymentAccepted: "Bank Transfer, Invoicing",
     address: {
       "@type": "PostalAddress",
@@ -92,30 +103,30 @@ export default function JsonLd() {
     ],
     hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: "Engineering Capabilities",
+      name: "Leistungsspektrum",
       itemListElement: [
         {
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "Digital Product Engineering & Web Platforms",
-            description: "Custom full-stack Next.js and TypeScript software engineered for high scale.",
+            name: "Webplattformen & SaaS-Entwicklung",
+            description: "Massgeschneiderte Next.js- und TypeScript-Entwicklung für geschäftskritische Systeme.",
           },
         },
         {
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "Sovereign Enterprise AI & Private LLMs",
-            description: "Air-gapped retrieval pipelines (RAG) and private models with zero telemetry leakage under Swiss nDSG.",
+            name: "Souveräne Enterprise AI & Private LLMs",
+            description: "Air-Gapped RAG-Pipelines und private KI-Modelle ohne Drittanbieter-Datenabfluss nach Schweizer nDSG.",
           },
         },
         {
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "Cloud Architecture & Swiss Data Residency",
-            description: "Resilient cloud infrastructure deployed in Zurich data centers (AWS eu-central-2, Exoscale).",
+            name: "Schweizer Cloud-Infrastruktur & High-Load",
+            description: "Ausfallsichere Systemarchitektur in Schweizer Rechenzentren (AWS Zürich eu-central-2, Exoscale).",
           },
         },
       ],
@@ -128,10 +139,11 @@ export default function JsonLd() {
     "@id": "https://shazwerk.ch/#website",
     url: "https://shazwerk.ch",
     name: "SHAZWERK",
+    alternateName: "SHAZWERK Software Agentur Zürich",
     publisher: {
       "@id": "https://shazwerk.ch/#organization",
     },
-    inLanguage: ["en-CH", "de-CH"],
+    inLanguage: ["de-CH", "en-CH"],
   };
 
   const faqSchema = {
@@ -140,34 +152,34 @@ export default function JsonLd() {
     mainEntity: [
       {
         "@type": "Question",
-        name: "How do you ensure Swiss data residency and compliance (FADP / nDSG)?",
+        name: "Wie stellt SHAZWERK Schweizer Datensouveränität (nDSG) sicher?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "All architectures can be deployed natively within Swiss-based data centers (such as AWS Europe Zurich region or Exoscale Zurich/Geneva). We configure zero-trust networking, encrypted data at rest/transit, and enforce strict air-gapped private LLM inference so your proprietary data never leaks across foreign borders.",
+          text: "Alle Systeme werden in Schweizer Rechenzentren (AWS Zürich Region oder Exoscale) betrieben. Private Sprachmodelle (LLMs) laufen air-gapped mit zero telemetry ohne Datenabfluss ins Ausland.",
         },
       },
       {
         "@type": "Question",
-        name: "What does a typical project timeline look like?",
+        name: "Wie lange dauern typische Softwareprojekte bei SHAZWERK?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Most core systems and minimum testable products (MVPs) ship within 4 to 8 weeks through iterative bi-weekly sprint cycles. Enterprise systems or multi-modal AI integrations usually range between 8 to 16 weeks with staging deployments accessible to your team every Friday.",
+          text: "Die meisten MVPs und Kernplattformen liefern wir in 4 bis 8 Wochen in zweiwöchentlichen Sprint-Zyklen mit Staging-Deployments jeden Freitag.",
         },
       },
       {
         "@type": "Question",
-        name: "What is handed over upon project completion?",
+        name: "Wem gehört der Quellcode nach Projektabschluss?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "100% full intellectual property (IP) transfer. You receive clean, fully documented TypeScript source code repositories, automated CI/CD deployment configurations, database migration scripts, environment variables checklists, and interactive technical documentation. Zero vendor lock-in.",
+          text: "100% des geistigen Eigentums (IP) und der Quellcode werden vollständig an den Kunden übertragen. Es gibt keinen Vendor Lock-In.",
         },
       },
       {
         "@type": "Question",
-        name: "Do you work on fixed-scope projects or dedicated retainers?",
+        name: "Arbeitet SHAZWERK mit festen Meilensteinen oder Retainern?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Both. For greenfield digital products with defined objectives, we operate on milestone-based fixed-budget sprints (no surprise invoices). For ongoing product evolution, dedicated AI development, and mission-critical operations, we embed dedicated senior engineering pods on monthly retained capacity.",
+          text: "Beides. Für neue Plattformen arbeiten wir mit festen Meilenstein-Sprints. Für die kontinuierliche Weiterentwicklung stellen wir dedizierte Senior Engineering Pods zur Verfügung.",
         },
       },
     ],

@@ -4,16 +4,16 @@ import Link from "next/link";
 import { ArrowUpRight, ArrowLeft, Shield, Award, Zap, Check } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "About SHAZWERK — Swiss Studio Philosophy & Standards",
+  title: "Über SHAZWERK — Studio Philosophie & Schweizer Standards",
   description:
-    "SHAZWERK is an independent Swiss digital engineering studio based in Zürich and Zug. Engineering software as high-precision craft.",
+    "SHAZWERK ist ein Schweizer Digital Engineering Studio in Zürich und Zug. Wir bauen geschäftskritische Systeme mit kompromissloser Schweizer Präzision und Datensouveränität.",
   alternates: {
     canonical: "https://shazwerk.ch/about",
   },
   openGraph: {
-    title: "About SHAZWERK — Studio Philosophy & Standards",
+    title: "Über SHAZWERK — Studio Philosophie & Schweizer Standards",
     description:
-      "Independent Swiss digital engineering and AI studio based in Zürich and Zug.",
+      "Schweizer Software- und AI-Studio in Zürich und Zug. Senior Pods und 100% IP-Übergabe.",
     url: "https://shazwerk.ch/about",
   },
 };

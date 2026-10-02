@@ -4,16 +4,16 @@ import Link from "next/link";
 import { ArrowUpRight, ArrowLeft, Check, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Engineering Capabilities & Technical Stack — SHAZWERK",
+  title: "Leistungen & Technologie-Stack — Software Studio Zürich | SHAZWERK",
   description:
-    "Comprehensive digital product engineering, custom Next.js platforms, sovereign enterprise AI, and cloud architecture built with Swiss precision.",
+    "Digitale Produktentwicklung, Next.js Webplattformen, souveräne Enterprise AI (nDSG) und Cloud-Infrastruktur mit Schweizer Präzision.",
   alternates: {
     canonical: "https://shazwerk.ch/services",
   },
   openGraph: {
-    title: "Engineering Capabilities & Technical Stack | SHAZWERK",
+    title: "Leistungen & Technologie-Stack | SHAZWERK Zürich",
     description:
-      "Full-cycle digital products, air-gapped LLMs, and Swiss cloud infrastructure.",
+      "Digitale Produktentwicklung, Next.js Webplattformen und souveräne Enterprise AI mit Schweizer Präzision.",
     url: "https://shazwerk.ch/services",
   },
 };

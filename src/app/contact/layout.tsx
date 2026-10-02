@@ -1,23 +1,23 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact & Project Briefing — Zürich & Zug Studio",
+  title: "Kontakt & Projektanfrage — Studio Zürich & Zug | SHAZWERK",
   description:
-    "Submit your technical brief or schedule a direct architecture discovery with SHAZWERK senior partners. Gotthardstrasse 26, 8002 Zürich. Fast 24h technical assessment.",
+    "Projektanfrage oder technische Discovery mit SHAZWERK Senior Systemarchitekten. Gotthardstrasse 26, 8002 Zürich. Schnelle technische Ersteinschätzung innerhalb von 24h.",
   keywords: [
-    "Contact Swiss software studio",
-    "Software agency Zurich contact",
-    "Digital product brief Switzerland",
-    "Hire software engineers Switzerland",
-    "AI studio Zurich contact",
+    "Software Agentur Zürich Kontakt",
+    "Webentwicklung Schweiz Anfrage",
+    "Digitalagentur Zürich Briefing",
+    "Softwareentwickler Schweiz engagieren",
+    "AI Studio Zürich Kontakt",
   ],
   alternates: {
     canonical: "https://shazwerk.ch/contact",
   },
   openGraph: {
-    title: "Contact & Technical Briefing | SHAZWERK",
+    title: "Kontakt & Projektanfrage | SHAZWERK Zürich",
     description:
-      "Direct channel to senior engineering partners in Zürich. Submit a project brief under mutual Swiss NDA.",
+      "Direkter Kanal zu leitenden Systemarchitekten in Zürich. Vertraulich nach Schweizer Recht.",
     url: "https://shazwerk.ch/contact",
   },
 };

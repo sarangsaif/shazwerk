@@ -3,53 +3,73 @@
 import React, { useState } from "react";
 import { Plus, Minus } from "lucide-react";
 import { trackClientEvent } from "@/lib/analytics-client";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface FaqItem {
-  question: string;
-  answer: string;
-  badge?: string;
+  questionDe: string;
+  questionEn: string;
+  answerDe: string;
+  answerEn: string;
+  badgeDe: string;
+  badgeEn: string;
 }
 
 const FAQ_ITEMS: FaqItem[] = [
   {
-    question: "How do you tackle new projects?",
-    answer:
-      "Every engagement begins with an intensive Technical & Product Discovery phase (typically 5 to 7 days). We examine your existing architecture, compliance boundaries, and business objectives. We then produce an unambiguous technical blueprint, interactive architecture diagram, and fixed milestone roadmap before writing a single line of production code.",
-    badge: "Discovery & Plan",
+    questionDe: "Wie läuft der Start eines neuen Projekts ab?",
+    questionEn: "How does project onboarding work?",
+    answerDe:
+      "Wir starten mit einer 5-tägigen technischen Discovery: Wir analysieren Architektur, Datenschutzvorgaben und Zielbild und erstellen einen verbindlichen Meilensteinplan vor der ersten Codezeile.",
+    answerEn:
+      "We begin with a 5-day technical discovery: We analyze architecture, data compliance, and roadmap milestones before writing a single line of production code.",
+    badgeDe: "5 Tage Discovery",
+    badgeEn: "5-Day Discovery",
   },
   {
-    question: "What does a typical project timeline look like?",
-    answer:
-      "Most core systems and minimum testable products (MVPs) ship within 4 to 8 weeks through iterative bi-weekly sprint cycles. Enterprise systems or multi-modal AI integrations usually range between 8 to 16 weeks with staging deployments accessible to your team every Friday.",
-    badge: "4 – 12 Weeks",
+    questionDe: "Wie sehen typische Projektlaufzeiten aus?",
+    questionEn: "What are typical project timelines?",
+    answerDe:
+      "Die meisten MVPs und Kernsysteme liefern wir in 4 bis 8 Wochen in zweiwöchentlichen Sprint-Zyklen. Staging-Deployments sind jeden Freitag für Ihr Team erreichbar.",
+    answerEn:
+      "Most MVPs and core systems ship in 4 to 8 weeks through bi-weekly sprints. Staging releases are updated every Friday for client review.",
+    badgeDe: "4–8 Wochen",
+    badgeEn: "4–8 Weeks",
   },
   {
-    question: "How do you handle revisions, feedback & quality assurance?",
-    answer:
-      "You have direct access to the senior engineers building your platform via dedicated Slack / Teams channels and private staging environments. Every sprint includes automated end-to-end integration tests, static code analysis, and interactive review checkpoints.",
-    badge: "Continuous QA",
+    questionDe: "Wie garantieren Sie Schweizer Datensouveränität (nDSG)?",
+    questionEn: "How do you guarantee Swiss data residency?",
+    answerDe:
+      "Alle Systeme werden in Schweizer Rechenzentren (AWS Zürich oder Exoscale) betrieben. Private LLMs laufen air-gapped ohne Datenabfluss ins Ausland.",
+    answerEn:
+      "All systems deploy to Swiss data centers (AWS Zurich or Exoscale). Private LLMs run air-gapped with zero telemetry leaving Switzerland.",
+    badgeDe: "Schweizer Cloud",
+    badgeEn: "Swiss Cloud",
   },
   {
-    question: "Do you work on fixed-scope projects or dedicated retainers?",
-    answer:
-      "Both. For greenfield digital products with defined objectives, we operate on milestone-based fixed-budget sprints (no surprise invoices). For ongoing product evolution, dedicated AI development, and mission-critical operations, we embed dedicated senior engineering pods on monthly retained capacity.",
-    badge: "Flexible Terms",
+    questionDe: "Was wird bei Projektabschluss übergeben?",
+    questionEn: "What is handed over upon completion?",
+    answerDe:
+      "100% geistiges Eigentum (IP). Sie erhalten den vollständigen TypeScript-Quellcode, automatisierte CI/CD-Pipelines und Dokumentation. Kein Vendor Lock-In.",
+    answerEn:
+      "100% intellectual property transfer. You receive the full TypeScript codebase, CI/CD pipelines, and technical documentation. Zero vendor lock-in.",
+    badgeDe: "100% IP-Eigentum",
+    badgeEn: "100% IP Handover",
   },
   {
-    question: "How do you ensure Swiss data residency and compliance (FADP / nDSG)?",
-    answer:
-      "All architectures can be deployed natively within Swiss-based data centers (such as AWS Europe Zurich region or Exoscale Zurich/Geneva). We configure zero-trust networking, encrypted data at rest/transit, and enforce strict air-gapped private LLM inference so your proprietary data never leaks across foreign borders.",
-    badge: "Swiss Sovereign",
-  },
-  {
-    question: "What is handed over upon project completion?",
-    answer:
-      "100% full intellectual property (IP) transfer. You receive clean, fully documented TypeScript source code repositories, automated CI/CD deployment configurations, database migration scripts, environment variables checklists, and interactive technical documentation. Zero vendor lock-in.",
-    badge: "100% IP Ownership",
+    questionDe: "Wie läuft die Zusammenarbeit mit den Entwicklern ab?",
+    questionEn: "How do we interface with your engineers?",
+    answerDe:
+      "Sie haben direkten Zugang zu den leitenden Systemarchitekten über dedizierte Slack- oder Teams-Kanäle. Keine Zwischenhändler oder Kontakter.",
+    answerEn:
+      "Direct communication with senior system architects via dedicated Slack or Teams channels. Zero agency middlemen or account managers.",
+    badgeDe: "Direkter Kontakt",
+    badgeEn: "Direct Access",
   },
 ];
 
 export default function MimosaHowWeWork() {
+  const { language } = useLanguage();
+  const isDe = language === "de";
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const toggle = (index: number) => {
@@ -59,38 +79,36 @@ export default function MimosaHowWeWork() {
   };
 
   return (
-    <section className="py-24 sm:py-32 px-6 sm:px-10 lg:px-16 bg-white border-t border-neutral-200">
+    <section className="py-20 sm:py-28 px-6 sm:px-10 lg:px-16 bg-white border-t border-neutral-200">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-          {/* Left Column: Sticky Section Marker */}
-          <div className="lg:col-span-4">
-            <div className="lg:sticky lg:top-28 flex flex-col gap-6">
-              <div>
-                <span className="text-xs font-mono tracking-wider text-neutral-500 uppercase block mb-3">
-                  [ 03 / HOW WE WORK ]
-                </span>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight text-neutral-950 leading-[1.1]">
-                  Clarity before code.
-                </h2>
-              </div>
+          {/* Left Column */}
+          <div className="lg:col-span-4 lg:sticky lg:top-28 flex flex-col gap-5">
+            <div>
+              <span className="text-xs font-mono tracking-wider text-neutral-500 uppercase block mb-3">
+                [ {isDe ? "04 / ABLAUF & FAQ" : "04 / PROCESS & FAQ"} ]
+              </span>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight text-neutral-950 leading-[1.08]">
+                {isDe ? "Klarheit vor Code." : "Clarity before code."}
+              </h2>
+            </div>
 
-              <p className="text-neutral-600 text-base leading-relaxed">
-                We eliminate the ambiguity of traditional agencies. Fast iteration, complete code transparency, and direct communication with the engineers building your system.
-              </p>
+            <p className="text-neutral-600 text-sm leading-relaxed">
+              {isDe
+                ? "Schnelle Iterationen, vollständige Transparenz und direkte Kommunikation mit den Ingenieuren Ihres Systems."
+                : "Fast iterations, total code transparency, and direct communication with principal engineers."}
+            </p>
 
-              <div className="p-5 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs font-mono space-y-2 text-neutral-700">
-                <div className="font-semibold text-neutral-950 uppercase tracking-wider">
-                  The SHAZWERK Guarantee
-                </div>
-                <div>• Bi-weekly staging deployments</div>
-                <div>• 100% Swiss IP & source handover</div>
-                <div>• No junior hand-offs or outsourcing</div>
-              </div>
+            <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs font-mono space-y-1.5 text-neutral-700">
+              <div className="font-semibold text-neutral-950 uppercase">{isDe ? "Garantien" : "Guarantees"}</div>
+              <div>• {isDe ? "Staging-Release jeden Freitag" : "Friday staging releases"}</div>
+              <div>• {isDe ? "100% Quellcode-Übergabe" : "100% IP & source handover"}</div>
+              <div>• {isDe ? "Keine Nachwuchskräfte" : "Senior pods only"}</div>
             </div>
           </div>
 
-          {/* Right Column: Accordion FAQ Cards */}
-          <div className="lg:col-span-8 flex flex-col gap-4">
+          {/* Right Column: Accordion */}
+          <div className="lg:col-span-8 flex flex-col gap-3">
             {FAQ_ITEMS.map((item, index) => {
               const isOpen = openIndex === index;
               return (
@@ -98,39 +116,37 @@ export default function MimosaHowWeWork() {
                   key={index}
                   className={`border rounded-2xl transition-all ${
                     isOpen
-                      ? "bg-neutral-50/80 border-neutral-400/80 shadow-xs"
+                      ? "bg-neutral-50 border-neutral-400/80 shadow-xs"
                       : "bg-white border-neutral-200 hover:border-neutral-300"
                   }`}
                 >
                   <button
                     type="button"
                     onClick={() => toggle(index)}
-                    className="w-full px-6 sm:px-8 py-5 sm:py-6 flex items-center justify-between text-left gap-4"
+                    className="w-full px-5 sm:px-6 py-4 sm:py-5 flex items-center justify-between text-left gap-4"
                   >
-                    <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="flex items-center gap-3">
                       <span className="text-xs font-mono text-neutral-400">
                         {index + 1 < 10 ? `0${index + 1}` : index + 1}
                       </span>
-                      <span className="text-lg sm:text-xl font-medium tracking-tight text-neutral-950">
-                        {item.question}
+                      <span className="text-base sm:text-lg font-medium tracking-tight text-neutral-950">
+                        {isDe ? item.questionDe : item.questionEn}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-3 shrink-0">
-                      {item.badge && (
-                        <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[11px] font-mono bg-neutral-200/70 text-neutral-700">
-                          {item.badge}
-                        </span>
-                      )}
-                      <div className="p-1.5 rounded-full bg-neutral-100 text-neutral-800">
-                        {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                    <div className="flex items-center gap-2.5 shrink-0">
+                      <span className="hidden sm:inline-block px-2 py-0.5 rounded-full text-[10px] font-mono bg-neutral-200/70 text-neutral-700">
+                        {isDe ? item.badgeDe : item.badgeEn}
+                      </span>
+                      <div className="p-1 rounded-full bg-neutral-100 text-neutral-800">
+                        {isOpen ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                       </div>
                     </div>
                   </button>
 
                   {isOpen && (
-                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 pt-2 text-neutral-700 text-base leading-relaxed border-t border-neutral-200/60 font-normal">
-                      <p>{item.answer}</p>
+                    <div className="px-5 sm:px-6 pb-5 pt-1 text-neutral-600 text-sm leading-relaxed border-t border-neutral-200/60 font-normal">
+                      <p>{isDe ? item.answerDe : item.answerEn}</p>
                     </div>
                   )}
                 </div>

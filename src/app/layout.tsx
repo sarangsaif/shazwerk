@@ -22,27 +22,26 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://shazwerk.ch"),
   title: {
-    default: "SHAZWERK — Swiss Digital Products, Software & AI Engineering Studio Zürich",
+    default: "SHAZWERK — Software Agentur Zürich & Digital Product Studio Schweiz",
     template: "%s | SHAZWERK",
   },
   description:
-    "SHAZWERK engineers high-stakes digital products, web platforms, and sovereign AI systems with Swiss precision. Based in Zürich and Zug. 100% Swiss data residency and IP handover.",
+    "Schweizer Digital Engineering Studio in Zürich. Wir entwickeln massgeschneiderte Webplattformen, anspruchsvolle Software und souveräne Enterprise AI mit Schweizer Präzision und 100% Datensouveränität.",
   keywords: [
-    "Swiss software agency",
-    "Swiss software development",
-    "Softwareentwicklung Schweiz",
     "Software Agentur Zürich",
-    "Digital product agency Switzerland",
-    "AI development Switzerland",
-    "Künstliche Intelligenz Schweiz",
+    "Softwareentwicklung Schweiz",
+    "Webagentur Zürich",
+    "App Entwicklung Zürich",
+    "Next.js Agentur Schweiz",
+    "AI Agentur Zürich",
+    "Enterprise AI Schweiz",
+    "Digitalagentur Zürich",
     "Private LLMs Schweiz nDSG",
-    "AI automation Switzerland",
-    "Next.js Agentur Zürich",
-    "UX UI design Switzerland",
-    "Digital product development Switzerland",
-    "Software company Switzerland",
-    "Web application development Switzerland",
-    "FINMA konforme Software",
+    "Softwareentwicklung Zürich",
+    "FINMA Softwareentwicklung",
+    "Web Application Development Switzerland",
+    "Digital Product Studio Zurich",
+    "Swiss software agency",
   ],
   authors: [{ name: "SHAZWERK", url: "https://shazwerk.ch" }],
   creator: "SHAZWERK GmbH",
@@ -55,34 +54,34 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://shazwerk.ch",
     languages: {
-      "en-CH": "https://shazwerk.ch",
       "de-CH": "https://shazwerk.ch",
+      "en-CH": "https://shazwerk.ch",
       "x-default": "https://shazwerk.ch",
     },
   },
   openGraph: {
-    title: "SHAZWERK — Swiss Digital Products, Software & AI Engineering",
+    title: "SHAZWERK — Software Agentur Zürich & Digital Product Studio Schweiz",
     description:
-      "Technology built around the way your business actually works. Digital products, custom software, and private AI engineered with Swiss precision.",
+      "Schweizer Softwareentwicklung & souveräne Enterprise AI mit Schweizer Präzision. Next.js, TypeScript, Private LLMs & 100% Datensouveränität.",
     url: "https://shazwerk.ch",
     siteName: "SHAZWERK",
-    locale: "en_CH",
-    alternateLocale: ["de_CH"],
+    locale: "de_CH",
+    alternateLocale: ["en_CH"],
     type: "website",
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "SHAZWERK — Swiss Software & AI Engineering",
+        alt: "SHAZWERK — Software Agentur Zürich & Digital Product Studio Schweiz",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "SHAZWERK — Swiss Digital Products, Software & AI Engineering",
+    title: "SHAZWERK — Software Agentur Zürich & Digital Product Studio Schweiz",
     description:
-      "Technology built around the way your business actually works. Digital products, custom software, and private AI engineered with Swiss precision.",
+      "Schweizer Softwareentwicklung & souveräne Enterprise AI mit Schweizer Präzision. Next.js, TypeScript, Private LLMs & 100% Datensouveränität.",
     images: ["/opengraph-image"],
   },
   robots: {
@@ -110,7 +109,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="de" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <head>
         <JsonLd />
       </head>

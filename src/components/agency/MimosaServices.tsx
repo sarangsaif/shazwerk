@@ -1,17 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
-import { ArrowUpRight, Cpu, Layers, Server, Sparkles, Check } from "lucide-react";
+import { ArrowUpRight, Check } from "lucide-react";
 import { trackClientEvent } from "@/lib/analytics-client";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface ServiceItem {
   id: string;
   number: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  deliverables: string[];
+  titleDe: string;
+  titleEn: string;
+  subtitleDe: string;
+  subtitleEn: string;
+  descDe: string;
+  descEn: string;
+  deliverablesDe: string[];
+  deliverablesEn: string[];
   technologies: string[];
 }
 
@@ -19,131 +24,164 @@ const SERVICES: ServiceItem[] = [
   {
     id: "digital-products",
     number: "01",
-    title: "Digital Product Engineering",
-    subtitle: "From architecture to production-grade software",
-    description:
-      "We design and build bespoke web platforms, consumer digital products, and high-load internal tools with obsessive attention to speed, type safety, and maintainable software architecture.",
-    deliverables: [
-      "Custom full-stack web applications & portals",
-      "High-throughput real-time dashboards & analytics",
-      "Robust REST & GraphQL API infrastructure",
-      "Scalable database modeling & schema migrations",
+    titleDe: "Webplattformen & SaaS-Systeme",
+    titleEn: "Web Platforms & SaaS Systems",
+    subtitleDe: "Vollwertige Full-Stack Produkte",
+    subtitleEn: "Production-grade digital systems",
+    descDe: "Massgeschneiderte Next.js-Plattformen, reaktive Portale und transaktionsstarke SaaS-Architekturen.",
+    descEn: "Custom Next.js platforms, reactive web portals, and transactional SaaS architectures built for high concurrency.",
+    deliverablesDe: [
+      "Next.js 14 & React Full-Stack Entwicklung",
+      "Echtzeit-Dashboards & Kundenportale",
+      "Skalierbare PostgreSQL- & API-Architektur",
+      "100% Quellcode-Übergabe & CI/CD",
     ],
-    technologies: ["Next.js 14", "React 18", "TypeScript", "Node.js", "PostgreSQL", "Tailwind CSS"],
+    deliverablesEn: [
+      "Next.js 14 & React full-stack engineering",
+      "Real-time customer portals & telemetry dashboards",
+      "Scalable PostgreSQL & API infrastructure",
+      "100% source code handover & CI/CD",
+    ],
+    technologies: ["Next.js 14", "TypeScript", "React 18", "PostgreSQL", "Node.js", "Tailwind CSS"],
   },
   {
     id: "enterprise-ai",
     number: "02",
-    title: "Enterprise AI & Private LLMs",
-    subtitle: "Domain-specific AI with zero telemetry leakage",
-    description:
-      "We deploy domain-tailored Large Language Models, specialized retrieval-augmented generation (RAG) pipelines, and intelligent workflow automation designed around Swiss data confidentiality.",
-    deliverables: [
-      "Private air-gapped LLM deployment in Swiss data centers",
-      "Enterprise document intelligence & semantic search",
-      "Multi-agent workflow automation & copilot systems",
-      "Model evaluation, latency optimization & fine-tuning",
+    titleDe: "Enterprise AI & Private LLMs",
+    titleEn: "Enterprise AI & Private LLMs",
+    subtitleDe: "Zero-Telemetry & Schweizer Datenschutz",
+    subtitleEn: "Zero-telemetry & Swiss data sovereignty",
+    descDe: "Air-gapped Sprachmodelle und RAG-Pipelines in Schweizer Rechenzentren ohne US Cloud Act Risiko.",
+    descEn: "Air-gapped language models and RAG pipelines hosted in Swiss data centers with zero external data leakage.",
+    deliverablesDe: [
+      "Lokale Vektordatenbanken (pgvector / Qdrant)",
+      "Air-gapped RAG-Pipelines für Unternehmensdaten",
+      "Multi-Agenten Automatisierung & Copilots",
+      "Vollständige nDSG-Konformität (kein Datenabfluss)",
     ],
-    technologies: ["Llama 3", "Mistral", "LangChain", "Qdrant / pgvector", "Python", "Ollama"],
+    deliverablesEn: [
+      "Local vector search (pgvector / Qdrant)",
+      "Air-gapped RAG pipelines for private data",
+      "Multi-agent automation & domain copilots",
+      "Full Swiss FADP / nDSG compliance",
+    ],
+    technologies: ["Llama 3", "Mistral", "pgvector", "LangChain", "Python", "Docker"],
   },
   {
     id: "cloud-reliability",
     number: "03",
-    title: "Cloud Architecture & Swiss Residency",
-    subtitle: "Resilient infrastructure built for zero downtime",
-    description:
-      "Infrastructure engineered to withstand critical peak loads with uncompromising Swiss banking-grade security, automated CI/CD pipelines, and verifiable data sovereignty.",
-    deliverables: [
-      "Zero-trust cloud infrastructure & Kubernetes clusters",
-      "Swiss data residency compliance (nDSG / FADP / GDPR)",
-      "Automated zero-downtime deployment pipelines",
-      "Real-time distributed telemetry, logging & alerting",
+    titleDe: "Schweizer Cloud & High-Load",
+    titleEn: "Swiss Cloud & High-Load Architecture",
+    subtitleDe: "Ausfallsicherheit & Bankenstandard",
+    subtitleEn: "Resilience & banking-grade security",
+    descDe: "Infrastruktur für maximale Lastspitzen mit Schweizer Datenhaltung und automatisierter Ausfallsicherung.",
+    descEn: "Infrastructure engineered for peak load with Swiss data residency and automated high-availability failover.",
+    deliverablesDe: [
+      "Zero-Trust Cloud & Kubernetes Topologie",
+      "Schweizer Datenhaltung (Zürich eu-central-2 / Exoscale)",
+      "Automatisierte Zero-Downtime Deployments",
+      "Sub-50ms Latenzen & Distributed Telemetry",
     ],
-    technologies: ["AWS (Zurich)", "Exoscale", "Docker / K8s", "Terraform", "PostgreSQL", "Redis"],
+    deliverablesEn: [
+      "Zero-trust cloud & Kubernetes topology",
+      "Swiss data residency (Zurich eu-central-2 / Exoscale)",
+      "Automated zero-downtime deployment pipelines",
+      "Sub-50ms latency & distributed telemetry",
+    ],
+    technologies: ["AWS (Zurich)", "Exoscale", "Docker", "Terraform", "PostgreSQL", "Redis"],
   },
   {
     id: "design-systems",
     number: "04",
-    title: "Design Systems & Interface Craft",
-    subtitle: "Awwwards-grade aesthetic meets functional utility",
-    description:
-      "We shape digital brands that stand out in crowded markets. Modern editorial typography, intuitive interaction models, and unified design token systems that engineer trust at first glance.",
-    deliverables: [
-      "Complete UI/UX system design & interactive prototypes",
-      "Atomic design token architecture & component libraries",
-      "Fluid micro-animations & responsive ergonomics",
-      "Comprehensive design guideline documentation",
+    titleDe: "Design Systems & UI Craft",
+    titleEn: "Design Systems & Interface Craft",
+    subtitleDe: "Funktionale Schweizer Typografie",
+    subtitleEn: "Utilitarian Swiss typography",
+    descDe: "Klarheit statt Spielerei: Schnelle Keyboard-Navigation, konsistente Token-Systeme und 60fps-Interaktionen.",
+    descEn: "Clarity over gimmicks: Fast keyboard navigation, unified design token architectures, and 60fps rendering.",
+    deliverablesDe: [
+      "Figma UI/UX Systems & Interaktive Prototypen",
+      "Design-Token-Architektur & UI-Komponenten",
+      "Ergonomische Tastatur- & Mobilbedienung",
+      "WCAG 2.1 Barrierefreiheit & Design-Richtlinien",
     ],
-    technologies: ["Figma", "CSS Tokens", "Modern Typography", "Micro-Interactions", "WCAG 2.1 AA"],
+    deliverablesEn: [
+      "Figma UI/UX systems & prototypes",
+      "Design token architecture & libraries",
+      "Fast ergonomics & responsive layouts",
+      "WCAG 2.1 accessibility & documentation",
+    ],
+    technologies: ["Figma", "CSS Tokens", "Modern Typography", "Micro-Interactions", "WCAG 2.1"],
   },
 ];
 
 export default function MimosaServices() {
-  const [activeService, setActiveService] = useState<string>("digital-products");
+  const { language } = useLanguage();
+  const isDe = language === "de";
 
   return (
-    <section id="capabilities" className="py-24 sm:py-32 px-6 sm:px-10 lg:px-16 bg-neutral-50/70 border-t border-neutral-200">
+    <section id="capabilities" className="py-20 sm:py-28 px-6 sm:px-10 lg:px-16 bg-neutral-50/70 border-t border-neutral-200">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-          {/* Left Column: Sticky Section Marker */}
-          <div className="lg:col-span-4">
-            <div className="lg:sticky lg:top-28 flex flex-col gap-6">
-              <div>
-                <span className="text-xs font-mono tracking-wider text-neutral-500 uppercase block mb-3">
-                  [ 02 / WHAT WE DO ]
-                </span>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight text-neutral-950 leading-[1.1]">
-                  Disciplines & capabilities.
-                </h2>
-              </div>
+          {/* Left Column */}
+          <div className="lg:col-span-4 lg:sticky lg:top-28 flex flex-col gap-6">
+            <div>
+              <span className="text-xs font-mono tracking-wider text-neutral-500 uppercase block mb-3">
+                [ {isDe ? "03 / DISZIPLINEN" : "03 / CAPABILITIES"} ]
+              </span>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight text-neutral-950 leading-[1.08]">
+                {isDe ? "Ingenieurdisziplinen." : "Disciplines & capabilities."}
+              </h2>
+            </div>
 
-              <p className="text-neutral-600 text-base leading-relaxed">
-                We do not believe in superficial solutions. We assemble dedicated, senior engineering pods focused on technical depth, rock-solid reliability, and tangible commercial impact.
-              </p>
+            <p className="text-neutral-600 text-sm leading-relaxed">
+              {isDe
+                ? "Keine Nachwuchskräfte, kein Outsourcing. Dedizierte Senior Pods mit technischer Tiefe und persönlicher Verantwortung."
+                : "No junior staff, zero outsourcing. Dedicated senior pods focused on architectural depth and commercial reliability."}
+            </p>
 
-              <div className="pt-4 border-t border-neutral-200">
-                <Link
-                  href="/services"
-                  onClick={() => trackClientEvent("nav_click", { destination: "services_page" })}
-                  className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-900 hover:text-red-600 transition-colors"
-                >
-                  <span>Explore full service matrix</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-neutral-400" />
-                </Link>
-              </div>
+            <div className="pt-2">
+              <Link
+                href="/services"
+                onClick={() => trackClientEvent("nav_click", { destination: "services_page" })}
+                className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-900 hover:text-red-600 transition-colors"
+              >
+                <span>{isDe ? "Detaillierte Übersicht ansehen" : "Explore full service matrix"}</span>
+                <ArrowUpRight className="w-3.5 h-3.5 text-neutral-400" />
+              </Link>
             </div>
           </div>
 
           {/* Right Column: Service Cards */}
-          <div className="lg:col-span-8 flex flex-col gap-8">
+          <div className="lg:col-span-8 flex flex-col gap-6">
             {SERVICES.map((service) => (
               <div
                 key={service.id}
-                className="bg-white border border-neutral-200 rounded-3xl p-6 sm:p-8 md:p-10 transition-all hover:border-neutral-400/80 shadow-xs"
+                className="bg-white border border-neutral-200 rounded-3xl p-6 sm:p-8 transition-all hover:border-neutral-400/80 shadow-xs"
               >
-                <div className="flex items-center justify-between gap-4 pb-6 border-b border-neutral-100 text-xs font-mono">
+                <div className="flex items-center justify-between gap-4 pb-4 border-b border-neutral-100 text-xs font-mono">
                   <span className="text-neutral-400 font-medium">DISCIPLINE {service.number}</span>
-                  <span className="text-neutral-500">{service.subtitle}</span>
+                  <span className="text-neutral-500">{isDe ? service.subtitleDe : service.subtitleEn}</span>
                 </div>
 
-                <div className="pt-6">
-                  <h3 className="text-2xl sm:text-3xl font-medium tracking-tight text-neutral-950 mb-3">
-                    {service.title}
+                <div className="pt-4 mb-4">
+                  <h3 className="text-xl sm:text-2xl font-medium tracking-tight text-neutral-950 mb-2">
+                    {isDe ? service.titleDe : service.titleEn}
                   </h3>
-                  <p className="text-neutral-700 text-base sm:text-lg leading-relaxed mb-8">
-                    {service.description}
+                  <p className="text-neutral-600 text-sm leading-relaxed">
+                    {isDe ? service.descDe : service.descEn}
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-neutral-100">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4 border-t border-neutral-100">
                   <div>
-                    <span className="text-xs font-mono uppercase text-neutral-400 block mb-3">
-                      Core Deliverables
+                    <span className="text-[11px] font-mono uppercase text-neutral-400 block mb-2">
+                      {isDe ? "Leistungsumfang" : "Deliverables"}
                     </span>
-                    <ul className="space-y-2.5">
-                      {service.deliverables.map((item, idx) => (
-                        <li key={idx} className="flex items-start gap-2.5 text-sm text-neutral-800">
-                          <Check className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+                    <ul className="space-y-1.5">
+                      {(isDe ? service.deliverablesDe : service.deliverablesEn).map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-2 text-xs text-neutral-800">
+                          <Check className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
                           <span>{item}</span>
                         </li>
                       ))}
@@ -151,14 +189,14 @@ export default function MimosaServices() {
                   </div>
 
                   <div>
-                    <span className="text-xs font-mono uppercase text-neutral-400 block mb-3">
-                      Technologies & Standards
+                    <span className="text-[11px] font-mono uppercase text-neutral-400 block mb-2">
+                      {isDe ? "Technologien" : "Technologies"}
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {service.technologies.map((t) => (
                         <span
                           key={t}
-                          className="px-2.5 py-1 rounded-md bg-neutral-100 text-neutral-800 text-xs font-mono"
+                          className="px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-800 text-[11px] font-mono"
                         >
                           {t}
                         </span>

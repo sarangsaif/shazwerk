@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-export type Language = "en" | "de";
+export type Language = "de" | "en";
 
 interface LanguageContextType {
   language: Language;
@@ -11,27 +11,23 @@ interface LanguageContextType {
 }
 
 const LanguageContext = createContext<LanguageContextType>({
-  language: "en",
+  language: "de",
   setLanguage: () => {},
   toggleLanguage: () => {},
 });
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<Language>("en");
+  // Default to Swiss German ("de")
+  const [language, setLanguageState] = useState<Language>("de");
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem("shazwerk_lang") as Language;
       if (saved === "en" || saved === "de") {
         setLanguageState(saved);
-      } else {
-        const browserLang = navigator.language.toLowerCase();
-        if (browserLang.startsWith("de")) {
-          setLanguageState("de");
-        }
       }
     } catch {
-      // ignore in environments without localStorage
+      // ignore
     }
   }, []);
 
@@ -45,7 +41,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   const toggleLanguage = () => {
-    setLanguage(language === "en" ? "de" : "en");
+    setLanguage(language === "de" ? "en" : "de");
   };
 
   return (

@@ -2,7 +2,7 @@ import React from "react";
 import MimosaHero from "@/components/agency/MimosaHero";
 import SwissPrecisionInspector from "@/components/agency/SwissPrecisionInspector";
 import MimosaWork from "@/components/agency/MimosaWork";
-import SwissProjectCalculator from "@/components/agency/SwissProjectCalculator";
+import SwissArchitectureConfigurator from "@/components/agency/SwissArchitectureConfigurator";
 import MimosaServices from "@/components/agency/MimosaServices";
 import MimosaHowWeWork from "@/components/agency/MimosaHowWeWork";
 import MimosaEthos from "@/components/agency/MimosaEthos";
@@ -14,7 +14,7 @@ export default function HomePage() {
       <MimosaHero />
       <SwissPrecisionInspector />
       <MimosaWork />
-      <SwissProjectCalculator />
+      <SwissArchitectureConfigurator />
       <MimosaServices />
       <MimosaHowWeWork />
       <MimosaEthos />

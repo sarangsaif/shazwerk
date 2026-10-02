@@ -1,23 +1,23 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Selected Work & Case Studies — Swiss Software & AI Engineering",
+  title: "Referenzen & Fallstudien — Software & AI Studio Zürich | SHAZWERK",
   description:
-    "Explore mission-critical digital systems engineered by SHAZWERK: Alpine logistics telemetry, FINMA asset reconciliation, Swiss-sovereign legal LLMs, and Basel clinical biotech workstations.",
+    "Ausgewählte Software- und KI-Systeme im produktiven Einsatz: Echtzeit-Telemetrie, FINMA-Handelsabwicklung und souveräne Enterprise LLMs in der Schweiz.",
   keywords: [
-    "Swiss software case studies",
-    "Digital product portfolio Zurich",
-    "FinTech development Switzerland",
-    "Private LLM case studies",
-    "High throughput telemetry",
+    "Software Referenzen Schweiz",
+    "Digital Engineering Portfolio Zürich",
+    "FinTech Entwicklung Schweiz",
+    "Private LLM Fallstudien",
+    "Next.js Case Studies Schweiz",
   ],
   alternates: {
     canonical: "https://shazwerk.ch/work",
   },
   openGraph: {
-    title: "Selected Work & Case Studies | SHAZWERK",
+    title: "Referenzen & Fallstudien | SHAZWERK Zürich",
     description:
-      "Mission-critical digital products, high-frequency systems, and sovereign AI built with Swiss precision.",
+      "Ausgewählte geschäftskritische Software- und KI-Systeme mit Schweizer Präzision entwickelt.",
     url: "https://shazwerk.ch/work",
   },
 };
