@@ -57,9 +57,9 @@ const ALL_PROJECTS: WorkProject[] = [
     solution:
       "Constructed a high-performance WebAssembly virtualization layer with zero-repaint canvas feeds and strict zero-trust data protection.",
     outcomes: [
-      "CHF 8.4M+ daily transacted volume processed without slippage",
-      "Sub-15ms settlement calculation engine verified by independent audit",
+      "Sub-15ms daily asset settlement engine verified by independent audit",
       "Full statutory compliance with the Swiss Banking Act and FINMA circulars",
+      "Cryptographic audit trails with zero-latency order book rendering",
     ],
     tech: ["WebAssembly", "TypeScript", "Next.js", "FINMA Compliance", "Tailwind"],
   },
@@ -120,7 +120,7 @@ const ALL_PROJECTS: WorkProject[] = [
     solution:
       "Implemented a predictive scheduling algorithm and real-time operator dispatch board delivering automatic load-shedding and contingency re-routing.",
     outcomes: [
-      "CHF 320,000 saved annually in municipal peak-tariff surcharges",
+      "35% peak load reduction across municipal charging depot grid networks",
       "Zero missed departure schedules across 220,000 vehicle kilometers",
       "Operator command console designed with high-contrast accessibility",
     ],

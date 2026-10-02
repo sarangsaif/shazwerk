@@ -79,7 +79,7 @@ const CAPABILITIES = [
     num: "05",
     title: "Strategic Architecture Advisory",
     subtitle: "De-risking technical investments before writing production code",
-    lead: "We conduct architectural audits, evaluate build-vs-buy decisions, plan database scalability, and establish milestone roadmaps with predictable timelines and budgets in CHF.",
+    lead: "We conduct architectural audits, evaluate build-vs-buy decisions, plan database scalability, and establish milestone roadmaps with predictable timelines and clear deliverables.",
     deliverables: [
       "Comprehensive architectural & code quality audits",
       "Swiss compliance & security boundary reviews",
@@ -95,7 +95,7 @@ const ENGAGEMENTS = [
     num: "01",
     title: "Fixed-Scope Product Sprint",
     lead: "For well-defined new digital products, platforms, or MVPs.",
-    details: "Clear deliverables, non-negotiable timelines, and transparent budget in CHF. Weekly staging releases and full IP handoff.",
+    details: "Clear deliverables, non-negotiable timelines, and transparent milestone roadmaps. Weekly staging releases and full IP handoff.",
     duration: "4 – 12 weeks",
   },
   {
