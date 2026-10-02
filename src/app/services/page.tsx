@@ -4,9 +4,18 @@ import Link from "next/link";
 import { ArrowUpRight, ArrowLeft, Check, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Capabilities & Technical Stack",
+  title: "Engineering Capabilities & Technical Stack — SHAZWERK",
   description:
-    "Comprehensive digital product engineering, software architecture, AI automation, and UX systems built with Swiss precision.",
+    "Comprehensive digital product engineering, custom Next.js platforms, sovereign enterprise AI, and cloud architecture built with Swiss precision.",
+  alternates: {
+    canonical: "https://shazwerk.ch/services",
+  },
+  openGraph: {
+    title: "Engineering Capabilities & Technical Stack | SHAZWERK",
+    description:
+      "Full-cycle digital products, air-gapped LLMs, and Swiss cloud infrastructure.",
+    url: "https://shazwerk.ch/services",
+  },
 };
 
 const CAPABILITIES = [

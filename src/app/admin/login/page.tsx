@@ -96,9 +96,6 @@ export default function AdminLoginPage() {
                 />
                 <Lock className="w-4 h-4 text-neutral-400 absolute right-3.5 top-3.5" />
               </div>
-              <p className="text-[11px] text-neutral-500 font-mono mt-1.5">
-                Default: <code className="text-neutral-800 bg-neutral-200/70 px-1 py-0.5 rounded">shazwerk2026!admin</code>
-              </p>
             </div>
 
             <button

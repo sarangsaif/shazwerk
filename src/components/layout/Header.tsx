@@ -3,21 +3,25 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, Menu, X, Sparkles } from "lucide-react";
+import { ArrowUpRight, Menu, X, Globe } from "lucide-react";
 import { trackClientEvent } from "@/lib/analytics-client";
-
-const NAV_ITEMS = [
-  { label: "Work", href: "/work" },
-  { label: "Services", href: "/services" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Header() {
-  const [zurichTime, setZurichTime] = useState("18:00");
+  const [zurichTime, setZurichTime] = useState("18:00:00");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
+  const { language, setLanguage } = useLanguage();
+
+  const isDe = language === "de";
+
+  const navItems = [
+    { label: isDe ? "Arbeiten" : "Work", href: "/work" },
+    { label: isDe ? "Leistungen" : "Services", href: "/services" },
+    { label: isDe ? "Über uns" : "About", href: "/about" },
+    { label: isDe ? "Kontakt" : "Contact", href: "/contact" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,7 +34,7 @@ export default function Header() {
   useEffect(() => {
     const updateTime = () => {
       try {
-        const timeStr = new Intl.DateTimeFormat("en-GB", {
+        const timeStr = new Intl.DateTimeFormat("de-CH", {
           timeZone: "Europe/Zurich",
           hour: "2-digit",
           minute: "2-digit",
@@ -80,18 +84,20 @@ export default function Header() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span className="text-[11px] text-neutral-500 hidden lg:inline">Available Q3/Q4</span>
+            <span className="text-[11px] text-neutral-500 hidden lg:inline">
+              {isDe ? "Studio Verfügbar" : "Studio Online"}
+            </span>
           </div>
         </div>
 
         {/* Right floating Navigation pill */}
         <div
-          className={`pointer-events-auto hidden md:flex items-center gap-1 bg-white/90 backdrop-blur-md border border-neutral-200/80 rounded-full p-1.5 shadow-sm transition-all duration-300 ${
+          className={`pointer-events-auto hidden md:flex items-center gap-1.5 bg-white/90 backdrop-blur-md border border-neutral-200/80 rounded-full p-1.5 shadow-sm transition-all duration-300 ${
             isScrolled ? "shadow-md border-neutral-300/90" : ""
           }`}
         >
           <nav className="flex items-center gap-1">
-            {NAV_ITEMS.map((item) => {
+            {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
@@ -110,25 +116,70 @@ export default function Header() {
             })}
           </nav>
 
+          {/* Language Switcher */}
+          <div className="flex items-center bg-neutral-100 rounded-full p-0.5 border border-neutral-200 text-[11px] font-mono">
+            <button
+              type="button"
+              onClick={() => {
+                setLanguage("en");
+                trackClientEvent("lang_switch", { lang: "en" });
+              }}
+              className={`px-2 py-0.5 rounded-full transition-all ${
+                !isDe
+                  ? "bg-white text-neutral-950 font-semibold shadow-xs"
+                  : "text-neutral-500 hover:text-neutral-900"
+              }`}
+            >
+              EN
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setLanguage("de");
+                trackClientEvent("lang_switch", { lang: "de" });
+              }}
+              className={`px-2 py-0.5 rounded-full transition-all ${
+                isDe
+                  ? "bg-white text-neutral-950 font-semibold shadow-xs"
+                  : "text-neutral-500 hover:text-neutral-900"
+              }`}
+            >
+              DE
+            </button>
+          </div>
+
           <Link
             href="/contact"
             onClick={() => trackClientEvent("cta_click", { location: "header_pill" })}
-            className="ml-1 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-red-600 text-white hover:bg-red-700 transition-colors shadow-xs"
+            className="ml-0.5 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-red-600 text-white hover:bg-red-700 transition-colors shadow-xs"
           >
-            <span>Start a brief</span>
+            <span>{isDe ? "Briefing senden" : "Start a brief"}</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        {/* Mobile menu button */}
-        <button
-          type="button"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="pointer-events-auto md:hidden p-2.5 rounded-full bg-white/95 backdrop-blur-md border border-neutral-200 text-neutral-900 shadow-sm"
-          aria-label="Toggle menu"
-        >
-          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        {/* Mobile controls */}
+        <div className="flex md:hidden items-center gap-2 pointer-events-auto">
+          {/* Mobile Language Switcher */}
+          <div className="flex items-center bg-white/90 backdrop-blur-md rounded-full p-1 border border-neutral-200 text-[11px] font-mono shadow-xs">
+            <button
+              type="button"
+              onClick={() => setLanguage(isDe ? "en" : "de")}
+              className="px-2.5 py-1 rounded-full font-semibold text-neutral-900"
+            >
+              {isDe ? "DE (CH)" : "EN (CH)"}
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2.5 rounded-full bg-white/95 backdrop-blur-md border border-neutral-200 text-neutral-900 shadow-sm"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Drawer */}
@@ -139,12 +190,12 @@ export default function Header() {
               <span>Zürich {zurichTime} CET</span>
               <span className="flex items-center gap-1.5 text-emerald-600 font-medium">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
-                Available for briefs
+                {isDe ? "Bereit für Anfragen" : "Available for briefs"}
               </span>
             </div>
 
             <nav className="flex flex-col gap-2 pt-2">
-              {NAV_ITEMS.map((item) => (
+              {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -161,10 +212,10 @@ export default function Header() {
                 href="/contact"
                 className="w-full py-3 text-center rounded-xl bg-neutral-950 text-white font-medium text-sm hover:bg-neutral-800 transition-colors"
               >
-                Get in touch
+                {isDe ? "Projekt unverbindlich anfragen" : "Get in touch"}
               </Link>
               <div className="text-center text-xs text-neutral-500 font-mono">
-                hello@shazwerk.ch · Switzerland
+                hello@shazwerk.ch · Gotthardstrasse 26, Zürich
               </div>
             </div>
           </div>
