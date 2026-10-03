@@ -232,6 +232,51 @@ export async function getAllAnalyticsEvents(): Promise<AnalyticsEvent[]> {
   return readAnalytics();
 }
 
+export async function rehydrateAnalyticsEvents(rehydrateItems: Partial<AnalyticsEvent>[]): Promise<void> {
+  if (!rehydrateItems || !Array.isArray(rehydrateItems) || rehydrateItems.length === 0) return;
+  const existing = readAnalytics();
+  const existingIds = new Set(existing.map((e) => e.session_id || e.id));
+
+  let added = false;
+  for (const item of rehydrateItems) {
+    const key = item.session_id || item.id;
+    if (key && !existingIds.has(key)) {
+      existing.push({
+        id: item.id || crypto.randomUUID(),
+        timestamp: item.timestamp || new Date().toISOString(),
+        event_type: item.event_type || "pageview",
+        path: item.path || "/",
+        referrer: item.referrer || "direct",
+        ip: item.ip || "127.0.0.1",
+        country: item.country || "Switzerland",
+        country_code: item.country_code || "CH",
+        city: item.city || "Zurich",
+        region: item.region || "ZH",
+        timezone: item.timezone || "Europe/Zurich",
+        device: item.device || "Desktop",
+        browser: item.browser || "Unknown",
+        browser_version: item.browser_version || "",
+        os: item.os || "Unknown",
+        os_version: item.os_version || "",
+        screen_resolution: item.screen_resolution || "1920x1080",
+        visitor_id: item.visitor_id || "v_" + crypto.randomUUID().slice(0, 8),
+        session_id: item.session_id || "s_" + crypto.randomUUID().slice(0, 8),
+        visit_count: item.visit_count || 1,
+        duration_seconds: item.duration_seconds || 0,
+        scroll_depth: item.scroll_depth || 0,
+        marketing: item.marketing,
+        user_agent: item.user_agent,
+      });
+      existingIds.add(key);
+      added = true;
+    }
+  }
+
+  if (added) {
+    writeAnalytics(existing);
+  }
+}
+
 export async function getAnalyticsSummary(): Promise<AnalyticsSummary> {
   const events = readAnalytics();
   const pageviews = events.filter((e) => e.event_type === "pageview");

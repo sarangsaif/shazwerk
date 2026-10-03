@@ -74,6 +74,48 @@ function getCountryFlag(countryCode?: string) {
   return String.fromCodePoint(...codePoints);
 }
 
+const VAULT_VISITORS_KEY = "_sw_admin_vault_visitors_v1";
+
+function mergeVisitorRecords(
+  serverList: VisitorSessionRecord[] = [],
+  cachedList: VisitorSessionRecord[] = []
+): VisitorSessionRecord[] {
+  const map = new Map<string, VisitorSessionRecord>();
+
+  for (const item of cachedList) {
+    if (item && (item.id || item.session_id)) {
+      const key = item.id || item.session_id;
+      map.set(key, item);
+    }
+  }
+
+  for (const item of serverList) {
+    if (item && (item.id || item.session_id)) {
+      const key = item.id || item.session_id;
+      const existing = map.get(key);
+      if (!existing) {
+        map.set(key, item);
+      } else {
+        const pages = Array.from(new Set([...(existing.pages_viewed || []), ...(item.pages_viewed || [])]));
+        const isItemNewer = new Date(item.last_active).getTime() >= new Date(existing.last_active).getTime();
+        map.set(key, {
+          ...(isItemNewer ? existing : item),
+          ...(isItemNewer ? item : existing),
+          pages_viewed: pages,
+          pageviews_count: Math.max(existing.pageviews_count || 1, item.pageviews_count || 1),
+          scroll_depth_max: Math.max(existing.scroll_depth_max || 0, item.scroll_depth_max || 0),
+          duration_seconds: Math.max(existing.duration_seconds || 0, item.duration_seconds || 0),
+          last_active: isItemNewer ? item.last_active : existing.last_active,
+        });
+      }
+    }
+  }
+
+  return Array.from(map.values()).sort(
+    (a, b) => new Date(b.last_active).getTime() - new Date(a.last_active).getTime()
+  );
+}
+
 interface Props {
   initialSubmissions: ContactSubmission[];
   analytics: AnalyticsSummary;
@@ -85,6 +127,7 @@ export default function AdminDashboardView({
   analytics,
   initialEmailSettings,
 }: Props) {
+  const router = useRouter();
   const [submissions, setSubmissions] = useState<ContactSubmission[]>(initialSubmissions);
   const [emailSettings, setEmailSettings] = useState<EmailSettings>(initialEmailSettings);
   const [analyticsData, setAnalyticsData] = useState<AnalyticsSummary>(analytics);
@@ -96,22 +139,7 @@ export default function AdminDashboardView({
   const [activeTab, setActiveTab] = useState<"queries" | "analytics" | "email">("queries");
   const [liveAutoRefresh, setLiveAutoRefresh] = useState(true);
 
-  // Auto-refresh telemetry stream every 8 seconds when on analytics tab
-  useEffect(() => {
-    if (activeTab !== "analytics" || !liveAutoRefresh) return;
-    const interval = setInterval(() => {
-      fetch("/api/admin/analytics")
-        .then((res) => (res.ok ? res.json() : null))
-        .then((data) => {
-          if (data?.analytics) {
-            setAnalyticsData(data.analytics);
-          }
-        })
-        .catch(() => {});
-    }, 8000);
-
-    return () => clearInterval(interval);
-  }, [activeTab, liveAutoRefresh]);
+  // Queries tab state
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedSubmission, setSelectedSubmission] = useState<ContactSubmission | null>(
@@ -122,21 +150,90 @@ export default function AdminDashboardView({
   const [forwardingId, setForwardingId] = useState<string | null>(null);
   const [forwardSuccess, setForwardSuccess] = useState<string | null>(null);
 
-  // Email settings state
+  // Settings tab state
   const [savingSettings, setSavingSettings] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [testingEmail, setTestingEmail] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
 
-  const router = useRouter();
-
   const handleCopy = (text: string, label: string) => {
-    if (navigator?.clipboard) {
+    if (typeof navigator !== "undefined" && navigator?.clipboard) {
       navigator.clipboard.writeText(text);
       setCopiedText(label);
       setTimeout(() => setCopiedText(null), 2000);
     }
   };
+
+  // Sync helper that updates state, persists to localStorage vault, and re-seeds server if needed
+  const syncWithVault = (serverAnalytics: AnalyticsSummary) => {
+    let cached: VisitorSessionRecord[] = [];
+    try {
+      const stored = localStorage.getItem(VAULT_VISITORS_KEY);
+      if (stored) cached = JSON.parse(stored);
+    } catch {}
+
+    const mergedVisitors = mergeVisitorRecords(serverAnalytics.recentVisitors || [], cached);
+
+    try {
+      localStorage.setItem(VAULT_VISITORS_KEY, JSON.stringify(mergedVisitors.slice(0, 500)));
+    } catch {}
+
+    const updatedSummary: AnalyticsSummary = {
+      ...serverAnalytics,
+      totalPageviews: Math.max(
+        serverAnalytics.totalPageviews,
+        mergedVisitors.reduce((acc, v) => acc + (v.pageviews_count || 1), 0)
+      ),
+      uniqueVisitorsCount: Math.max(
+        serverAnalytics.uniqueVisitorsCount,
+        new Set(mergedVisitors.map((v) => v.visitor_id || v.ip)).size
+      ),
+      recentVisitors: mergedVisitors,
+    };
+
+    setAnalyticsData(updatedSummary);
+
+    // If server returned fewer visitors (serverless cold start / instance recycle), re-seed server!
+    if ((serverAnalytics.recentVisitors?.length || 0) < mergedVisitors.length) {
+      fetch("/api/admin/analytics", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rehydrateVisitors: mergedVisitors.slice(0, 50) }),
+      }).catch(() => {});
+    }
+
+    return updatedSummary;
+  };
+
+  // On mount: hydrate from Local Vault immediately so logs NEVER start empty or reset
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(VAULT_VISITORS_KEY);
+      if (stored) {
+        const cached: VisitorSessionRecord[] = JSON.parse(stored);
+        if (Array.isArray(cached) && cached.length > 0) {
+          syncWithVault(analytics);
+        }
+      }
+    } catch {}
+  }, []);
+
+  // Auto-refresh telemetry stream every 8 seconds when on analytics tab
+  useEffect(() => {
+    if (activeTab !== "analytics" || !liveAutoRefresh) return;
+    const interval = setInterval(() => {
+      fetch("/api/admin/analytics")
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data?.analytics) {
+            syncWithVault(data.analytics);
+          }
+        })
+        .catch(() => {});
+    }, 8000);
+
+    return () => clearInterval(interval);
+  }, [activeTab, liveAutoRefresh]);
 
   const refreshAnalytics = async () => {
     setIsRefreshingAnalytics(true);
@@ -145,9 +242,9 @@ export default function AdminDashboardView({
       if (res.ok) {
         const data = await res.json();
         if (data.analytics) {
-          setAnalyticsData(data.analytics);
+          const updated = syncWithVault(data.analytics);
           if (selectedVisitor) {
-            const updatedVisitor = data.analytics.recentVisitors?.find(
+            const updatedVisitor = updated.recentVisitors?.find(
               (v: VisitorSessionRecord) => v.id === selectedVisitor.id
             );
             if (updatedVisitor) setSelectedVisitor(updatedVisitor);
@@ -158,6 +255,15 @@ export default function AdminDashboardView({
       console.error("Failed to refresh analytics:", err);
     } finally {
       setIsRefreshingAnalytics(false);
+    }
+  };
+
+  const handleClearVault = () => {
+    if (confirm("Reset local visitor vault and re-sync with server?")) {
+      try {
+        localStorage.removeItem(VAULT_VISITORS_KEY);
+      } catch {}
+      refreshAnalytics();
     }
   };
 
