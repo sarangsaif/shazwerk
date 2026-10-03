@@ -4,9 +4,12 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy (Datenschutzerklärung)",
+  title: "Datenschutzerklärung (nDSG / DSGVO)",
   description:
-    "Privacy Policy of SHAZWERK in accordance with the Swiss Federal Act on Data Protection (nDSG / FADP) and EU GDPR.",
+    "Datenschutzerklärung der SHAZWERK GmbH gemäss revidiertem Schweizer Bundesgesetz über den Datenschutz (revDSG / nDSG) und EU-DSGVO.",
+  alternates: {
+    canonical: "https://shazwerk.ch/privacy",
+  },
 };
 
 export default function PrivacyPage() {

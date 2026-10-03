@@ -1,14 +1,16 @@
 import React from "react";
 
 export default function JsonLd() {
+  const baseUrl = "https://shazwerk.ch";
+
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "@id": "https://shazwerk.ch/#organization",
+    "@id": `${baseUrl}/#organization`,
     name: "SHAZWERK",
     legalName: "SHAZWERK GmbH",
-    url: "https://shazwerk.ch",
-    logo: "https://shazwerk.ch/logo.png",
+    url: baseUrl,
+    logo: `${baseUrl}/logo.png`,
     email: "hello@shazwerk.ch",
     telephone: "+41448209010",
     taxID: "CHE-419.820.104 MWST",
@@ -48,6 +50,7 @@ export default function JsonLd() {
       "AI Agentur Zürich",
       "Enterprise AI Schweiz",
       "Souveräne AI nDSG",
+      "Softwareentwicklung Zürich",
       "FINMA konforme Software",
     ],
   };
@@ -55,9 +58,9 @@ export default function JsonLd() {
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    "@id": "https://shazwerk.ch/#localservice",
+    "@id": `${baseUrl}/#localservice`,
     name: "SHAZWERK — Software Agentur Zürich & Digital Product Studio",
-    url: "https://shazwerk.ch",
+    url: baseUrl,
     telephone: "+41448209010",
     priceRange: "$$$",
     currenciesAccepted: "CHF, EUR",
@@ -103,7 +106,7 @@ export default function JsonLd() {
     ],
     hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: "Leistungsspektrum",
+      name: "Dienstleistungen & Kompetenzen",
       itemListElement: [
         {
           "@type": "Offer",
@@ -129,6 +132,22 @@ export default function JsonLd() {
             description: "Ausfallsichere Systemarchitektur in Schweizer Rechenzentren (AWS Zürich eu-central-2, Exoscale).",
           },
         },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Design Systems & UI Craft",
+            description: "Funktionale Schweizer Typografie, barrierefreie Design Tokens und 60fps-Interaktion.",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Architektur- & Security-Audit",
+            description: "Ganzheitliche Prüfung von Codequalität, Schweizer nDSG-Konformität und Skalierbarkeit.",
+          },
+        },
       ],
     },
   };
@@ -136,14 +155,56 @@ export default function JsonLd() {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "@id": "https://shazwerk.ch/#website",
-    url: "https://shazwerk.ch",
+    "@id": `${baseUrl}/#website`,
+    url: baseUrl,
     name: "SHAZWERK",
-    alternateName: "SHAZWERK Software Agentur Zürich",
+    alternateName: ["SHAZWERK Software Agentur Zürich", "SHAZWERK Studio Schweiz"],
     publisher: {
-      "@id": "https://shazwerk.ch/#organization",
+      "@id": `${baseUrl}/#organization`,
+    },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${baseUrl}/?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
     },
     inLanguage: ["de-CH", "en-CH"],
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Studio Zürich",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Dienstleistungen",
+        item: `${baseUrl}/services`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Referenzen",
+        item: `${baseUrl}/work`,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: "Über uns",
+        item: `${baseUrl}/about`,
+      },
+      {
+        "@type": "ListItem",
+        position: 5,
+        name: "Kontakt",
+        item: `${baseUrl}/contact`,
+      },
+    ],
   };
 
   const faqSchema = {
@@ -198,6 +259,10 @@ export default function JsonLd() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <script
         type="application/ld+json"

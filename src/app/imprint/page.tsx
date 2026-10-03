@@ -4,8 +4,11 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Impressum (Legal Notice)",
-  description: "Statutory Swiss Impressum and company details for SHAZWERK.",
+  title: "Impressum (Rechtliche Angaben)",
+  description: "Gesetzliches Schweizer Impressum und Unternehmensangaben der SHAZWERK GmbH.",
+  alternates: {
+    canonical: "https://shazwerk.ch/imprint",
+  },
 };
 
 export default function ImprintPage() {
