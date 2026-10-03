@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -23,14 +23,56 @@ import {
   Save,
   Check,
   AlertCircle,
+  Globe,
+  Monitor,
+  Smartphone,
+  Tablet,
+  Cpu,
+  Eye,
+  Activity,
+  UserCheck,
+  Copy,
+  Tag,
+  Share2,
+  X,
+  Compass,
+  Zap,
+  MapPin,
+  Laptop,
+  Terminal,
+  Calendar,
 } from "lucide-react";
 import {
   ContactSubmission,
   SubmissionStatus,
   AnalyticsSummary,
+  VisitorSessionRecord,
   EmailSettings,
 } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
+
+// Helper for relative time display
+function formatRelativeTime(dateStr: string) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const seconds = Math.floor(diff / 1000);
+  if (seconds < 60) return "Just now";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
+// Country code to flag emoji helper
+function getCountryFlag(countryCode?: string) {
+  if (!countryCode || countryCode.length !== 2) return "🌐";
+  const codePoints = countryCode
+    .toUpperCase()
+    .split("")
+    .map((char) => 127397 + char.charCodeAt(0));
+  return String.fromCodePoint(...codePoints);
+}
 
 interface Props {
   initialSubmissions: ContactSubmission[];
@@ -45,7 +87,31 @@ export default function AdminDashboardView({
 }: Props) {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>(initialSubmissions);
   const [emailSettings, setEmailSettings] = useState<EmailSettings>(initialEmailSettings);
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsSummary>(analytics);
+  const [isRefreshingAnalytics, setIsRefreshingAnalytics] = useState(false);
+  const [selectedVisitor, setSelectedVisitor] = useState<VisitorSessionRecord | null>(null);
+  const [visitorSearch, setVisitorSearch] = useState("");
+  const [visitorDeviceFilter, setVisitorDeviceFilter] = useState("all");
+  const [copiedText, setCopiedText] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"queries" | "analytics" | "email">("queries");
+  const [liveAutoRefresh, setLiveAutoRefresh] = useState(true);
+
+  // Auto-refresh telemetry stream every 8 seconds when on analytics tab
+  useEffect(() => {
+    if (activeTab !== "analytics" || !liveAutoRefresh) return;
+    const interval = setInterval(() => {
+      fetch("/api/admin/analytics")
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data?.analytics) {
+            setAnalyticsData(data.analytics);
+          }
+        })
+        .catch(() => {});
+    }, 8000);
+
+    return () => clearInterval(interval);
+  }, [activeTab, liveAutoRefresh]);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedSubmission, setSelectedSubmission] = useState<ContactSubmission | null>(
@@ -63,6 +129,37 @@ export default function AdminDashboardView({
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
 
   const router = useRouter();
+
+  const handleCopy = (text: string, label: string) => {
+    if (navigator?.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedText(label);
+      setTimeout(() => setCopiedText(null), 2000);
+    }
+  };
+
+  const refreshAnalytics = async () => {
+    setIsRefreshingAnalytics(true);
+    try {
+      const res = await fetch("/api/admin/analytics");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.analytics) {
+          setAnalyticsData(data.analytics);
+          if (selectedVisitor) {
+            const updatedVisitor = data.analytics.recentVisitors?.find(
+              (v: VisitorSessionRecord) => v.id === selectedVisitor.id
+            );
+            if (updatedVisitor) setSelectedVisitor(updatedVisitor);
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Failed to refresh analytics:", err);
+    } finally {
+      setIsRefreshingAnalytics(false);
+    }
+  };
 
   // Handle status update
   const handleStatusChange = async (id: string, newStatus: SubmissionStatus) => {
@@ -319,7 +416,13 @@ export default function AdminDashboardView({
           }`}
         >
           <BarChart3 className="w-4 h-4" />
-          <span>Visits & Telemetry ({analytics.totalPageviews} views)</span>
+          <span>Visitor Intelligence ({analyticsData.totalPageviews} views)</span>
+          {analyticsData.liveVisitorsCount > 0 && (
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-semibold border border-emerald-500/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              {analyticsData.liveVisitorsCount} live
+            </span>
+          )}
         </button>
 
         <button
@@ -602,53 +705,660 @@ export default function AdminDashboardView({
       {/* TAB 2: VISITS & TELEMETRY */}
       {activeTab === "analytics" && (
         <div className="space-y-8">
+          {/* Header Action Bar */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-neutral-50 border border-neutral-200 rounded-2xl p-6">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-xl font-medium tracking-tight text-neutral-950">
+                  Visitor Intelligence & Real-Time Telemetry
+                </h3>
+                {analyticsData.liveVisitorsCount > 0 ? (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-mono font-medium border border-emerald-500/20">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    {analyticsData.liveVisitorsCount} Active Now
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neutral-200/60 text-neutral-600 text-xs font-mono">
+                    <span className="w-1.5 h-1.5 rounded-full bg-neutral-400" />
+                    Idle Pulse
+                  </span>
+                )}
+              </div>
+              <p className="text-xs font-mono text-neutral-500">
+                Live visitor session logs, true client IP, geolocation, hardware footprint, and marketing cookie attribution.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => setLiveAutoRefresh(!liveAutoRefresh)}
+                className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-mono transition-colors shadow-xs ${
+                  liveAutoRefresh
+                    ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                    : "bg-white text-neutral-600 border-neutral-300 hover:text-neutral-900"
+                }`}
+                title="Toggle real-time auto-refresh (polls every 8s)"
+              >
+                <span className={`w-2 h-2 rounded-full ${liveAutoRefresh ? "bg-emerald-500 animate-pulse" : "bg-neutral-400"}`} />
+                <span>{liveAutoRefresh ? "Live Stream: ON" : "Live: Paused"}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={refreshAnalytics}
+                disabled={isRefreshingAnalytics}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-neutral-300 hover:border-neutral-950 text-neutral-900 text-xs font-mono transition-colors shadow-xs"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 text-neutral-600 ${isRefreshingAnalytics ? "animate-spin" : ""}`} />
+                <span>{isRefreshingAnalytics ? "Refreshing..." : "Refresh"}</span>
+              </button>
+
+              <a
+                href="/api/admin/analytics/export"
+                download
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-mono transition-colors shadow-xs"
+              >
+                <Download className="w-3.5 h-3.5 text-neutral-400" />
+                <span>Export CSV</span>
+              </a>
+            </div>
+          </div>
+
           {/* Metrics Overview Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6">
-              <span className="text-xs font-mono text-neutral-400 block mb-2">TOTAL PAGEVIEWS</span>
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-5">
+              <span className="text-xs font-mono text-neutral-400 block mb-1">TOTAL PAGEVIEWS</span>
               <div className="text-3xl font-semibold text-neutral-950">
-                {analytics.totalPageviews}
+                {analyticsData.totalPageviews}
               </div>
               <span className="text-[11px] text-neutral-500 font-mono mt-1 block">
                 Across all studio routes
               </span>
             </div>
 
-            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6">
-              <span className="text-xs font-mono text-neutral-400 block mb-2">UNIQUE VISITORS (EST.)</span>
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-5">
+              <span className="text-xs font-mono text-neutral-400 block mb-1">UNIQUE VISITORS</span>
               <div className="text-3xl font-semibold text-neutral-950">
-                {analytics.uniqueVisitorsEstimate}
+                {analyticsData.uniqueVisitorsCount || analyticsData.uniqueVisitorsEstimate}
               </div>
               <span className="text-[11px] text-neutral-500 font-mono mt-1 block">
-                Zero-cookie privacy modeled
+                Persistent cookie (`_sw_vid`)
               </span>
             </div>
 
-            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6">
-              <span className="text-xs font-mono text-neutral-400 block mb-2">PROJECT QUERIES</span>
-              <div className="text-3xl font-semibold text-neutral-950">
-                {analytics.formSubmissionsCount}
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-5">
+              <span className="text-xs font-mono text-neutral-400 block mb-1">LIVE ACTIVE (15M)</span>
+              <div className="text-3xl font-semibold text-emerald-600 flex items-center gap-2">
+                <span>{analyticsData.liveVisitorsCount}</span>
+                {analyticsData.liveVisitorsCount > 0 && (
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
+                )}
               </div>
               <span className="text-[11px] text-neutral-500 font-mono mt-1 block">
-                Submissions received
+                Real-time active visitors
               </span>
             </div>
 
-            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6">
-              <span className="text-xs font-mono text-neutral-400 block mb-2">INQUIRY CONVERSION</span>
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-5">
+              <span className="text-xs font-mono text-neutral-400 block mb-1">AVG SCROLL DEPTH</span>
               <div className="text-3xl font-semibold text-neutral-950">
-                {analytics.totalPageviews > 0
-                  ? ((analytics.formSubmissionsCount / analytics.totalPageviews) * 100).toFixed(1)
-                  : "0"}
-                %
+                {analyticsData.avgScrollDepth}%
               </div>
               <span className="text-[11px] text-neutral-500 font-mono mt-1 block">
-                Visitor-to-lead ratio
+                Reading engagement depth
+              </span>
+            </div>
+
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-5 col-span-2 lg:col-span-1">
+              <span className="text-xs font-mono text-neutral-400 block mb-1">LEAD CONVERSION</span>
+              <div className="text-3xl font-semibold text-neutral-950">
+                {analyticsData.totalPageviews > 0
+                  ? ((analyticsData.formSubmissionsCount / analyticsData.totalPageviews) * 100).toFixed(1)
+                  : "0"}%
+              </div>
+              <span className="text-[11px] text-neutral-500 font-mono mt-1 block">
+                Visitor-to-inquiry ratio
               </span>
             </div>
           </div>
 
-          {/* Detailed Breakdown Tables */}
+          {/* SECTION: LIVE VISITOR STREAM & FORENSIC LOG */}
+          <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6 sm:p-7 space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-200">
+              <div>
+                <h4 className="text-base font-medium text-neutral-950 flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-red-600" />
+                  <span>Live Visitor Telemetry Stream</span>
+                </h4>
+                <p className="text-xs font-mono text-neutral-500 mt-0.5">
+                  Detailed profile of every visitor session. Click "Inspect" for complete hardware & marketing attribution.
+                </p>
+              </div>
+
+              {/* Filters */}
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Search IP, city, country, path, campaign..."
+                    value={visitorSearch}
+                    onChange={(e) => setVisitorSearch(e.target.value)}
+                    className="pl-8 pr-3 py-1.5 rounded-xl bg-white border border-neutral-300 text-xs font-mono text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-950 w-60 sm:w-72"
+                  />
+                  {visitorSearch && (
+                    <button
+                      type="button"
+                      onClick={() => setVisitorSearch("")}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-700"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1 bg-white border border-neutral-300 rounded-xl p-0.5 text-xs font-mono">
+                  {(["all", "Desktop", "Mobile", "Tablet"] as const).map((dev) => (
+                    <button
+                      key={dev}
+                      type="button"
+                      onClick={() => setVisitorDeviceFilter(dev)}
+                      className={`px-2.5 py-1 rounded-lg transition-colors ${
+                        visitorDeviceFilter === dev
+                          ? "bg-neutral-950 text-white font-medium shadow-xs"
+                          : "text-neutral-600 hover:text-neutral-950"
+                      }`}
+                    >
+                      {dev === "all" ? "All Devices" : dev}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Filtered Count Tag */}
+            <div className="flex items-center justify-between text-xs font-mono text-neutral-400">
+              <span>
+                Displaying{" "}
+                {(analyticsData.recentVisitors || []).filter((v) => {
+                  if (visitorDeviceFilter !== "all" && v.device.toLowerCase() !== visitorDeviceFilter.toLowerCase()) return false;
+                  if (!visitorSearch.trim()) return true;
+                  const q = visitorSearch.toLowerCase();
+                  return (
+                    v.ip.toLowerCase().includes(q) ||
+                    v.city.toLowerCase().includes(q) ||
+                    v.country.toLowerCase().includes(q) ||
+                    v.current_path.toLowerCase().includes(q) ||
+                    v.landing_path.toLowerCase().includes(q) ||
+                    (v.marketing?.utm_campaign && v.marketing.utm_campaign.toLowerCase().includes(q)) ||
+                    (v.marketing?.utm_source && v.marketing.utm_source.toLowerCase().includes(q)) ||
+                    (v.browser && v.browser.toLowerCase().includes(q)) ||
+                    (v.os && v.os.toLowerCase().includes(q))
+                  );
+                }).length}{" "}
+                of {analyticsData.recentVisitors?.length || 0} recorded visitor sessions
+              </span>
+              {copiedText && (
+                <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  {copiedText} copied to clipboard!
+                </span>
+              )}
+            </div>
+
+            {/* Visitors Table */}
+            <div className="overflow-x-auto rounded-xl border border-neutral-200 bg-white">
+              <table className="w-full text-left border-collapse text-xs font-mono">
+                <thead>
+                  <tr className="bg-neutral-100/70 border-b border-neutral-200 text-neutral-500 uppercase tracking-wider text-[11px]">
+                    <th className="py-3 px-4 font-medium">Activity</th>
+                    <th className="py-3 px-4 font-medium">Visitor IP & ID</th>
+                    <th className="py-3 px-4 font-medium">Location</th>
+                    <th className="py-3 px-4 font-medium">Device & System</th>
+                    <th className="py-3 px-4 font-medium">Marketing Attribution</th>
+                    <th className="py-3 px-4 font-medium">Page & Scroll</th>
+                    <th className="py-3 px-4 font-medium text-right">Dossier</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-neutral-100">
+                  {(!analyticsData.recentVisitors || analyticsData.recentVisitors.length === 0) ? (
+                    <tr>
+                      <td colSpan={7} className="py-12 text-center text-neutral-400">
+                        No visitor telemetry captured yet. Browse the studio site to view real-time data stream.
+                      </td>
+                    </tr>
+                  ) : (
+                    analyticsData.recentVisitors
+                      .filter((v) => {
+                        if (visitorDeviceFilter !== "all" && v.device.toLowerCase() !== visitorDeviceFilter.toLowerCase()) return false;
+                        if (!visitorSearch.trim()) return true;
+                        const q = visitorSearch.toLowerCase();
+                        return (
+                          v.ip.toLowerCase().includes(q) ||
+                          v.city.toLowerCase().includes(q) ||
+                          v.country.toLowerCase().includes(q) ||
+                          v.current_path.toLowerCase().includes(q) ||
+                          v.landing_path.toLowerCase().includes(q) ||
+                          (v.marketing?.utm_campaign && v.marketing.utm_campaign.toLowerCase().includes(q)) ||
+                          (v.marketing?.utm_source && v.marketing.utm_source.toLowerCase().includes(q)) ||
+                          (v.browser && v.browser.toLowerCase().includes(q)) ||
+                          (v.os && v.os.toLowerCase().includes(q))
+                        );
+                      })
+                      .map((visitor) => {
+                        const flag = getCountryFlag(visitor.country_code);
+                        const isOnline = visitor.is_online;
+                        const marketingTag =
+                          visitor.marketing?.utm_campaign ||
+                          visitor.marketing?.utm_source ||
+                          visitor.marketing?.ad_source ||
+                          (visitor.referrer && visitor.referrer !== "direct" ? visitor.referrer : "Direct");
+
+                        return (
+                          <tr key={visitor.id} className="hover:bg-neutral-50/80 transition-colors">
+                            {/* Activity */}
+                            <td className="py-3.5 px-4 whitespace-nowrap">
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className={`w-2 h-2 rounded-full ${
+                                    isOnline ? "bg-emerald-500 animate-pulse" : "bg-neutral-300"
+                                  }`}
+                                  title={isOnline ? "Active in last 15m" : "Offline"}
+                                />
+                                <div>
+                                  <div className="text-neutral-950 font-medium">
+                                    {formatRelativeTime(visitor.last_active)}
+                                  </div>
+                                  <div className="text-[10px] text-neutral-400">
+                                    {formatDate(visitor.last_active)}
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+
+                            {/* IP & Visitor ID */}
+                            <td className="py-3.5 px-4 whitespace-nowrap">
+                              <div className="flex items-center gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => handleCopy(visitor.ip, "IP")}
+                                  className="font-medium text-neutral-900 hover:text-red-600 transition-colors flex items-center gap-1"
+                                  title="Click to copy IP"
+                                >
+                                  <span>{visitor.ip}</span>
+                                  <Copy className="w-3 h-3 text-neutral-400 hover:text-neutral-700" />
+                                </button>
+                              </div>
+                              <div className="flex items-center gap-1.5 mt-0.5">
+                                <span className="text-[10px] text-neutral-400 font-mono">
+                                  {visitor.visitor_id ? visitor.visitor_id.slice(0, 10) + "..." : "anon"}
+                                </span>
+                                {visitor.pageviews_count > 1 && (
+                                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-neutral-200/70 text-neutral-700">
+                                    {visitor.pageviews_count} views
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+
+                            {/* Location */}
+                            <td className="py-3.5 px-4 whitespace-nowrap">
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-base">{flag}</span>
+                                <div>
+                                  <div className="text-neutral-900 font-medium">
+                                    {visitor.city || "Unknown City"}
+                                  </div>
+                                  <div className="text-[10px] text-neutral-400">
+                                    {visitor.country} {visitor.region ? `(${visitor.region})` : ""}
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+
+                            {/* Device & System */}
+                            <td className="py-3.5 px-4 whitespace-nowrap">
+                              <div className="flex items-center gap-2">
+                                {visitor.device === "Mobile" ? (
+                                  <Smartphone className="w-3.5 h-3.5 text-neutral-400" />
+                                ) : visitor.device === "Tablet" ? (
+                                  <Tablet className="w-3.5 h-3.5 text-neutral-400" />
+                                ) : (
+                                  <Monitor className="w-3.5 h-3.5 text-neutral-400" />
+                                )}
+                                <div>
+                                  <div className="text-neutral-900">
+                                    {visitor.os} {visitor.os_version ? `v${visitor.os_version}` : ""}
+                                  </div>
+                                  <div className="text-[10px] text-neutral-400">
+                                    {visitor.browser} {visitor.browser_version} · {visitor.screen_resolution}
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+
+                            {/* Marketing & Attribution */}
+                            <td className="py-3.5 px-4 whitespace-nowrap">
+                              <span
+                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium border ${
+                                  visitor.marketing?.gclid || visitor.marketing?.ad_source
+                                    ? "bg-amber-50 text-amber-800 border-amber-200"
+                                    : visitor.marketing?.utm_campaign
+                                    ? "bg-blue-50 text-blue-800 border-blue-200"
+                                    : "bg-neutral-100 text-neutral-700 border-neutral-200"
+                                }`}
+                              >
+                                <Tag className="w-2.5 h-2.5" />
+                                {marketingTag.length > 24 ? marketingTag.slice(0, 24) + "..." : marketingTag}
+                              </span>
+                            </td>
+
+                            {/* Page & Scroll */}
+                            <td className="py-3.5 px-4 whitespace-nowrap">
+                              <div className="text-neutral-900 font-medium">
+                                {visitor.current_path}
+                              </div>
+                              <div className="flex items-center gap-2 mt-1">
+                                <div className="w-16 bg-neutral-200 rounded-full h-1 overflow-hidden">
+                                  <div
+                                    className="bg-neutral-900 h-1 rounded-full"
+                                    style={{ width: `${Math.max(5, visitor.scroll_depth_max)}%` }}
+                                  />
+                                </div>
+                                <span className="text-[10px] text-neutral-400">
+                                  {visitor.scroll_depth_max}% · {visitor.duration_seconds}s
+                                </span>
+                              </div>
+                            </td>
+
+                            {/* Dossier action */}
+                            <td className="py-3.5 px-4 whitespace-nowrap text-right">
+                              <button
+                                type="button"
+                                onClick={() => setSelectedVisitor(visitor)}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-neutral-300 hover:border-neutral-950 text-neutral-900 text-xs font-mono transition-colors shadow-2xs"
+                              >
+                                <Eye className="w-3 h-3 text-neutral-500" />
+                                <span>Inspect</span>
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* FORENSIC INSPECTOR MODAL */}
+          {selectedVisitor && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+              <div className="bg-white rounded-3xl border border-neutral-200 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 space-y-6">
+                {/* Modal Header */}
+                <div className="flex items-start justify-between pb-6 border-b border-neutral-200 gap-4">
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl">{getCountryFlag(selectedVisitor.country_code)}</span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-xl font-medium tracking-tight text-neutral-950">
+                          {selectedVisitor.city}, {selectedVisitor.country}
+                        </h3>
+                        {selectedVisitor.is_online ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-mono font-medium border border-emerald-500/20">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            Live Online
+                          </span>
+                        ) : (
+                          <span className="text-xs font-mono text-neutral-400">
+                            Last seen {formatRelativeTime(selectedVisitor.last_active)}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs font-mono text-neutral-600 font-semibold">
+                          IP: {selectedVisitor.ip}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(selectedVisitor.ip, "Visitor IP")}
+                          className="text-neutral-400 hover:text-neutral-800 transition-colors"
+                          title="Copy IP"
+                        >
+                          <Copy className="w-3 h-3" />
+                        </button>
+                        <span className="text-neutral-300">·</span>
+                        <span className="text-xs font-mono text-neutral-500">
+                          Region: {selectedVisitor.region || "N/A"}
+                        </span>
+                        <span className="text-neutral-300">·</span>
+                        <span className="text-xs font-mono text-neutral-500">
+                          TZ: {selectedVisitor.timezone || "Europe/Zurich"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedVisitor(null)}
+                    className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-600 transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* 4 Forensic Analytical Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {/* Card 1: Identity & Persistence Cookies */}
+                  <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-5 space-y-3">
+                    <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-neutral-400 font-semibold border-b border-neutral-200 pb-2">
+                      <UserCheck className="w-4 h-4 text-red-600" />
+                      <span>Digital Identity & Cookies</span>
+                    </div>
+
+                    <div className="space-y-2 text-xs font-mono">
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Visitor Cookie ID (`_sw_vid`):</span>
+                        <span className="text-neutral-900 font-semibold break-all text-right max-w-[200px]">
+                          {selectedVisitor.visitor_id}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Session Cookie ID (`_sw_sid`):</span>
+                        <span className="text-neutral-900 font-semibold break-all text-right max-w-[200px]">
+                          {selectedVisitor.session_id}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">First Interaction:</span>
+                        <span className="text-neutral-900">{formatDate(selectedVisitor.timestamp)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Latest Pulse:</span>
+                        <span className="text-neutral-900">{formatDate(selectedVisitor.last_active)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Pages In Session:</span>
+                        <span className="text-neutral-900 font-semibold">{selectedVisitor.pageviews_count} views</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card 2: Hardware Footprint & Specs */}
+                  <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-5 space-y-3">
+                    <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-neutral-400 font-semibold border-b border-neutral-200 pb-2">
+                      <Cpu className="w-4 h-4 text-neutral-700" />
+                      <span>Device & Hardware Footprint</span>
+                    </div>
+
+                    <div className="space-y-2 text-xs font-mono">
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Device Category:</span>
+                        <span className="text-neutral-900 font-semibold">{selectedVisitor.device}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Operating System:</span>
+                        <span className="text-neutral-900 font-semibold">
+                          {selectedVisitor.os} {selectedVisitor.os_version ? `(${selectedVisitor.os_version})` : ""}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Web Browser:</span>
+                        <span className="text-neutral-900 font-semibold">
+                          {selectedVisitor.browser} {selectedVisitor.browser_version}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Screen Resolution:</span>
+                        <span className="text-neutral-900">{selectedVisitor.screen_resolution}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Viewport Window:</span>
+                        <span className="text-neutral-900">{selectedVisitor.viewport_size || "N/A"}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">CPU Threads / RAM:</span>
+                        <span className="text-neutral-900">
+                          {selectedVisitor.cpu_cores ? `${selectedVisitor.cpu_cores} Cores` : "Undetected"} ·{" "}
+                          {selectedVisitor.ram_gb ? `${selectedVisitor.ram_gb} GB RAM` : "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Network / Connection:</span>
+                        <span className="text-neutral-900 uppercase">
+                          {selectedVisitor.connection_type || "Wi-Fi / Ethernet"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Language:</span>
+                        <span className="text-neutral-900 uppercase">{selectedVisitor.language || "en"}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card 3: Marketing Attribution & Advertising Tagging */}
+                  <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-5 space-y-3">
+                    <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-neutral-400 font-semibold border-b border-neutral-200 pb-2">
+                      <Tag className="w-4 h-4 text-blue-600" />
+                      <span>Marketing Attribution & Cookies</span>
+                    </div>
+
+                    <div className="space-y-2 text-xs font-mono">
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">UTM Campaign:</span>
+                        <span className="text-neutral-900 font-semibold">
+                          {selectedVisitor.marketing?.utm_campaign || "None (Direct / Organic)"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">UTM Source:</span>
+                        <span className="text-neutral-900">
+                          {selectedVisitor.marketing?.utm_source || "direct"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">UTM Medium:</span>
+                        <span className="text-neutral-900">
+                          {selectedVisitor.marketing?.utm_medium || "organic"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">UTM Term / Keywords:</span>
+                        <span className="text-neutral-900">
+                          {selectedVisitor.marketing?.utm_term || "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Google Click ID (`gclid`):</span>
+                        <span className="text-neutral-900 break-all text-right max-w-[200px]">
+                          {selectedVisitor.marketing?.gclid || "None"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Meta Click ID (`fbclid`):</span>
+                        <span className="text-neutral-900 break-all text-right max-w-[200px]">
+                          {selectedVisitor.marketing?.fbclid || "None"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Traffic Referrer:</span>
+                        <span className="text-neutral-900 truncate max-w-[200px]" title={selectedVisitor.referrer}>
+                          {selectedVisitor.referrer}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card 4: Session Navigation & Behavior Journey */}
+                  <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-5 space-y-3">
+                    <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-neutral-400 font-semibold border-b border-neutral-200 pb-2">
+                      <Compass className="w-4 h-4 text-emerald-600" />
+                      <span>Session Engagement & Route Journey</span>
+                    </div>
+
+                    <div className="space-y-2 text-xs font-mono">
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Landing Page:</span>
+                        <span className="text-neutral-900 font-semibold">{selectedVisitor.landing_path}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Current / Exit Route:</span>
+                        <span className="text-neutral-900 font-semibold">{selectedVisitor.current_path}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Max Scroll Depth:</span>
+                        <span className="text-neutral-900 font-semibold">{selectedVisitor.scroll_depth_max}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-500">Active Reading Time:</span>
+                        <span className="text-neutral-900">{selectedVisitor.duration_seconds} seconds</span>
+                      </div>
+
+                      <div className="pt-2 border-t border-neutral-200">
+                        <span className="text-neutral-500 block mb-1.5">Visited Routes Trail:</span>
+                        <div className="flex flex-wrap gap-1">
+                          {selectedVisitor.pages_viewed.map((pg, i) => (
+                            <span
+                              key={i}
+                              className="px-2 py-0.5 rounded bg-white border border-neutral-200 text-neutral-900 text-[11px]"
+                            >
+                              {pg}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Raw User Agent Footprint */}
+                {selectedVisitor.user_agent && (
+                  <div className="bg-neutral-900 text-neutral-200 rounded-2xl p-4 font-mono text-xs">
+                    <div className="flex items-center justify-between text-neutral-400 mb-2">
+                      <span className="flex items-center gap-1.5">
+                        <Terminal className="w-3.5 h-3.5 text-neutral-400" />
+                        Raw User-Agent Header
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(selectedVisitor.user_agent || "", "User Agent")}
+                        className="hover:text-white transition-colors flex items-center gap-1"
+                      >
+                        <Copy className="w-3 h-3" />
+                        <span>Copy UA</span>
+                      </button>
+                    </div>
+                    <p className="break-all text-[11px] text-neutral-300 bg-neutral-950 p-2.5 rounded-lg border border-neutral-800">
+                      {selectedVisitor.user_agent}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* MACRO BREAKDOWN GRIDS */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Top Visited Pages */}
             <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6">
@@ -656,13 +1366,13 @@ export default function AdminDashboardView({
                 Top Visited Studio Pages
               </h4>
               <div className="space-y-3">
-                {analytics.topPages.length === 0 ? (
+                {analyticsData.topPages.length === 0 ? (
                   <div className="text-xs font-mono text-neutral-400 py-6 text-center">
                     No visit data recorded yet.
                   </div>
                 ) : (
-                  analytics.topPages.map((page) => {
-                    const percent = Math.round((page.count / Math.max(1, analytics.totalPageviews)) * 100);
+                  analyticsData.topPages.map((page) => {
+                    const percent = Math.round((page.count / Math.max(1, analyticsData.totalPageviews)) * 100);
                     return (
                       <div key={page.path} className="space-y-1">
                         <div className="flex justify-between text-xs font-mono">
@@ -690,13 +1400,13 @@ export default function AdminDashboardView({
                 Traffic Referral Channels
               </h4>
               <div className="space-y-3">
-                {analytics.referrers.length === 0 ? (
+                {analyticsData.referrers.length === 0 ? (
                   <div className="text-xs font-mono text-neutral-400 py-6 text-center">
                     No referrers recorded yet.
                   </div>
                 ) : (
-                  analytics.referrers.map((ref) => {
-                    const percent = Math.round((ref.count / Math.max(1, analytics.totalPageviews)) * 100);
+                  analyticsData.referrers.map((ref) => {
+                    const percent = Math.round((ref.count / Math.max(1, analyticsData.totalPageviews)) * 100);
                     return (
                       <div key={ref.source} className="space-y-1">
                         <div className="flex justify-between text-xs font-mono">
@@ -718,18 +1428,47 @@ export default function AdminDashboardView({
               </div>
             </div>
 
-            {/* Geographic Distribution */}
+            {/* Top Cities */}
             <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6">
-              <h4 className="text-xs font-mono uppercase tracking-wider text-neutral-400 mb-4">
-                Regional Distribution
+              <h4 className="text-xs font-mono uppercase tracking-wider text-neutral-400 mb-4 flex items-center justify-between">
+                <span>Top Visitor Cities</span>
+                <MapPin className="w-3.5 h-3.5 text-neutral-400" />
               </h4>
-              <div className="space-y-3">
-                {analytics.countries.length === 0 ? (
+              <div className="space-y-2.5">
+                {(!analyticsData.cities || analyticsData.cities.length === 0) ? (
+                  <div className="text-xs font-mono text-neutral-400 py-6 text-center">
+                    No city data available yet.
+                  </div>
+                ) : (
+                  analyticsData.cities.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between text-xs font-mono py-1 border-b border-neutral-100 last:border-0"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-neutral-900 font-medium">{item.city}</span>
+                        <span className="text-neutral-400 text-[11px]">({item.country})</span>
+                      </div>
+                      <span className="text-neutral-700 font-semibold">{item.count} sessions</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Top Countries */}
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6">
+              <h4 className="text-xs font-mono uppercase tracking-wider text-neutral-400 mb-4 flex items-center justify-between">
+                <span>Regional Distribution</span>
+                <Globe className="w-3.5 h-3.5 text-neutral-400" />
+              </h4>
+              <div className="space-y-2.5">
+                {analyticsData.countries.length === 0 ? (
                   <div className="text-xs font-mono text-neutral-400 py-6 text-center">
                     No regional data available yet.
                   </div>
                 ) : (
-                  analytics.countries.map((c) => (
+                  analyticsData.countries.map((c) => (
                     <div
                       key={c.country}
                       className="flex items-center justify-between text-xs font-mono py-1 border-b border-neutral-100 last:border-0"
@@ -742,24 +1481,101 @@ export default function AdminDashboardView({
               </div>
             </div>
 
-            {/* Interactive CTA Clicks */}
+            {/* Operating Systems & Browsers */}
             <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6">
               <h4 className="text-xs font-mono uppercase tracking-wider text-neutral-400 mb-4">
-                Interaction & Engagement Triggers
+                Operating Systems & Platforms
               </h4>
-              <div className="space-y-3">
-                {analytics.ctaClicks.length === 0 ? (
-                  <div className="text-xs font-mono text-neutral-400 py-6 text-center">
-                    No button interaction events captured yet.
+              <div className="space-y-2">
+                {(!analyticsData.operatingSystems || analyticsData.operatingSystems.length === 0) ? (
+                  <div className="text-xs font-mono text-neutral-400 py-4 text-center">
+                    No OS data recorded yet.
                   </div>
                 ) : (
-                  analytics.ctaClicks.map((cta) => (
+                  analyticsData.operatingSystems.map((os) => (
                     <div
-                      key={cta.cta_id}
+                      key={os.os}
                       className="flex items-center justify-between text-xs font-mono py-1 border-b border-neutral-100 last:border-0"
                     >
-                      <span className="text-neutral-900">{cta.cta_id}</span>
-                      <span className="text-neutral-600 font-semibold">{cta.count} clicks</span>
+                      <span className="text-neutral-900">{os.os}</span>
+                      <span className="text-neutral-600 font-semibold">{os.count} sessions</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Browsers */}
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6">
+              <h4 className="text-xs font-mono uppercase tracking-wider text-neutral-400 mb-4">
+                Browser Distribution
+              </h4>
+              <div className="space-y-2">
+                {(!analyticsData.browsers || analyticsData.browsers.length === 0) ? (
+                  <div className="text-xs font-mono text-neutral-400 py-4 text-center">
+                    No browser data recorded yet.
+                  </div>
+                ) : (
+                  analyticsData.browsers.map((b) => (
+                    <div
+                      key={b.browser}
+                      className="flex items-center justify-between text-xs font-mono py-1 border-b border-neutral-100 last:border-0"
+                    >
+                      <span className="text-neutral-900">{b.browser}</span>
+                      <span className="text-neutral-600 font-semibold">{b.count} sessions</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Marketing Campaigns Breakdown */}
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6">
+              <h4 className="text-xs font-mono uppercase tracking-wider text-neutral-400 mb-4">
+                Marketing UTM Campaigns
+              </h4>
+              <div className="space-y-2">
+                {(!analyticsData.marketingCampaigns || analyticsData.marketingCampaigns.length === 0) ? (
+                  <div className="text-xs font-mono text-neutral-400 py-4 text-center">
+                    No active campaign parameters captured yet.
+                  </div>
+                ) : (
+                  analyticsData.marketingCampaigns.map((camp, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between text-xs font-mono py-1 border-b border-neutral-100 last:border-0"
+                    >
+                      <div>
+                        <div className="text-neutral-900 font-medium">{camp.campaign}</div>
+                        <div className="text-[10px] text-neutral-400">
+                          {camp.source} / {camp.medium}
+                        </div>
+                      </div>
+                      <span className="text-neutral-700 font-semibold">{camp.visitors} visitors</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Advertising Click Identifiers */}
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6">
+              <h4 className="text-xs font-mono uppercase tracking-wider text-neutral-400 mb-4">
+                Paid Ads Attribution (Click IDs)
+              </h4>
+              <div className="space-y-2">
+                {(!analyticsData.adClickSummary || analyticsData.adClickSummary.length === 0) ? (
+                  <div className="text-xs font-mono text-neutral-400 py-4 text-center">
+                    No ad click IDs (`gclid`, `fbclid`, etc.) logged yet.
+                  </div>
+                ) : (
+                  analyticsData.adClickSummary.map((ad) => (
+                    <div
+                      key={ad.provider}
+                      className="flex items-center justify-between text-xs font-mono py-1 border-b border-neutral-100 last:border-0"
+                    >
+                      <span className="text-neutral-900 font-medium">{ad.provider}</span>
+                      <span className="text-neutral-600 font-semibold">{ad.count} clicks</span>
                     </div>
                   ))
                 )}
