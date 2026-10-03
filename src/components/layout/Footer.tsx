@@ -100,15 +100,23 @@ export default function Footer() {
             </Link>
           </div>
 
-          {/* Capabilities */}
+          {/* Capabilities & SEO Landing Pages */}
           <div className="lg:col-span-3 flex flex-col gap-3">
             <div className="text-xs font-mono uppercase tracking-wider text-neutral-500 mb-1">
-              {isDe ? "Kompetenzen" : "Capabilities"}
+              {isDe ? "Schwerpunkte" : "Focus Areas"}
             </div>
-            <span className="text-neutral-600">Digital Product Engineering</span>
-            <span className="text-neutral-600">Enterprise AI & Private LLMs</span>
-            <span className="text-neutral-600">Swiss Cloud Infrastructure</span>
-            <span className="text-neutral-600">Design Systems & FinTech UI</span>
+            <Link href="/software-agentur-zuerich" className="text-neutral-700 hover:text-neutral-950 hover:underline transition-colors">
+              Software Agentur Zürich
+            </Link>
+            <Link href="/webagentur-zuerich" className="text-neutral-700 hover:text-neutral-950 hover:underline transition-colors">
+              Webagentur Zürich
+            </Link>
+            <Link href="/enterprise-ai-schweiz" className="text-neutral-700 hover:text-neutral-950 hover:underline transition-colors">
+              Enterprise AI Schweiz
+            </Link>
+            <Link href="/services" className="text-neutral-700 hover:text-neutral-950 hover:underline transition-colors">
+              Next.js & Cloud Stack
+            </Link>
           </div>
 
           {/* Swiss Studio Locations */}
@@ -155,6 +163,9 @@ export default function Footer() {
             <Link href="/imprint" className="hover:text-neutral-900 hover:underline transition-colors">
               Impressum
             </Link>
+            <a href="/feed.xml" target="_blank" className="hover:text-neutral-900 hover:underline transition-colors">
+              RSS Feed
+            </a>
             <Link href="/admin/login" className="text-neutral-400 hover:text-neutral-600 transition-colors">
               Staff Portal
             </Link>
