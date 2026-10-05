@@ -68,7 +68,6 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.honeypot) return;
 
     setLoading(true);
     setError(null);
@@ -86,8 +85,26 @@ export default function ContactPage() {
         throw new Error(data.error || "Failed to submit project inquiry.");
       }
 
+      // Immediately cache submission into client vault for admin durability
+      if (data.submission) {
+        try {
+          const VAULT_KEY = "_sw_admin_vault_submissions_v1";
+          const stored = localStorage.getItem(VAULT_KEY);
+          const existing = stored ? JSON.parse(stored) : [];
+          const updated = [
+            data.submission,
+            ...existing.filter((s: any) => s.id !== data.submission.id),
+          ];
+          localStorage.setItem(VAULT_KEY, JSON.stringify(updated.slice(0, 200)));
+          window.dispatchEvent(new Event("storage"));
+        } catch {}
+      }
+
       setSubmitted(true);
-      trackClientEvent("form_submit_success", { project_type: formData.project_type });
+      trackClientEvent("form_submit_success", { 
+        project_type: formData.project_type,
+        company: formData.company,
+      });
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "An unexpected error occurred.";
       setError(message);
@@ -197,15 +214,16 @@ export default function ContactPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="bg-neutral-50 border border-neutral-200 rounded-3xl p-6 sm:p-8 flex flex-col gap-5">
-                <input
-                  type="text"
-                  name="honeypot"
-                  value={formData.honeypot}
-                  onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
-                  className="hidden"
-                  tabIndex={-1}
-                  autoComplete="off"
-                />
+                <div style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0, overflow: "hidden", pointerEvents: "none" }} aria-hidden="true">
+                  <input
+                    type="text"
+                    name="hp_validation_studio"
+                    value={formData.honeypot}
+                    onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>

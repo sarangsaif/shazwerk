@@ -122,6 +122,38 @@ export async function getSubmissions(): Promise<ContactSubmission[]> {
   return readSubmissions();
 }
 
+export async function rehydrateSubmissions(rehydrateItems: ContactSubmission[]): Promise<ContactSubmission[]> {
+  if (!rehydrateItems || !Array.isArray(rehydrateItems) || rehydrateItems.length === 0) {
+    return readSubmissions();
+  }
+  const existing = readSubmissions();
+  const existingMap = new Map<string, ContactSubmission>();
+
+  for (const s of existing) {
+    if (s && s.id) existingMap.set(s.id, s);
+  }
+
+  let addedOrUpdated = false;
+  for (const item of rehydrateItems) {
+    if (item && item.id) {
+      if (!existingMap.has(item.id)) {
+        existingMap.set(item.id, item);
+        addedOrUpdated = true;
+      }
+    }
+  }
+
+  const merged = Array.from(existingMap.values()).sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
+
+  if (addedOrUpdated) {
+    writeSubmissions(merged);
+  }
+
+  return merged;
+}
+
 export async function updateSubmissionStatus(
   id: string,
   status: SubmissionStatus

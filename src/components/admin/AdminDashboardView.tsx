@@ -116,6 +116,34 @@ function mergeVisitorRecords(
   );
 }
 
+const VAULT_SUBMISSIONS_KEY = "_sw_admin_vault_submissions_v1";
+
+function mergeSubmissions(
+  serverList: ContactSubmission[] = [],
+  cachedList: ContactSubmission[] = []
+): ContactSubmission[] {
+  const map = new Map<string, ContactSubmission>();
+
+  for (const item of cachedList) {
+    if (item && item.id) map.set(item.id, item);
+  }
+
+  for (const item of serverList) {
+    if (item && item.id) {
+      const existing = map.get(item.id);
+      if (!existing) {
+        map.set(item.id, item);
+      } else {
+        map.set(item.id, { ...existing, ...item });
+      }
+    }
+  }
+
+  return Array.from(map.values()).sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
+}
+
 interface Props {
   initialSubmissions: ContactSubmission[];
   analytics: AnalyticsSummary;
@@ -129,6 +157,7 @@ export default function AdminDashboardView({
 }: Props) {
   const router = useRouter();
   const [submissions, setSubmissions] = useState<ContactSubmission[]>(initialSubmissions);
+  const [isRefreshingSubmissions, setIsRefreshingSubmissions] = useState(false);
   const [emailSettings, setEmailSettings] = useState<EmailSettings>(initialEmailSettings);
   const [analyticsData, setAnalyticsData] = useState<AnalyticsSummary>(analytics);
   const [isRefreshingAnalytics, setIsRefreshingAnalytics] = useState(false);
@@ -205,35 +234,79 @@ export default function AdminDashboardView({
     return updatedSummary;
   };
 
-  // On mount: hydrate from Local Vault immediately so logs NEVER start empty or reset
+  // Submissions vault sync: preserves queries across serverless resets
+  const syncSubmissionsWithVault = (serverSubs: ContactSubmission[] = []) => {
+    let cached: ContactSubmission[] = [];
+    try {
+      const stored = localStorage.getItem(VAULT_SUBMISSIONS_KEY);
+      if (stored) cached = JSON.parse(stored);
+    } catch {}
+
+    const merged = mergeSubmissions(serverSubs, cached);
+
+    try {
+      localStorage.setItem(VAULT_SUBMISSIONS_KEY, JSON.stringify(merged.slice(0, 500)));
+    } catch {}
+
+    setSubmissions(merged);
+    setSelectedSubmission((prev) => {
+      if (prev && merged.some((m) => m.id === prev.id)) {
+        return merged.find((m) => m.id === prev.id) || prev;
+      }
+      return merged[0] || null;
+    });
+
+    // If server has fewer submissions (serverless cold restart), re-seed server!
+    if (serverSubs.length < merged.length) {
+      fetch("/api/admin/submissions", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rehydrateSubmissions: merged.slice(0, 50) }),
+      }).catch(() => {});
+    }
+
+    return merged;
+  };
+
+  // On mount: hydrate from Local Vaults immediately so neither logs NOR submissions ever reset
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(VAULT_VISITORS_KEY);
-      if (stored) {
-        const cached: VisitorSessionRecord[] = JSON.parse(stored);
-        if (Array.isArray(cached) && cached.length > 0) {
+      const storedVis = localStorage.getItem(VAULT_VISITORS_KEY);
+      if (storedVis) {
+        const cachedVis: VisitorSessionRecord[] = JSON.parse(storedVis);
+        if (Array.isArray(cachedVis) && cachedVis.length > 0) {
           syncWithVault(analytics);
+        }
+      }
+    } catch {}
+
+    try {
+      const storedSubs = localStorage.getItem(VAULT_SUBMISSIONS_KEY);
+      if (storedSubs) {
+        const cachedSubs: ContactSubmission[] = JSON.parse(storedSubs);
+        if (Array.isArray(cachedSubs) && cachedSubs.length > 0) {
+          syncSubmissionsWithVault(initialSubmissions);
         }
       }
     } catch {}
   }, []);
 
-  // Auto-refresh telemetry stream every 8 seconds when on analytics tab
-  useEffect(() => {
-    if (activeTab !== "analytics" || !liveAutoRefresh) return;
-    const interval = setInterval(() => {
-      fetch("/api/admin/analytics")
-        .then((res) => (res.ok ? res.json() : null))
-        .then((data) => {
-          if (data?.analytics) {
-            syncWithVault(data.analytics);
-          }
-        })
-        .catch(() => {});
-    }, 8000);
-
-    return () => clearInterval(interval);
-  }, [activeTab, liveAutoRefresh]);
+  const refreshSubmissions = async () => {
+    setIsRefreshingSubmissions(true);
+    try {
+      const res = await fetch("/api/admin/submissions");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.submissions) {
+          syncSubmissionsWithVault(data.submissions);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to refresh submissions:", err);
+    } finally {
+      setIsRefreshingSubmissions(false);
+    }
+  };
 
   const refreshAnalytics = async () => {
     setIsRefreshingAnalytics(true);
@@ -258,12 +331,60 @@ export default function AdminDashboardView({
     }
   };
 
+  // Auto-refresh queries and telemetry streams every 6 seconds + instant refresh on focus / storage event
+  useEffect(() => {
+    const handleStorageOrFocus = () => {
+      refreshSubmissions();
+      refreshAnalytics();
+    };
+
+    window.addEventListener("focus", handleStorageOrFocus);
+    window.addEventListener("storage", handleStorageOrFocus);
+
+    if (!liveAutoRefresh) {
+      return () => {
+        window.removeEventListener("focus", handleStorageOrFocus);
+        window.removeEventListener("storage", handleStorageOrFocus);
+      };
+    }
+
+    const interval = setInterval(() => {
+      if (activeTab === "queries") {
+        fetch("/api/admin/submissions")
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (data?.submissions) {
+              syncSubmissionsWithVault(data.submissions);
+            }
+          })
+          .catch(() => {});
+      } else if (activeTab === "analytics") {
+        fetch("/api/admin/analytics")
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (data?.analytics) {
+              syncWithVault(data.analytics);
+            }
+          })
+          .catch(() => {});
+      }
+    }, 6000);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", handleStorageOrFocus);
+      window.removeEventListener("storage", handleStorageOrFocus);
+    };
+  }, [activeTab, liveAutoRefresh]);
+
   const handleClearVault = () => {
-    if (confirm("Reset local visitor vault and re-sync with server?")) {
+    if (confirm("Reset local visitor & submissions vault and re-sync with server?")) {
       try {
         localStorage.removeItem(VAULT_VISITORS_KEY);
+        localStorage.removeItem(VAULT_SUBMISSIONS_KEY);
       } catch {}
       refreshAnalytics();
+      refreshSubmissions();
     }
   };
 
@@ -278,9 +399,13 @@ export default function AdminDashboardView({
       });
 
       if (res.ok) {
-        setSubmissions((prev) =>
-          prev.map((s) => (s.id === id ? { ...s, status: newStatus } : s))
-        );
+        setSubmissions((prev) => {
+          const next = prev.map((s) => (s.id === id ? { ...s, status: newStatus } : s));
+          try {
+            localStorage.setItem(VAULT_SUBMISSIONS_KEY, JSON.stringify(next.slice(0, 500)));
+          } catch {}
+          return next;
+        });
         if (selectedSubmission?.id === id) {
           setSelectedSubmission((prev) => (prev ? { ...prev, status: newStatus } : null));
         }
@@ -302,10 +427,18 @@ export default function AdminDashboardView({
       });
 
       if (res.ok) {
-        const next = submissions.filter((s) => s.id !== id);
-        setSubmissions(next);
+        setSubmissions((prev) => {
+          const next = prev.filter((s) => s.id !== id);
+          try {
+            localStorage.setItem(VAULT_SUBMISSIONS_KEY, JSON.stringify(next.slice(0, 500)));
+          } catch {}
+          return next;
+        });
         if (selectedSubmission?.id === id) {
-          setSelectedSubmission(next[0] || null);
+          setSelectedSubmission((prev) => {
+            const remaining = submissions.filter((s) => s.id !== id);
+            return remaining[0] || null;
+          });
         }
       }
     } catch (err) {
@@ -580,6 +713,17 @@ export default function AdminDashboardView({
                 />
                 <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-2.5 top-2.5" />
               </div>
+
+              <button
+                type="button"
+                onClick={refreshSubmissions}
+                disabled={isRefreshingSubmissions}
+                title="Refresh project queries from server & vault"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-mono transition-colors shrink-0"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isRefreshingSubmissions ? "animate-spin text-red-600" : ""}`} />
+                <span className="hidden md:inline">Refresh</span>
+              </button>
 
               <button
                 type="button"
@@ -1253,6 +1397,42 @@ export default function AdminDashboardView({
                     <X className="w-5 h-5" />
                   </button>
                 </div>
+
+                {/* Submitted Project Brief Banner if this visitor submitted a form */}
+                {(() => {
+                  const visitorSubmission = submissions.find(
+                    (s) =>
+                      (s as any).visitor_id === selectedVisitor.visitor_id ||
+                      (s as any).session_id === selectedVisitor.session_id ||
+                      (s as any).ip === selectedVisitor.ip
+                  );
+                  if (!visitorSubmission) return null;
+                  return (
+                    <div className="bg-red-50/70 border border-red-200 rounded-2xl p-5 space-y-3">
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="font-bold text-red-700 flex items-center gap-1.5">
+                          <Mail className="w-4 h-4 text-red-600" />
+                          Submitted Project Inquiry Brief
+                        </span>
+                        <span className="text-neutral-500">{formatDate(visitorSubmission.created_at)}</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
+                        <div>
+                          <span className="text-neutral-400 block text-[10px]">CLIENT & COMPANY</span>
+                          <span className="font-semibold text-neutral-900">{visitorSubmission.name} · {visitorSubmission.company}</span>
+                        </div>
+                        <div>
+                          <span className="text-neutral-400 block text-[10px]">EMAIL & PHONE</span>
+                          <a href={`mailto:${visitorSubmission.email}`} className="text-red-600 underline font-semibold block">{visitorSubmission.email}</a>
+                          {visitorSubmission.phone && <span className="text-neutral-600 block">{visitorSubmission.phone}</span>}
+                        </div>
+                      </div>
+                      <div className="bg-white p-3.5 rounded-xl border border-red-200 text-xs text-neutral-800 whitespace-pre-wrap leading-relaxed font-sans">
+                        {visitorSubmission.message}
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* 4 Forensic Analytical Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
