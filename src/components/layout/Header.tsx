@@ -7,8 +7,9 @@ import { trackClientEvent } from "@/lib/analytics-client";
 import { useLanguage } from "@/context/LanguageContext";
 import { getLenis } from "@/components/motion/SmoothScroll";
 import ZurichClock from "@/components/ui/ZurichClock";
+import AmbientSound from "@/components/sound/AmbientSound";
 import { LANDING_PAGES } from "@/lib/landing";
-import { SITE } from "@/lib/content";
+import { useContent } from "@/components/cms/ContentProvider";
 
 const NAV = [
   { de: "Arbeiten", en: "Work", href: "/work" },
@@ -21,6 +22,7 @@ export default function Header() {
   const pathname = usePathname();
   const { language, setLanguage } = useLanguage();
   const isDe = language === "de";
+  const { settings } = useContent();
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
 
@@ -83,17 +85,17 @@ export default function Header() {
             <span className="inline-block h-2 w-2 bg-white" aria-hidden="true" />
           </Link>
 
-          <div className="eyebrow hidden items-center gap-3 lg:col-span-3 lg:flex">
+          <div className="eyebrow hidden items-center gap-3 xl:col-span-3 xl:flex">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-60" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
             </span>
             <span>
-              Zürich <ZurichClock />
+              {settings.city} <ZurichClock />
             </span>
           </div>
 
-          <nav aria-label={isDe ? "Hauptnavigation" : "Main navigation"} className="hidden lg:col-span-4 lg:block">
+          <nav aria-label={isDe ? "Hauptnavigation" : "Main navigation"} className="hidden lg:col-span-6 lg:block xl:col-span-4">
             <ul className="flex items-center gap-7 text-sm">
               {NAV.map((item) => (
                 <li key={item.href}>
@@ -113,7 +115,8 @@ export default function Header() {
             </ul>
           </nav>
 
-          <div className="col-span-1 flex items-center justify-end gap-5 lg:col-span-2">
+          <div className="col-span-1 flex items-center justify-end gap-4 sm:gap-5 lg:col-span-3 xl:col-span-2">
+            {settings.soundEnabled && <AmbientSound />}
             <div className="eyebrow flex items-center gap-1" role="group" aria-label="Sprache / Language">
               <button
                 type="button"
@@ -184,7 +187,7 @@ export default function Header() {
                     <span className="transition-transform duration-500 ease-out-expo group-hover:translate-x-4 group-hover:text-swiss-red">
                       {isDe ? item.de : item.en}
                     </span>
-                    <span className="eyebrow text-paper/50">0{i + 1}</span>
+                    <span className="eyebrow text-paper/60">0{i + 1}</span>
                   </Link>
                 </li>
               ))}
@@ -193,7 +196,7 @@ export default function Header() {
 
           <div className="grid gap-8 pt-10 text-sm text-paper/70 md:grid-cols-3">
             <div>
-              <p className="eyebrow mb-3 text-paper/40">{isDe ? "Schwerpunkte" : "Focus"}</p>
+              <p className="eyebrow mb-3 text-paper/60">{isDe ? "Schwerpunkte" : "Focus"}</p>
               <ul className="space-y-1">
                 {LANDING_PAGES.map((p) => (
                   <li key={p.slug}>
@@ -205,17 +208,20 @@ export default function Header() {
               </ul>
             </div>
             <div>
-              <p className="eyebrow mb-3 text-paper/40">Studio</p>
+              <p className="eyebrow mb-3 text-paper/60">Studio</p>
               <p>
-                {SITE.street}
+                {settings.street}
                 <br />
-                {SITE.zip} {SITE.city}
+                {settings.zip} {settings.city}
               </p>
             </div>
             <div className="md:text-right">
-              <p className="eyebrow mb-3 text-paper/40">{isDe ? "Neues Projekt" : "New project"}</p>
-              <a href={`mailto:${SITE.email}`} className="link-line font-display text-2xl text-paper">
-                {SITE.email}
+              <p className="eyebrow mb-3 text-paper/60">{isDe ? "Neues Projekt" : "New project"}</p>
+              <a href={`mailto:${settings.email}`} className="link-line font-display text-2xl text-paper">
+                {settings.email}
+              </a>
+              <a href={`tel:${settings.phone.replace(/[^+\d]/g, "")}`} className="link-line mt-2 block text-paper/70">
+                {settings.phone}
               </a>
             </div>
           </div>

@@ -3,7 +3,7 @@
 Official web platform for **SHAZWERK** (`https://shazwerk.ch`).
 
 > **Positioning:** Digital products, software and AI — engineered for real business.  
-> **Market:** Switzerland / DACH (Zurich · Basel · Geneva)  
+> **Market:** Switzerland / DACH (Winterthur · Zürich)  
 > **Design Philosophy:** Swiss modernist industrial design, architectural grid layouts, high information density, and zero fluff.
 
 ---
@@ -46,20 +46,30 @@ Bilingual inline copy uses `<T de="…" en="…" />`.
 - `sitemap.xml` generated from content, `robots.txt`, RSS feed, `/logo.png` brand mark, web manifest
 - Static prerendering for all public pages, no layout-shifting fonts (`next/font`), no image requests in hero
 
-## Environment Variables
+## Admin portal & CMS (`/admin`)
 
-Configure these in your environment or Vercel dashboard:
+- **Übersicht** – live visitors, visitors, pageviews, inquiries, time on site, scroll depth, bounce rate, daily chart, top pages, referrers, countries, cities, devices, UTM campaigns
+- **Besucher & Wege** – every session with location, IP, device, referrer and the full click-by-click journey
+- **Klicks** – every clicked link/button, per page
+- **Anfragen** – contact form inquiries with status, reply and forwarding
+- **Inhalte bearbeiten** – projects (add, edit, hide, reorder, delete), services, FAQ, business details and homepage texts; saving publishes immediately
+- **Einstellungen** – email notifications for new inquiries
+- Raw events as CSV: `/api/admin/export`
+
+Data lives in **Upstash Redis** (`src/lib/store.ts`). Without it, a local JSON file in `./data` is used, which does **not** persist on Vercel.
+
+## Environment Variables (Vercel → Settings → Environment Variables)
 
 ```env
-# Optional: Override default admin console passphrase
+# Required: admin portal password
 ADMIN_PASSWORD=your_secure_admin_passphrase
 
-# Optional: Override HMAC signing secret for session tokens
-ADMIN_SECRET=your_32_byte_random_signing_secret
+# Optional: session signing secret (derived from the password when unset)
+ADMIN_SECRET=long_random_string
 
-# Optional: External Cloud Database (Supabase / Neon / PostgreSQL / Turso)
-# If omitted, uses local zero-cost persistent JSON store automatically
-DATABASE_URL=postgresql://user:pass@host:5432/shazwerk
+# Set automatically by Vercel → Storage → Upstash for Redis
+KV_REST_API_URL=...
+KV_REST_API_TOKEN=...
 ```
 
 ---
@@ -94,10 +104,11 @@ npm run start
    - Import repository `sarangsaif/shazwerk`.
    - Ensure Framework Preset is **Next.js**.
    - Set environment variable `ADMIN_PASSWORD` to your chosen admin passphrase.
+   - Storage → Create Database → **Upstash for Redis** (free) → connect it to this project.
    - Attach custom domain `shazwerk.ch` and verify DNS records (A record pointing to `76.76.21.21` or CNAME `cname.vercel-dns.com`).
 
 ---
 
 ## License & Intellectual Property
 
-© 2026 SHAZWERK. All rights reserved. Registered in Switzerland.
+© 2026 SHAZWERK, Winterthur. All rights reserved.

@@ -20,6 +20,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/admin", "/admin/*", "/api/admin/*"],
       },
     ],
-    sitemap: "https://shazwerk.ch/sitemap.xml",
+    sitemap: "https://www.shazwerk.ch/sitemap.xml",
   };
 }

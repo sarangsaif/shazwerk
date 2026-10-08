@@ -3,10 +3,14 @@ import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import T from "@/components/i18n/T";
 import SwissCross from "@/components/ui/SwissCross";
 import Magnetic from "@/components/motion/Magnetic";
+import HeroContours from "./HeroContours";
+import type { SiteSettings } from "@/lib/content";
 
-export default function Hero() {
+export default function Hero({ settings }: { settings: SiteSettings }) {
   return (
     <section className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden pb-8 pt-32" aria-labelledby="hero-title">
+      <HeroContours />
+
       {/* 12-column Swiss grid */}
       <div className="wrap pointer-events-none absolute inset-0 grid grid-cols-4 lg:grid-cols-12" aria-hidden="true">
         {Array.from({ length: 12 }).map((_, i) => (
@@ -18,7 +22,7 @@ export default function Hero() {
         <h1 id="hero-title">
           <span className="eyebrow intro-fade mb-6 flex items-center gap-3 text-stone-muted" style={{ ["--d" as string]: "200ms" }}>
             <SwissCross className="h-3 w-3 text-swiss-red" />
-            <T de="Webagentur & Software-Studio in Zürich" en="Web agency & software studio in Zurich" />
+            <T de={`Webagentur & Software-Studio in ${settings.city}`} en={`Web agency & software studio in ${settings.city}`} />
           </span>
           <span className="block font-display text-mega font-medium">
             <span className="mask intro-line" style={{ ["--i" as string]: 0 }}>
@@ -36,7 +40,7 @@ export default function Hero() {
             </span>
             <span className="mask intro-line" style={{ ["--i" as string]: 2 }}>
               <span className="flex items-center gap-[0.12em]">
-                Zürich
+                {settings.heroCity}
                 <span className="inline-block h-[0.62em] w-[0.62em] translate-y-[0.04em] bg-swiss-red" aria-hidden="true">
                   <SwissCross className="h-full w-full text-swiss-red" />
                 </span>
@@ -47,10 +51,7 @@ export default function Hero() {
 
         <div className="intro-fade mt-12 grid grid-cols-1 gap-8 border-t hairline pt-6 lg:grid-cols-12" style={{ ["--d" as string]: "900ms" }}>
           <p className="max-w-md text-lg leading-snug lg:col-span-5">
-            <T
-              de="Wir gestalten und entwickeln Websites, Software, Apps und KI für Schweizer Unternehmen, die keine Kompromisse machen. Präzise geplant, schnell geliefert, in der Schweiz gehostet."
-              en="We design and build websites, software, apps and AI for Swiss companies that refuse to compromise. Precisely planned, delivered fast, hosted in Switzerland."
-            />
+            <T de={settings.heroLead.de} en={settings.heroLead.en} />
           </p>
           <div className="flex flex-wrap items-center gap-4 lg:col-span-4 lg:col-start-7">
             <Magnetic strength={0.25}>
@@ -81,8 +82,8 @@ export default function Hero() {
             <defs>
               <path id="badge-circle" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" />
             </defs>
-            <text fontSize="9.2" letterSpacing="2.6" fontFamily="var(--font-mono)" fill="currentColor">
-              <textPath href="#badge-circle">SWISS MADE · DIGITAL CRAFT · ZÜRICH · </textPath>
+            <text fontSize="8.6" fontFamily="var(--font-mono)" fill="currentColor">
+              <textPath href="#badge-circle" textLength="234" lengthAdjust="spacing">{`SWISS MADE · DIGITAL CRAFT · ${settings.city.toUpperCase()} · `}</textPath>
             </text>
           </svg>
           <SwissCross className="absolute left-1/2 top-1/2 h-7 w-7 -translate-x-1/2 -translate-y-1/2 text-swiss-red" />

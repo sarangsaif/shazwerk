@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { getLanding, LANDING_PAGES, AREA_SERVED } from "@/lib/landing";
-import { PROJECTS, SITE, OG_IMAGES } from "@/lib/content";
+import { SITE, OG_IMAGES } from "@/lib/content";
+import { getPublishedProjects } from "@/lib/cms";
 import PageHero from "./PageHero";
 import CtaLink from "./CtaLink";
 import ProjectPoster from "@/components/ui/ProjectPoster";
@@ -29,9 +30,11 @@ export function landingMetadata(slug: string): Metadata {
 }
 
 /** Shared layout for the German high-intent SEO landing pages. */
-export default function LandingTemplate({ slug }: { slug: string }) {
+export default async function LandingTemplate({ slug }: { slug: string }) {
   const p = getLanding(slug);
-  const projects = PROJECTS.filter((x) => p.projects.includes(x.slug));
+  const all = await getPublishedProjects();
+  const linked = all.filter((x) => p.projects.includes(x.slug));
+  const projects = linked.length ? linked : all.slice(0, 2);
   const related = LANDING_PAGES.filter((x) => x.slug !== p.slug);
 
   const serviceSchema = {

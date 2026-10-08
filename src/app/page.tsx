@@ -6,21 +6,23 @@ import SelectedWork from "@/components/home/SelectedWork";
 import ServicesList from "@/components/home/ServicesList";
 import Process from "@/components/home/Process";
 import Faq from "@/components/home/Faq";
+import { getContent } from "@/lib/cms";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { settings, services, faq } = await getContent();
   return (
     <>
-      <Hero />
+      <Hero settings={settings} />
       <SectorBand />
-      <Manifest />
+      <Manifest manifesto={settings.manifesto} />
       <SelectedWork />
-      <ServicesList />
+      <ServicesList services={services} />
       <Process />
-      <Faq />
+      <Faq items={faq} />
     </>
   );
 }

@@ -52,14 +52,14 @@ function parseUserAgent(uaString: string | null) {
     device = "Bot";
   }
 
-  // Operating System
-  if (/macintosh|mac os x/i.test(ua)) {
-    os = "macOS";
-    const match = ua.match(/Mac OS X ([0-9_]+)/);
-    if (match) osVersion = match[1].replace(/_/g, ".");
-  } else if (/iphone|ipad|ipod/i.test(ua)) {
+  // Operating System (check iOS before macOS: iPhone UAs contain "like Mac OS X")
+  if (/iphone|ipad|ipod/i.test(ua)) {
     os = "iOS";
     const match = ua.match(/OS ([0-9_]+)/);
+    if (match) osVersion = match[1].replace(/_/g, ".");
+  } else if (/macintosh|mac os x/i.test(ua)) {
+    os = "macOS";
+    const match = ua.match(/Mac OS X ([0-9_]+)/);
     if (match) osVersion = match[1].replace(/_/g, ".");
   } else if (/windows nt/i.test(ua)) {
     os = "Windows";
@@ -162,6 +162,9 @@ export async function POST(req: NextRequest) {
     let countryCode = rawCountryCode.toUpperCase();
     let country = COUNTRY_NAMES[countryCode] || countryCode;
     let city = req.headers.get("x-vercel-ip-city") || req.headers.get("cf-ipcity") || "";
+    try {
+      city = decodeURIComponent(city);
+    } catch {}
     let region = req.headers.get("x-vercel-ip-country-region") || req.headers.get("cf-region") || "";
     const timezone = req.headers.get("x-vercel-ip-timezone") || body.timezone || "Europe/Zurich";
 
@@ -172,7 +175,7 @@ export async function POST(req: NextRequest) {
         country = "Switzerland (Local)";
       }
       if (!city) {
-        city = "Zurich (Local)";
+        city = "Lokal";
       }
       if (!region) {
         region = "ZH";
@@ -207,8 +210,8 @@ export async function POST(req: NextRequest) {
       ip: clientIp,
       country,
       country_code: countryCode,
-      city: city || "Zurich",
-      region: region || "ZH",
+      city,
+      region,
       timezone,
       device,
       browser: uaInfo.browser,

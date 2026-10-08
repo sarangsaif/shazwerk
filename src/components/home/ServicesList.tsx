@@ -2,10 +2,10 @@ import Link from "next/link";
 import { ArrowUpRight, Plus } from "lucide-react";
 import T from "@/components/i18n/T";
 import MaskText from "@/components/ui/MaskText";
-import { SERVICES } from "@/lib/content";
+import { Service } from "@/lib/content";
 
 /** Large service rows that expand on hover / focus (always expanded on touch). */
-export default function ServicesList({ withHeading = true }: { withHeading?: boolean }) {
+export default function ServicesList({ services, withHeading = true }: { services: Service[]; withHeading?: boolean }) {
   return (
     <section className="wrap py-28 sm:py-40" aria-labelledby={withHeading ? "services-title" : undefined}>
       {withHeading && (
@@ -28,10 +28,10 @@ export default function ServicesList({ withHeading = true }: { withHeading?: boo
       )}
 
       <ul className="border-t border-ink/15">
-        {SERVICES.map((s) => (
-          <li key={s.slug} className="group border-b border-ink/15">
+        {services.map((s, idx) => (
+          <li key={s.slug || idx} className="group border-b border-ink/15">
             <div className="relative grid grid-cols-12 gap-4 py-8 transition-colors duration-500 sm:py-10">
-              <span className="eyebrow col-span-2 pt-3 text-stone-muted sm:col-span-1">{s.num}</span>
+              <span className="eyebrow col-span-2 pt-3 text-stone-muted sm:col-span-1">{String(idx + 1).padStart(2, "0")}</span>
               <h3 className="col-span-9 font-display text-huge font-medium transition-transform duration-700 ease-out-expo group-hover:translate-x-2 sm:col-span-10">
                 <T de={s.title.de} en={s.title.en} />
               </h3>
@@ -49,7 +49,7 @@ export default function ServicesList({ withHeading = true }: { withHeading?: boo
                       {s.items.de.map((item, i) => (
                         <li key={item} className="flex gap-2">
                           <span className="text-swiss-red" aria-hidden="true">✚</span>
-                          <T de={item} en={s.items.en[i]} />
+                          <T de={item} en={s.items.en[i] ?? item} />
                         </li>
                       ))}
                     </ul>

@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import { ContactSubmission, EmailSettings, EmailNotificationResult } from "./types";
 import { getEmailSettings } from "./db";
 
-export function generateInquiryHtml(submission: ContactSubmission, baseUrl: string = "https://shazwerk.ch"): string {
+export function generateInquiryHtml(submission: ContactSubmission, baseUrl: string = "https://www.shazwerk.ch"): string {
   return `
 <!DOCTYPE html>
 <html>

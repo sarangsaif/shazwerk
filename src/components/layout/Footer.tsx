@@ -7,20 +7,21 @@ import { ArrowUpRight } from "lucide-react";
 import { trackClientEvent } from "@/lib/analytics-client";
 import { useLanguage } from "@/context/LanguageContext";
 import { LANDING_PAGES } from "@/lib/landing";
-import { SITE } from "@/lib/content";
-import ZurichClock from "@/components/ui/ZurichClock";
+import { useContent } from "@/components/cms/ContentProvider";
+import SbbClock from "@/components/ui/SbbClock";
 import Magnetic from "@/components/motion/Magnetic";
 
 export default function Footer() {
   const pathname = usePathname();
   const { language } = useLanguage();
   const isDe = language === "de";
+  const { settings } = useContent();
   const [copied, setCopied] = useState(false);
 
   if (pathname?.startsWith("/admin")) return null;
 
   const copyEmail = () => {
-    navigator.clipboard?.writeText(SITE.email);
+    navigator.clipboard?.writeText(settings.email);
     setCopied(true);
     trackClientEvent("copy_email", { source: "footer" });
     setTimeout(() => setCopied(false), 2200);
@@ -32,7 +33,7 @@ export default function Footer() {
     <footer className="relative overflow-hidden bg-ink text-paper">
       {showCta && (
         <section className="wrap border-b border-paper/15 pb-20 pt-28 sm:pt-40" aria-labelledby="footer-cta">
-          <p className="eyebrow mb-8 text-paper/50">{isDe ? "Neues Projekt" : "New project"}</p>
+          <p className="eyebrow mb-8 text-paper/60">{isDe ? "Neues Projekt" : "New project"}</p>
           <h2 id="footer-cta" className="font-display text-giant font-medium" data-reveal="up">
             {isDe ? "Haben Sie ein Vorhaben?" : "Got something in mind?"}
             <br />
@@ -45,10 +46,9 @@ export default function Footer() {
               type="button"
               onClick={copyEmail}
               className="group text-left font-display text-big tracking-[-0.03em]"
-              aria-label={isDe ? `E-Mail ${SITE.email} kopieren` : `Copy email ${SITE.email}`}
             >
-              <span className="link-line">{SITE.email}</span>
-              <span className="eyebrow mt-2 block text-paper/50">
+              <span className="link-line">{settings.email}</span>
+              <span className="eyebrow mt-2 block text-paper/60">
                 {copied ? (isDe ? "✓ Kopiert" : "✓ Copied") : isDe ? "Klicken zum Kopieren" : "Click to copy"}
               </span>
             </button>
@@ -70,21 +70,21 @@ export default function Footer() {
 
       <div className="wrap grid grid-cols-2 gap-10 py-16 text-sm md:grid-cols-4">
         <div>
-          <p className="eyebrow mb-4 text-paper/40">Studio</p>
+          <p className="eyebrow mb-4 text-paper/60">Studio</p>
           <address className="not-italic leading-relaxed text-paper/80">
-            {SITE.legalName}
+            SHAZWERK{settings.ownerName ? ` · ${settings.ownerName}` : ""}
             <br />
-            {SITE.street}
+            {settings.street}
             <br />
-            {SITE.zip} {SITE.city}, {isDe ? "Schweiz" : "Switzerland"}
+            {settings.zip} {settings.city}, {isDe ? "Schweiz" : "Switzerland"}
             <br />
-            <a href={`tel:${SITE.phoneE164}`} className="link-line">
-              {SITE.phone}
+            <a href={`tel:${settings.phone.replace(/[^+\d]/g, "")}`} className="link-line">
+              {settings.phone}
             </a>
           </address>
         </div>
         <nav aria-label="Footer">
-          <p className="eyebrow mb-4 text-paper/40">{isDe ? "Navigation" : "Navigate"}</p>
+          <p className="eyebrow mb-4 text-paper/60">{isDe ? "Navigation" : "Navigate"}</p>
           <ul className="space-y-1.5 text-paper/80">
             <li><Link href="/work" className="link-line">{isDe ? "Arbeiten" : "Work"}</Link></li>
             <li><Link href="/services" className="link-line">{isDe ? "Leistungen" : "Services"}</Link></li>
@@ -93,7 +93,7 @@ export default function Footer() {
           </ul>
         </nav>
         <nav aria-label={isDe ? "Schwerpunkte" : "Focus areas"}>
-          <p className="eyebrow mb-4 text-paper/40">{isDe ? "Schwerpunkte" : "Focus"}</p>
+          <p className="eyebrow mb-4 text-paper/60">{isDe ? "Schwerpunkte" : "Focus"}</p>
           <ul className="space-y-1.5 text-paper/80">
             {LANDING_PAGES.map((p) => (
               <li key={p.slug}>
@@ -105,11 +105,9 @@ export default function Footer() {
           </ul>
         </nav>
         <div>
-          <p className="eyebrow mb-4 text-paper/40">{isDe ? "Ortszeit" : "Local time"}</p>
-          <p className="font-display text-3xl tracking-[-0.03em]">
-            <ZurichClock />
-          </p>
-          <p className="mt-1 text-paper/50">Zürich, CET</p>
+          <p className="eyebrow mb-4 text-paper/60">{isDe ? "Ortszeit" : "Local time"}</p>
+          <SbbClock className="h-28 w-28" />
+          <p className="mt-3 text-paper/60">{settings.city}, CET</p>
         </div>
       </div>
 
@@ -129,16 +127,16 @@ export default function Footer() {
         </svg>
       </div>
 
-      <div className="wrap flex flex-col gap-4 border-t border-paper/15 py-6 text-xs text-paper/50 sm:flex-row sm:items-center sm:justify-between">
+      <div className="wrap flex flex-col gap-4 border-t border-paper/15 py-6 text-xs text-paper/60 sm:flex-row sm:items-center sm:justify-between">
         <p>
-          © {new Date().getFullYear()} {SITE.legalName} · UID {SITE.uid} ·{" "}
-          {isDe ? "Webagentur & Software Studio Zürich" : "Web agency & software studio Zurich"}
+          © {new Date().getFullYear()} SHAZWERK ·{" "}
+          {isDe ? `Webdesign & Software Studio ${settings.city}` : `Web design & software studio ${settings.city}`}
         </p>
         <ul className="flex flex-wrap items-center gap-5">
           <li><Link href="/privacy" className="link-line hover:text-paper">{isDe ? "Datenschutz" : "Privacy"}</Link></li>
           <li><Link href="/imprint" className="link-line hover:text-paper">Impressum</Link></li>
           <li><a href="/feed.xml" className="link-line hover:text-paper">RSS</a></li>
-          <li><Link href="/admin/login" rel="nofollow" className="text-paper/30 hover:text-paper/60">Staff</Link></li>
+          <li><Link href="/admin/login" rel="nofollow" className="text-paper/60 hover:text-paper">Staff</Link></li>
         </ul>
       </div>
     </footer>

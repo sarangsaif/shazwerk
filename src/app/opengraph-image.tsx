@@ -74,7 +74,7 @@ export default async function Image() {
               color: "#E2E8F0",
             }}
           >
-            <span>Zürich & Zug · Switzerland</span>
+            <span>Winterthur · Switzerland</span>
           </div>
         </div>
 

@@ -8,7 +8,7 @@ export default function SelectedWork() {
     <section className="bg-ink py-28 text-paper sm:py-40" aria-labelledby="work-title">
       <div className="wrap">
         <div className="mb-16 grid grid-cols-1 gap-8 lg:grid-cols-12">
-          <p className="eyebrow text-paper/50 lg:col-span-3">
+          <p className="eyebrow text-paper/60 lg:col-span-3">
             (02) <T de="Ausgewählte Arbeiten" en="Selected work" />
           </p>
           <h2 id="work-title" className="font-display text-giant font-medium lg:col-span-9" data-reveal="mask">

@@ -13,8 +13,12 @@ export function getLenis() {
 export default function SmoothScroll() {
   const pathname = usePathname();
 
+  const isAdmin = pathname?.startsWith("/admin") ?? false;
+
   useEffect(() => {
+    if (isAdmin) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
     const lenis = new Lenis({
       duration: 1.15,
@@ -29,7 +33,7 @@ export default function SmoothScroll() {
       lenis.destroy();
       lenisInstance = null;
     };
-  }, []);
+  }, [isAdmin]);
 
   useEffect(() => {
     if (window.location.hash) return;

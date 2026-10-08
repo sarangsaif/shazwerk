@@ -4,12 +4,13 @@ import PageHero from "@/components/page/PageHero";
 import CtaLink from "@/components/page/CtaLink";
 import ServicesList from "@/components/home/ServicesList";
 import Process from "@/components/home/Process";
-import { SERVICES, SITE, OG_IMAGES } from "@/lib/content";
+import { SITE, OG_IMAGES } from "@/lib/content";
+import { getContent } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Leistungen – Webdesign, Webentwicklung, Software & AI",
   description:
-    "Webdesign, Webentwicklung, Software- und App-Entwicklung, Enterprise AI sowie Cloud-Hosting in der Schweiz. Festpreis pro Meilenstein, Senior-Team und 100 % Quellcode-Eigentum.",
+    "Webdesign, Webentwicklung, Software- und App-Entwicklung, Enterprise AI sowie Cloud-Hosting in der Schweiz. Festpreis pro Meilenstein, persönliche Betreuung und 100 % Quellcode-Eigentum.",
   alternates: { canonical: "/services" },
   openGraph: {
       images: OG_IMAGES,
@@ -27,7 +28,7 @@ const MODELS = [
   },
   {
     title: { de: "Partnerschaft", en: "Partnership" },
-    lead: { de: "Ein festes Senior-Team für die laufende Weiterentwicklung.", en: "A dedicated senior team for continuous development." },
+    lead: { de: "Feste Betreuung für die laufende Weiterentwicklung.", en: "Dedicated support for continuous development." },
     detail: { de: "Monatliches Mandat · zweiwöchige Sprints", en: "Monthly retainer · two-week sprints" },
   },
   {
@@ -37,7 +38,8 @@ const MODELS = [
   },
 ];
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const { services: SERVICES } = await getContent();
   const schema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -76,7 +78,7 @@ export default function ServicesPage() {
           />
         }
       />
-      <ServicesList withHeading={false} />
+      <ServicesList services={SERVICES} withHeading={false} />
 
       <section className="wrap pb-28" aria-labelledby="models-title">
         <h2 id="models-title" className="font-display text-huge font-medium" data-reveal="up">

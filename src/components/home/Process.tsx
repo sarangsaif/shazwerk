@@ -69,8 +69,8 @@ export default function Process() {
             </h2>
             <p className="mt-6 max-w-sm text-stone-muted">
               {isDe
-                ? "Festpreis pro Meilenstein, jeden Freitag eine Live-Version und ein Senior-Team, das von Anfang bis Ende dabei bleibt."
-                : "Fixed price per milestone, a live version every Friday and a senior team that stays from start to finish."}
+                ? "Festpreis pro Meilenstein, jeden Freitag eine Live-Version und dieselbe Ansprechperson von Anfang bis Ende."
+                : "Fixed price per milestone, a live version every Friday and the same person from start to finish."}
             </p>
           </div>
           {PROCESS.map((step) => (

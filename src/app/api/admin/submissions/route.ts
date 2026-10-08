@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
-import { updateSubmissionStatus, getSubmissions, deleteSubmission, rehydrateSubmissions } from "@/lib/db";
+import { updateSubmissionStatus, getSubmissions, deleteSubmission } from "@/lib/db";
 import { sendInquiryNotification } from "@/lib/email";
-import { SubmissionStatus, ContactSubmission } from "@/lib/types";
+import { SubmissionStatus } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -13,22 +13,6 @@ export async function GET() {
 
   const submissions = await getSubmissions();
   return NextResponse.json({ submissions });
-}
-
-// Rehydrate / sync submissions from local vault
-export async function PUT(req: NextRequest) {
-  if (!isAdminAuthenticated()) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  try {
-    const body = await req.json();
-    const vaultItems: ContactSubmission[] = body?.rehydrateSubmissions || [];
-    const merged = await rehydrateSubmissions(vaultItems);
-    return NextResponse.json({ success: true, submissions: merged });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message || "Failed to rehydrate submissions" }, { status: 500 });
-  }
 }
 
 export async function PATCH(req: NextRequest) {

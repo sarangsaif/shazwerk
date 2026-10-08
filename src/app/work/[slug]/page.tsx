@@ -6,14 +6,15 @@ import T from "@/components/i18n/T";
 import PageHero from "@/components/page/PageHero";
 import CtaLink from "@/components/page/CtaLink";
 import ProjectPoster from "@/components/ui/ProjectPoster";
-import { PROJECTS, SITE, OG_IMAGES } from "@/lib/content";
+import { SITE, OG_IMAGES } from "@/lib/content";
+import { getPublishedProjects } from "@/lib/cms";
 
-export function generateStaticParams() {
-  return PROJECTS.map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  return (await getPublishedProjects()).map((p) => ({ slug: p.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const p = PROJECTS.find((x) => x.slug === params.slug);
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const p = (await getPublishedProjects()).find((x) => x.slug === params.slug);
   if (!p) return {};
   const title = `${p.client}: ${p.title.de}`;
   return {
@@ -30,7 +31,8 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   };
 }
 
-export default function CaseStudyPage({ params }: { params: { slug: string } }) {
+export default async function CaseStudyPage({ params }: { params: { slug: string } }) {
+  const PROJECTS = await getPublishedProjects();
   const idx = PROJECTS.findIndex((x) => x.slug === params.slug);
   if (idx === -1) notFound();
   const p = PROJECTS[idx];
@@ -131,7 +133,12 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
           </span>
           <ArrowUpRight className="mb-4 h-12 w-12 shrink-0 transition-transform duration-500 group-hover:rotate-45 group-hover:text-swiss-red" aria-hidden="true" />
         </Link>
-        <div className="mt-12">
+        <div className="mt-12 flex flex-wrap items-center gap-6">
+          {p.link && (
+            <a href={p.link} target="_blank" rel="noopener" className="link-line">
+              <T de="Projekt live ansehen ↗" en="View live project ↗" />
+            </a>
+          )}
           <CtaLink href="/contact">
             <T de="Ähnliches Projekt besprechen" en="Discuss a similar project" />
           </CtaLink>

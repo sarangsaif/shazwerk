@@ -6,7 +6,7 @@
   --paper: #F1EFEA;
   --paper-deep: #E7E4DD;
   --ink: #0D0D0D;
-  --muted: #6B6A66;
+  --muted: #5E5D59;
   --line: rgba(13, 13, 13, 0.14);
   --swiss-red: #E30613;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -393,4 +393,18 @@ details[open] .faq-icon {
   .marquee {
     animation: none;
   }
+}
+
+/* ---------- Sound toggle equaliser ---------- */
+@keyframes sound-bar {
+  0%,
+  100% {
+    height: 3px;
+  }
+  50% {
+    height: 16px;
+  }
+}
+.sound-bar {
+  animation: sound-bar 1.1s ease-in-out infinite;
 }

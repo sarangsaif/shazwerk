@@ -1,99 +1,65 @@
-import React from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import LegalPage from "@/components/page/LegalPage";
+import { getContent } from "@/lib/cms";
+import { SITE, toE164 } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Impressum (Rechtliche Angaben)",
-  description: "Gesetzliches Schweizer Impressum und Unternehmensangaben der SHAZWERK GmbH.",
-  alternates: {
-    canonical: "https://shazwerk.ch/imprint",
-  },
+  title: "Impressum",
+  description: "Impressum von SHAZWERK, Webdesign- und Software-Studio in Winterthur.",
+  alternates: { canonical: "/imprint" },
 };
 
-export default function ImprintPage() {
+export default async function ImprintPage() {
+  const { settings: st } = await getContent();
   return (
-    <div className="text-ink min-h-screen pt-40 pb-24 px-6 sm:px-10 lg:px-16">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-xs font-mono text-neutral-500 hover:text-neutral-950 transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Studio</span>
-          </Link>
-        </div>
-
-        <div className="pb-12 mb-12 border-b border-neutral-200">
-          <span className="text-xs font-mono uppercase tracking-wider text-neutral-500 block mb-3">
-            [ STATUTORY SWISS NOTICE // IMPRESSUM ]
-          </span>
-          <h1 className="text-3xl sm:text-5xl font-normal tracking-tight text-neutral-950 leading-tight mb-4">
-            Impressum
-          </h1>
-          <p className="text-xs font-mono text-neutral-500">
-            Mandatory Swiss Impressum in accordance with Swiss Commercial Law & UWG Art. 3 Abs. 1 Bst. s.
-          </p>
-        </div>
-
-        <div className="space-y-10 text-base text-neutral-700 leading-relaxed font-normal">
-          <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6 sm:p-8">
-            <h2 className="text-xl font-medium text-neutral-950 mb-4">Company Entity & Headquarters</h2>
-            <div className="font-mono text-xs text-neutral-800 space-y-3">
-              <div>
-                <span className="text-neutral-400 block text-[10px] uppercase">Corporate Entity</span>
-                <span className="text-neutral-950 font-bold text-sm">SHAZWERK GmbH</span>
-              </div>
-              <div>
-                <span className="text-neutral-400 block text-[10px] uppercase">Registered Address</span>
-                <span>Gotthardstrasse 26, 8002 Zürich, Switzerland</span>
-              </div>
-              <div>
-                <span className="text-neutral-400 block text-[10px] uppercase">Commercial Register & UID</span>
-                <span>CHE-419.820.104</span>
-              </div>
-              <div>
-                <span className="text-neutral-400 block text-[10px] uppercase">VAT / MWST</span>
-                <span>CHE-419.820.104 MWST</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6 sm:p-8">
-            <h2 className="text-xl font-medium text-neutral-950 mb-4">Direct Studio Communication</h2>
-            <div className="font-mono text-xs text-neutral-800 space-y-3">
-              <div>
-                <span className="text-neutral-400 block text-[10px] uppercase">General Inquiries</span>
-                <a href="mailto:hello@shazwerk.ch" className="text-neutral-950 hover:text-red-600 transition-colors">
-                  hello@shazwerk.ch
-                </a>
-              </div>
-              <div>
-                <span className="text-neutral-400 block text-[10px] uppercase">Technical & Project Briefs</span>
-                <a href="mailto:contact@shazwerk.ch" className="text-neutral-950 hover:text-red-600 transition-colors">
-                  contact@shazwerk.ch
-                </a>
-              </div>
-              <div>
-                <span className="text-neutral-400 block text-[10px] uppercase">Telephone</span>
-                <span>+41 44 820 90 10</span>
-              </div>
-              <div>
-                <span className="text-neutral-400 block text-[10px] uppercase">Website & Canonical Domain</span>
-                <span>https://shazwerk.ch</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6 sm:p-8">
-            <h2 className="text-xl font-medium text-neutral-950 mb-3">Disclaimer & Intellectual Property</h2>
-            <p className="text-sm text-neutral-600">
-              The contents of this website have been created with the utmost care. However, SHAZWERK assumes no liability for the correctness, completeness, or topicality of the information provided. All trademarks, software architectures, logos, and code samples are the intellectual property of SHAZWERK GmbH or their respective clients and are protected under Swiss and international copyright conventions.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <LegalPage crumb="Impressum" href="/imprint" title="Impressum" updated="Oktober 2026">
+      <section>
+        <h2>Anbieterin dieser Website</h2>
+        <p>
+          SHAZWERK
+          {st.ownerName && (
+            <>
+              <br />
+              Inhaber/in: {st.ownerName}
+            </>
+          )}
+          <br />
+          {st.street}
+          <br />
+          {st.zip} {st.city}
+          <br />
+          Schweiz
+        </p>
+        <p>
+          SHAZWERK ist ein junges, nicht im Handelsregister eingetragenes Unternehmen (Start-up) und daher ohne
+          UID- oder MWST-Nummer.
+        </p>
+      </section>
+      <section>
+        <h2>Kontakt</h2>
+        <p>
+          E-Mail: <a href={`mailto:${st.email}`}>{st.email}</a>
+          <br />
+          Telefon: <a href={`tel:${toE164(st.phone)}`}>{st.phone}</a>
+          <br />
+          Website: {SITE.url.replace("https://", "")}
+        </p>
+      </section>
+      <section>
+        <h2>Haftungsausschluss</h2>
+        <p>
+          Wir prüfen die Inhalte dieser Website sorgfältig, übernehmen aber keine Gewähr für Richtigkeit,
+          Vollständigkeit und Aktualität. Für Inhalte externer Links sind ausschliesslich deren Betreiber
+          verantwortlich.
+        </p>
+      </section>
+      <section>
+        <h2>Urheberrecht</h2>
+        <p>
+          Texte, Gestaltung, Grafiken und Code dieser Website gehören SHAZWERK oder den jeweiligen Rechteinhabern.
+          Jede Verwendung ausserhalb der gesetzlichen Schranken braucht unsere schriftliche Zustimmung.
+        </p>
+      </section>
+    </LegalPage>
   );
 }

@@ -1,15 +1,10 @@
 import { Plus } from "lucide-react";
 import T from "@/components/i18n/T";
-import { FAQ, SITE } from "@/lib/content";
+import { SITE, FaqItem } from "@/lib/content";
 
 /** Visible FAQ with matching FAQPage structured data. */
-export default function Faq({
-  items = FAQ.map((f) => ({ q: f.q, a: f.a })),
-  index = "(05)",
-}: {
-  items?: { q: { de: string; en: string }; a: { de: string; en: string } }[];
-  index?: string;
-}) {
+export default function Faq({ items, index = "(05)" }: { items: FaqItem[]; index?: string }) {
+  if (!items.length) return null;
   const schema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",

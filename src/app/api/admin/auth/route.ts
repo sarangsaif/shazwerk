@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyPassword, createSessionToken, COOKIE_NAME } from "@/lib/auth";
+import { verifyPassword, createSessionToken, COOKIE_NAME, adminConfigured } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -7,8 +7,15 @@ export async function POST(req: NextRequest) {
   try {
     const { password } = await req.json();
 
+    if (!adminConfigured()) {
+      return NextResponse.json(
+        { error: "Admin-Passwort fehlt: Bitte ADMIN_PASSWORD in Vercel → Settings → Environment Variables setzen." },
+        { status: 503 }
+      );
+    }
+
     if (!verifyPassword(password)) {
-      return NextResponse.json({ error: "Invalid administrative credentials." }, { status: 401 });
+      return NextResponse.json({ error: "Falsches Passwort." }, { status: 401 });
     }
 
     const token = createSessionToken();

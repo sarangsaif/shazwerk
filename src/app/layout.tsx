@@ -9,6 +9,8 @@ import SmoothScroll from "@/components/motion/SmoothScroll";
 import RevealObserver from "@/components/motion/RevealObserver";
 import Cursor from "@/components/motion/Cursor";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { ContentProvider } from "@/components/cms/ContentProvider";
+import { getContent } from "@/lib/cms";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 const interTight = Inter_Tight({
@@ -26,9 +28,9 @@ const instrumentSerif = Instrument_Serif({
 });
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
-const TITLE = "SHAZWERK – Webagentur & Software Studio Zürich";
+const TITLE = "SHAZWERK – Webagentur Winterthur & Zürich | Websites, Software, AI";
 const DESCRIPTION =
-  "SHAZWERK ist eine Webagentur und Software-Studio in Zürich. Wir gestalten und entwickeln Websites, Webapplikationen, Apps und Enterprise AI für Schweizer Unternehmen – mit Hosting in der Schweiz und 100 % Quellcode-Eigentum.";
+  "SHAZWERK ist ein Webdesign- und Software-Studio aus Winterthur für die Region Zürich und die ganze Schweiz. Wir gestalten und entwickeln Websites, Webapplikationen, Apps und Enterprise AI für Schweizer Unternehmen – mit Hosting in der Schweiz und 100 % Quellcode-Eigentum.";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -40,7 +42,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://shazwerk.ch"),
+  metadataBase: new URL("https://www.shazwerk.ch"),
   title: {
     default: TITLE,
     template: "%s | SHAZWERK Zürich",
@@ -48,6 +50,7 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   applicationName: "SHAZWERK",
   keywords: [
+    "Webagentur Winterthur",
     "Webagentur Zürich",
     "Webdesign Agentur Schweiz",
     "Software Agentur Zürich",
@@ -59,9 +62,9 @@ export const metadata: Metadata = {
     "KI Agentur Zürich",
     "Website erstellen lassen Zürich",
   ],
-  authors: [{ name: "SHAZWERK", url: "https://shazwerk.ch" }],
-  creator: "SHAZWERK GmbH",
-  publisher: "SHAZWERK GmbH",
+  authors: [{ name: "SHAZWERK", url: "https://www.shazwerk.ch" }],
+  creator: "SHAZWERK",
+  publisher: "SHAZWERK",
   category: "technology",
   formatDetection: { email: false, address: false, telephone: false },
   alternates: {
@@ -96,13 +99,14 @@ export const metadata: Metadata = {
   },
   other: {
     "geo.region": "CH-ZH",
-    "geo.placename": "Zürich",
-    "geo.position": "47.3686;8.5392",
-    ICBM: "47.3686, 8.5392",
+    "geo.placename": "Winterthur",
+    "geo.position": "47.4995;8.7262",
+    ICBM: "47.4995, 8.7262",
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const content = await getContent();
   return (
     <html
       lang="de-CH"
@@ -112,10 +116,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         {/* Enables reveal animations only when JS runs; content stays visible otherwise. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
-        <JsonLd />
+        <JsonLd content={content} />
       </head>
       <body className="flex min-h-screen flex-col bg-paper font-sans text-ink antialiased">
         <LanguageProvider>
+          <ContentProvider value={{ settings: content.settings, projects: content.projects.filter((p) => !p.hidden) }}>
           <SmoothScroll />
           <RevealObserver />
           <Cursor />
@@ -125,6 +130,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </main>
           <Footer />
+          </ContentProvider>
         </LanguageProvider>
         <div className="grain" aria-hidden="true" />
       </body>
