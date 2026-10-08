@@ -1,33 +1,25 @@
 import { MetadataRoute } from "next";
+import { PROJECTS, SITE } from "@/lib/content";
+import { LANDING_PAGES } from "@/lib/landing";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://shazwerk.ch";
   const lastModified = new Date();
-
-  const routes = [
-    { path: "", priority: 1.0, changeFrequency: "weekly" as const },
-    { path: "/software-agentur-zuerich", priority: 0.95, changeFrequency: "weekly" as const },
-    { path: "/webagentur-zuerich", priority: 0.95, changeFrequency: "weekly" as const },
-    { path: "/enterprise-ai-schweiz", priority: 0.95, changeFrequency: "weekly" as const },
-    { path: "/services", priority: 0.95, changeFrequency: "weekly" as const },
-    { path: "/work", priority: 0.9, changeFrequency: "weekly" as const },
-    { path: "/about", priority: 0.85, changeFrequency: "monthly" as const },
-    { path: "/contact", priority: 0.9, changeFrequency: "monthly" as const },
-    { path: "/imprint", priority: 0.3, changeFrequency: "yearly" as const },
-    { path: "/privacy", priority: 0.3, changeFrequency: "yearly" as const },
-  ];
-
-  return routes.map((route) => ({
-    url: `${baseUrl}${route.path}`,
+  const entry = (path: string, priority: number, changeFrequency: "weekly" | "monthly" | "yearly") => ({
+    url: `${SITE.url}${path}`,
     lastModified,
-    changeFrequency: route.changeFrequency,
-    priority: route.priority,
-    alternates: {
-      languages: {
-        "de-CH": `${baseUrl}${route.path}`,
-        "en-CH": `${baseUrl}${route.path}`,
-        "x-default": `${baseUrl}${route.path}`,
-      },
-    },
-  }));
+    changeFrequency,
+    priority,
+  });
+
+  return [
+    entry("", 1.0, "weekly"),
+    ...LANDING_PAGES.map((p) => entry(`/${p.slug}`, 0.9, "monthly")),
+    entry("/services", 0.9, "monthly"),
+    entry("/work", 0.8, "monthly"),
+    ...PROJECTS.map((p) => entry(`/work/${p.slug}`, 0.7, "yearly")),
+    entry("/about", 0.7, "monthly"),
+    entry("/contact", 0.8, "yearly"),
+    entry("/imprint", 0.2, "yearly"),
+    entry("/privacy", 0.2, "yearly"),
+  ];
 }

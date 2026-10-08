@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function ImprintPage() {
   return (
-    <div className="bg-white text-neutral-900 min-h-screen pt-32 pb-24 px-6 sm:px-10 lg:px-16">
+    <div className="text-ink min-h-screen pt-40 pb-24 px-6 sm:px-10 lg:px-16">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <Link

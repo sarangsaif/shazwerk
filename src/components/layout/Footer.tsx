@@ -2,175 +2,144 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Copy, Check } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { ArrowUpRight } from "lucide-react";
 import { trackClientEvent } from "@/lib/analytics-client";
 import { useLanguage } from "@/context/LanguageContext";
+import { LANDING_PAGES } from "@/lib/landing";
+import { SITE } from "@/lib/content";
+import ZurichClock from "@/components/ui/ZurichClock";
+import Magnetic from "@/components/motion/Magnetic";
 
 export default function Footer() {
-  const [copied, setCopied] = useState(false);
+  const pathname = usePathname();
   const { language } = useLanguage();
   const isDe = language === "de";
+  const [copied, setCopied] = useState(false);
 
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText("hello@shazwerk.ch");
+  if (pathname?.startsWith("/admin")) return null;
+
+  const copyEmail = () => {
+    navigator.clipboard?.writeText(SITE.email);
     setCopied(true);
     trackClientEvent("copy_email", { source: "footer" });
-    setTimeout(() => setCopied(false), 2500);
+    setTimeout(() => setCopied(false), 2200);
   };
 
+  const showCta = pathname !== "/contact";
+
   return (
-    <footer className="bg-white border-t border-neutral-200 text-neutral-900 pt-20 pb-12 px-6 sm:px-10 lg:px-16 overflow-hidden">
-      <div className="max-w-7xl mx-auto">
-        {/* Main Agency Statement / CTA */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-20 border-b border-neutral-200">
-          <div className="lg:col-span-7">
-            <span className="text-xs font-mono tracking-wider text-neutral-500 uppercase block mb-4">
-              [ {isDe ? "05 / KONTAKT" : "05 / GET IN TOUCH"} ]
+    <footer className="relative overflow-hidden bg-ink text-paper">
+      {showCta && (
+        <section className="wrap border-b border-paper/15 pb-20 pt-28 sm:pt-40" aria-labelledby="footer-cta">
+          <p className="eyebrow mb-8 text-paper/50">{isDe ? "Neues Projekt" : "New project"}</p>
+          <h2 id="footer-cta" className="font-display text-giant font-medium" data-reveal="up">
+            {isDe ? "Haben Sie ein Vorhaben?" : "Got something in mind?"}
+            <br />
+            <span className="font-serif font-normal italic text-paper/60">
+              {isDe ? "Lassen Sie uns reden." : "Let’s talk."}
             </span>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-neutral-950 leading-[1.05] max-w-2xl">
-              {isDe ? "Lassen Sie uns über Ihr Vorhaben sprechen." : "We would love to hear your ideas."}
-            </h2>
-            <p className="mt-6 text-lg sm:text-xl text-neutral-600 font-normal leading-relaxed max-w-xl">
-              {isDe
-                ? "Wir begleiten ambitionierte Gründer, CTOs und etablierte Unternehmen in der Schweiz und DACH-Region bei der Entwicklung digitaler Hochleistungssysteme."
-                : "We partner with ambitious founders, technology leaders, and established enterprises across Switzerland and Europe to build digital products that move the needle."}
-            </p>
-          </div>
-
-          <div className="lg:col-span-5 flex flex-col justify-between items-start lg:items-end gap-8">
-            <div className="w-full sm:w-auto">
-              {/* One-click email copy card */}
-              <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6 transition-all hover:border-neutral-400">
-                <div className="text-xs font-mono text-neutral-500 mb-2">
-                  {isDe ? "Direkter Kontakt" : "Direct Inquiries"}
-                </div>
-                <button
-                  type="button"
-                  onClick={handleCopyEmail}
-                  className="group flex items-center gap-3 text-xl sm:text-2xl font-medium tracking-tight text-neutral-950 hover:text-red-600 transition-colors"
-                >
-                  <span>hello@shazwerk.ch</span>
-                  <span className="p-1.5 rounded-lg bg-neutral-200/70 group-hover:bg-red-50 text-neutral-700 group-hover:text-red-600 transition-colors">
-                    {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-                  </span>
-                </button>
-                <div className="mt-2 text-xs font-mono text-neutral-500">
-                  {copied ? (
-                    <span className="text-emerald-600 font-semibold">
-                      {isDe ? "✓ In Zwischenablage kopiert!" : "✓ Copied to clipboard!"}
-                    </span>
-                  ) : (
-                    isDe ? "Klicken zum Kopieren" : "Click to copy address"
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4">
+          </h2>
+          <div className="mt-14 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+            <button
+              type="button"
+              onClick={copyEmail}
+              className="group text-left font-display text-big tracking-[-0.03em]"
+              aria-label={isDe ? `E-Mail ${SITE.email} kopieren` : `Copy email ${SITE.email}`}
+            >
+              <span className="link-line">{SITE.email}</span>
+              <span className="eyebrow mt-2 block text-paper/50">
+                {copied ? (isDe ? "✓ Kopiert" : "✓ Copied") : isDe ? "Klicken zum Kopieren" : "Click to copy"}
+              </span>
+            </button>
+            <Magnetic>
               <Link
                 href="/contact"
                 onClick={() => trackClientEvent("cta_click", { location: "footer_button" })}
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-neutral-950 text-white font-medium text-sm hover:bg-neutral-800 transition-colors shadow-sm"
+                className="relative flex h-36 w-36 items-center justify-center rounded-full bg-swiss-red text-center text-sm font-medium text-white transition-transform duration-500 ease-out-expo hover:scale-105 sm:h-44 sm:w-44"
               >
-                <span>{isDe ? "Projekt unverbindlich anfragen" : "Tell us about your project"}</span>
-                <ArrowUpRight className="w-4 h-4" />
+                <span>
+                  {isDe ? "Projekt starten" : "Start a project"}
+                  <ArrowUpRight className="mx-auto mt-1 h-5 w-5" aria-hidden="true" />
+                </span>
               </Link>
-            </div>
+            </Magnetic>
           </div>
-        </div>
+        </section>
+      )}
 
-        {/* Directory & Coordinates */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-12 gap-10 py-16 border-b border-neutral-200 text-sm">
-          {/* Navigation */}
-          <div className="lg:col-span-3 flex flex-col gap-3">
-            <div className="text-xs font-mono uppercase tracking-wider text-neutral-500 mb-1">
-              {isDe ? "Navigation" : "Explore"}
-            </div>
-            <Link href="/work" className="text-neutral-700 hover:text-neutral-950 hover:underline transition-colors">
-              {isDe ? "Ausgewählte Arbeiten" : "Selected Work"}
-            </Link>
-            <Link href="/services" className="text-neutral-700 hover:text-neutral-950 hover:underline transition-colors">
-              {isDe ? "Leistungen & Stack" : "Capabilities & Services"}
-            </Link>
-            <Link href="/about" className="text-neutral-700 hover:text-neutral-950 hover:underline transition-colors">
-              {isDe ? "Studio & Philosophie" : "Studio & Ethos"}
-            </Link>
-            <Link href="/contact" className="text-neutral-700 hover:text-neutral-950 hover:underline transition-colors">
-              {isDe ? "Kontakt & Briefing" : "Contact & Inquiries"}
-            </Link>
-          </div>
-
-          {/* Capabilities & SEO Landing Pages */}
-          <div className="lg:col-span-3 flex flex-col gap-3">
-            <div className="text-xs font-mono uppercase tracking-wider text-neutral-500 mb-1">
-              {isDe ? "Schwerpunkte" : "Focus Areas"}
-            </div>
-            <Link href="/software-agentur-zuerich" className="text-neutral-700 hover:text-neutral-950 hover:underline transition-colors">
-              Software Agentur Zürich
-            </Link>
-            <Link href="/webagentur-zuerich" className="text-neutral-700 hover:text-neutral-950 hover:underline transition-colors">
-              Webagentur Zürich
-            </Link>
-            <Link href="/enterprise-ai-schweiz" className="text-neutral-700 hover:text-neutral-950 hover:underline transition-colors">
-              Enterprise AI Schweiz
-            </Link>
-            <Link href="/services" className="text-neutral-700 hover:text-neutral-950 hover:underline transition-colors">
-              Next.js & Cloud Stack
-            </Link>
-          </div>
-
-          {/* Swiss Studio Locations */}
-          <div className="lg:col-span-3 flex flex-col gap-3">
-            <div className="text-xs font-mono uppercase tracking-wider text-neutral-500 mb-1">
-              {isDe ? "Standorte" : "Locations"}
-            </div>
-            <div className="text-neutral-700 leading-relaxed font-mono text-xs">
-              <span className="font-semibold block text-neutral-950">Zürich Studio</span>
-              Gotthardstrasse 26<br />
-              8002 Zürich, Switzerland<br />
-              <span className="text-neutral-500">+41 44 820 90 10</span>
-            </div>
-            <div className="text-neutral-700 leading-relaxed font-mono text-xs mt-1">
-              <span className="font-semibold block text-neutral-950">Zug Presence</span>
-              Baarerstrasse 82<br />
-              6300 Zug, Switzerland
-            </div>
-          </div>
-
-          {/* Swiss Legal Registry */}
-          <div className="lg:col-span-3 flex flex-col gap-3 font-mono text-xs">
-            <div className="uppercase tracking-wider text-neutral-500 mb-1">
-              {isDe ? "Schweizer Register" : "Swiss Registry"}
-            </div>
-            <div className="text-neutral-600 space-y-1">
-              <div>UID: <span className="text-neutral-900 font-medium">CHE-419.820.104</span></div>
-              <div>MWST: <span className="text-neutral-900 font-medium">CHE-419.820.104 MWST</span></div>
-              <div>Rechtsform: <span className="text-neutral-900 font-medium">GmbH</span></div>
-              <div className="pt-2 text-neutral-500">Kanton Zürich · Schweiz</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Bar: Copyright & Compliance */}
-        <div className="pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-mono text-neutral-500">
-          <div>
-            © {new Date().getFullYear()} SHAZWERK GmbH · Swiss Digital Engineering & AI Studio Zürich.
-          </div>
-          <div className="flex items-center gap-6">
-            <Link href="/privacy" className="hover:text-neutral-900 hover:underline transition-colors">
-              {isDe ? "Datenschutz (nDSG / DSGVO)" : "Privacy Policy (FADP / nDSG)"}
-            </Link>
-            <Link href="/imprint" className="hover:text-neutral-900 hover:underline transition-colors">
-              Impressum
-            </Link>
-            <a href="/feed.xml" target="_blank" className="hover:text-neutral-900 hover:underline transition-colors">
-              RSS Feed
+      <div className="wrap grid grid-cols-2 gap-10 py-16 text-sm md:grid-cols-4">
+        <div>
+          <p className="eyebrow mb-4 text-paper/40">Studio</p>
+          <address className="not-italic leading-relaxed text-paper/80">
+            {SITE.legalName}
+            <br />
+            {SITE.street}
+            <br />
+            {SITE.zip} {SITE.city}, {isDe ? "Schweiz" : "Switzerland"}
+            <br />
+            <a href={`tel:${SITE.phoneE164}`} className="link-line">
+              {SITE.phone}
             </a>
-            <Link href="/admin/login" className="text-neutral-400 hover:text-neutral-600 transition-colors">
-              Staff Portal
-            </Link>
-          </div>
+          </address>
         </div>
+        <nav aria-label="Footer">
+          <p className="eyebrow mb-4 text-paper/40">{isDe ? "Navigation" : "Navigate"}</p>
+          <ul className="space-y-1.5 text-paper/80">
+            <li><Link href="/work" className="link-line">{isDe ? "Arbeiten" : "Work"}</Link></li>
+            <li><Link href="/services" className="link-line">{isDe ? "Leistungen" : "Services"}</Link></li>
+            <li><Link href="/about" className="link-line">Studio</Link></li>
+            <li><Link href="/contact" className="link-line">{isDe ? "Kontakt" : "Contact"}</Link></li>
+          </ul>
+        </nav>
+        <nav aria-label={isDe ? "Schwerpunkte" : "Focus areas"}>
+          <p className="eyebrow mb-4 text-paper/40">{isDe ? "Schwerpunkte" : "Focus"}</p>
+          <ul className="space-y-1.5 text-paper/80">
+            {LANDING_PAGES.map((p) => (
+              <li key={p.slug}>
+                <Link href={`/${p.slug}`} className="link-line">
+                  {p.eyebrow.replace(" · ", " ")}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <div>
+          <p className="eyebrow mb-4 text-paper/40">{isDe ? "Ortszeit" : "Local time"}</p>
+          <p className="font-display text-3xl tracking-[-0.03em]">
+            <ZurichClock />
+          </p>
+          <p className="mt-1 text-paper/50">Zürich, CET</p>
+        </div>
+      </div>
+
+      {/* Giant wordmark, stretched to the exact column width */}
+      <div className="wrap select-none pb-4" aria-hidden="true" data-reveal="up">
+        <svg viewBox="0 0 1000 152" className="block h-auto w-full">
+          <text
+            x="0"
+            y="146"
+            textLength="1000"
+            lengthAdjust="spacingAndGlyphs"
+            fill="currentColor"
+            style={{ fontFamily: "var(--font-display)", fontSize: 200, fontWeight: 600, letterSpacing: "-0.06em" }}
+          >
+            SHAZWERK
+          </text>
+        </svg>
+      </div>
+
+      <div className="wrap flex flex-col gap-4 border-t border-paper/15 py-6 text-xs text-paper/50 sm:flex-row sm:items-center sm:justify-between">
+        <p>
+          © {new Date().getFullYear()} {SITE.legalName} · UID {SITE.uid} ·{" "}
+          {isDe ? "Webagentur & Software Studio Zürich" : "Web agency & software studio Zurich"}
+        </p>
+        <ul className="flex flex-wrap items-center gap-5">
+          <li><Link href="/privacy" className="link-line hover:text-paper">{isDe ? "Datenschutz" : "Privacy"}</Link></li>
+          <li><Link href="/imprint" className="link-line hover:text-paper">Impressum</Link></li>
+          <li><a href="/feed.xml" className="link-line hover:text-paper">RSS</a></li>
+          <li><Link href="/admin/login" rel="nofollow" className="text-paper/30 hover:text-paper/60">Staff</Link></li>
+        </ul>
       </div>
     </footer>
   );

@@ -40,6 +40,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  useEffect(() => {
+    document.documentElement.lang = language === "de" ? "de-CH" : "en";
+  }, [language]);
+
   const toggleLanguage = () => {
     setLanguage(language === "de" ? "en" : "de");
   };

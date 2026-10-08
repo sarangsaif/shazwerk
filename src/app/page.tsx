@@ -1,24 +1,26 @@
-import React from "react";
-import MimosaHero from "@/components/agency/MimosaHero";
-import SwissPrecisionInspector from "@/components/agency/SwissPrecisionInspector";
-import MimosaWork from "@/components/agency/MimosaWork";
-import SwissArchitectureConfigurator from "@/components/agency/SwissArchitectureConfigurator";
-import MimosaServices from "@/components/agency/MimosaServices";
-import MimosaHowWeWork from "@/components/agency/MimosaHowWeWork";
-import MimosaEthos from "@/components/agency/MimosaEthos";
-import MimosaContact from "@/components/agency/MimosaContact";
+import type { Metadata } from "next";
+import Hero from "@/components/home/Hero";
+import SectorBand from "@/components/home/SectorBand";
+import Manifest from "@/components/home/Manifest";
+import SelectedWork from "@/components/home/SelectedWork";
+import ServicesList from "@/components/home/ServicesList";
+import Process from "@/components/home/Process";
+import Faq from "@/components/home/Faq";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col bg-white text-neutral-900 min-h-screen">
-      <MimosaHero />
-      <SwissPrecisionInspector />
-      <MimosaWork />
-      <SwissArchitectureConfigurator />
-      <MimosaServices />
-      <MimosaHowWeWork />
-      <MimosaEthos />
-      <MimosaContact />
-    </div>
+    <>
+      <Hero />
+      <SectorBand />
+      <Manifest />
+      <SelectedWork />
+      <ServicesList />
+      <Process />
+      <Faq />
+    </>
   );
 }
