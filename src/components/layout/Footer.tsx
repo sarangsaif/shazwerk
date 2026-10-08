@@ -89,6 +89,8 @@ export default function Footer() {
             <li><Link href="/work" className="link-line">{isDe ? "Arbeiten" : "Work"}</Link></li>
             <li><Link href="/services" className="link-line">{isDe ? "Leistungen" : "Services"}</Link></li>
             <li><Link href="/about" className="link-line">Studio</Link></li>
+            <li><Link href="/website-check" className="link-line">{isDe ? "Gratis Website-Check" : "Free website check"}</Link></li>
+            <li><Link href="/ratgeber" className="link-line">Ratgeber</Link></li>
             <li><Link href="/contact" className="link-line">{isDe ? "Kontakt" : "Contact"}</Link></li>
           </ul>
         </nav>

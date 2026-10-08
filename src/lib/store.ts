@@ -92,9 +92,9 @@ export async function getJSON<T>(key: string): Promise<T | null> {
   return v === undefined ? null : (structuredClone(v) as T);
 }
 
-export async function setJSON(key: string, value: unknown): Promise<void> {
+export async function setJSON(key: string, value: unknown, ttlSeconds?: number): Promise<void> {
   if (storeBackend === "redis") {
-    await redis(["SET", key, JSON.stringify(value)]);
+    await redis(ttlSeconds ? ["SET", key, JSON.stringify(value), "EX", ttlSeconds] : ["SET", key, JSON.stringify(value)]);
     return;
   }
   fileRead()[key] = structuredClone(value);

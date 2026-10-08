@@ -15,6 +15,7 @@ const NAV = [
   { de: "Arbeiten", en: "Work", href: "/work" },
   { de: "Leistungen", en: "Services", href: "/services" },
   { de: "Studio", en: "Studio", href: "/about" },
+  { de: "Gratis-Check", en: "Free check", href: "/website-check" },
   { de: "Kontakt", en: "Contact", href: "/contact" },
 ];
 

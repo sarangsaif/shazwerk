@@ -7,7 +7,7 @@ import { storeBackend } from "@/lib/store";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  if (!isAdminAuthenticated()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!(await isAdminAuthenticated())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const days = Math.min(365, Math.max(1, Number(req.nextUrl.searchParams.get("days")) || 30));
   const [events, submissions] = await Promise.all([getAnalyticsEvents(), getSubmissions()]);
   const since = Date.now() - days * 86400000;
