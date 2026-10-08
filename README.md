@@ -23,17 +23,28 @@ Official web platform for **SHAZWERK** (`https://shazwerk.ch`).
 
 ## Website Structure
 
-- `/` — Homepage (Zurich live clock, Blueprint Hero, Process 01–06, Core Services Matrix, What We Build, Selected Work, Why SHAZWERK, Process Timeline 01–07, Final Minimalist CTA)
-- `/services` — Comprehensive technical breakdown of all 6 capabilities and engagement models (Fixed-Scope, Dedicated Squad, Fractional CTO)
-- `/work` — Curated catalog of architectural studies and internal concept products
-- `/about` — Studio ethos, Swiss business context, international engineering delivery, and foundational principles
-- `/contact` — High-end inquiry briefing form with real-time validation, CHF budget tiers, and spam protection
-- `/privacy` — Comprehensive privacy policy compliant with Swiss nDSG & EU GDPR
-- `/imprint` — Statutory Swiss Impressum with structured corporate placeholders
-- `/admin` — Private triage console for reviewing inquiries, changing status, and inspecting privacy-preserving telemetry
-- `/admin/login` — Authenticated access portal
+Swiss International Style meets award-level motion: 12-column grid, oversized Inter Tight display type with
+Instrument Serif italics, Lenis smooth scroll, masked line reveals, blend-mode cursor, marquee bands and a
+pinned horizontal process section. All motion respects `prefers-reduced-motion`; content is server-rendered
+in German (de-CH) and only hidden for reveal animations once JavaScript is confirmed.
 
----
+- `/` — Hero, services marquee, scroll-lit manifesto, project index with floating previews, expandable services, pinned process, FAQ
+- `/work`, `/work/[slug]` — Project grid and statically generated case studies
+- `/services`, `/about`, `/contact` — Services & engagement models, studio principles, inquiry form
+- SEO landing pages (German, high intent): `/webagentur-zuerich`, `/webdesign-agentur-schweiz`, `/software-agentur-zuerich`, `/app-entwicklung-schweiz`, `/enterprise-ai-schweiz`
+- `/privacy`, `/imprint`, `/admin`, `/admin/login`
+
+Content lives in `src/lib/content.ts` (projects, services, process, FAQ) and `src/lib/landing.ts` (landing pages).
+Bilingual inline copy uses `<T de="…" en="…" />`.
+
+## SEO
+
+- Per-page titles, descriptions, canonicals, Open Graph/Twitter images; `lang="de-CH"`
+- JSON-LD: Organization, ProfessionalService (local business with geo, hours, areas served), WebSite,
+  BreadcrumbList on every subpage, Service on landing pages, CreativeWork on case studies, FAQPage only
+  where the FAQ is visible on the page
+- `sitemap.xml` generated from content, `robots.txt`, RSS feed, `/logo.png` brand mark, web manifest
+- Static prerendering for all public pages, no layout-shifting fonts (`next/font`), no image requests in hero
 
 ## Environment Variables
 

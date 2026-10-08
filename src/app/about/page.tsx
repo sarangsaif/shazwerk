@@ -1,169 +1,123 @@
-import React from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowUpRight, ArrowLeft, Shield, Award, Zap, Check } from "lucide-react";
+import T from "@/components/i18n/T";
+import PageHero from "@/components/page/PageHero";
+import CtaLink from "@/components/page/CtaLink";
+import Marquee from "@/components/ui/Marquee";
+import SwissCross from "@/components/ui/SwissCross";
+import { CLIENT_SECTORS, OG_IMAGES } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Über SHAZWERK — Studio Philosophie & Schweizer Standards",
+  title: "Studio – Unabhängige Webagentur aus Zürich",
   description:
-    "SHAZWERK ist ein Schweizer Digital Engineering Studio in Zürich und Zug. Wir bauen geschäftskritische Systeme mit kompromissloser Schweizer Präzision und Datensouveränität.",
-  alternates: {
-    canonical: "https://shazwerk.ch/about",
-  },
+    "SHAZWERK ist ein unabhängiges Design- und Engineering-Studio in Zürich. Senior-Team, Schweizer Gestaltung, Datenhaltung in der Schweiz und 100 % Quellcode-Eigentum für unsere Kunden.",
+  alternates: { canonical: "/about" },
   openGraph: {
-    title: "Über SHAZWERK — Studio Philosophie & Schweizer Standards",
-    description:
-      "Schweizer Software- und AI-Studio in Zürich und Zug. Senior Pods und 100% IP-Übergabe.",
-    url: "https://shazwerk.ch/about",
+      images: OG_IMAGES,
+    title: "Studio | SHAZWERK Zürich",
+    description: "Unabhängiges Design- und Engineering-Studio in Zürich.",
+    url: "/about",
   },
 };
 
+const PRINCIPLES = [
+  {
+    title: { de: "Form folgt Funktion.", en: "Form follows function." },
+    text: {
+      de: "Wie im Schweizer Grafikdesign: Raster, Hierarchie, Weissraum. Jedes Element muss seinen Platz verdienen.",
+      en: "Just like Swiss graphic design: grid, hierarchy, white space. Every element has to earn its place.",
+    },
+  },
+  {
+    title: { de: "Senior, nicht gross.", en: "Senior, not big." },
+    text: {
+      de: "Kleine Teams aus erfahrenen Designerinnen und Entwicklern. Sie sprechen jede Woche direkt mit den Menschen, die Ihr Produkt bauen.",
+      en: "Small teams of experienced designers and engineers. You talk to the people building your product, every week.",
+    },
+  },
+  {
+    title: { de: "Millisekunden zählen.", en: "Milliseconds matter." },
+    text: {
+      de: "Performance ist Gestaltung. Wir budgetieren Ladezeiten so streng wie Kosten – für Nutzer und für Google.",
+      en: "Performance is design. We budget load times as strictly as costs – for users and for Google.",
+    },
+  },
+  {
+    title: { de: "Ihr Code. Ihre Daten.", en: "Your code. Your data." },
+    text: {
+      de: "100 % IP-Übertragung, keine proprietären Baukästen, Hosting in der Schweiz. Kein Lock-in.",
+      en: "100% IP transfer, no proprietary builders, hosting in Switzerland. No lock-in.",
+    },
+  },
+];
+
 export default function AboutPage() {
   return (
-    <div className="bg-white text-neutral-900 min-h-screen pt-32 pb-24 px-6 sm:px-10 lg:px-16">
-      <div className="max-w-7xl mx-auto">
-        {/* Breadcrumb */}
-        <div className="mb-8">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-xs font-mono text-neutral-500 hover:text-neutral-950 transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Studio</span>
-          </Link>
+    <>
+      <PageHero
+        crumbs={[{ name: "Studio", href: "/about" }]}
+        eyebrow={<T de="Studio · Zürich" en="Studio · Zurich" />}
+        lines={[
+          <T key="a" de="Schweizer Gestaltung." en="Swiss design." />,
+          <span key="b" className="font-serif font-normal italic text-stone-muted">
+            <T de="Digitales Handwerk." en="Digital craft." />
+          </span>,
+        ]}
+        lead={
+          <T
+            de="SHAZWERK ist ein unabhängiges Studio für Design und Engineering an der Gotthardstrasse in Zürich. Wir arbeiten für Schweizer KMU, Scale-ups und Konzerne, die digital nicht Mittelmass sein wollen."
+            en="SHAZWERK is an independent design and engineering studio on Gotthardstrasse in Zurich. We work for Swiss SMEs, scale-ups and enterprises that refuse to be average online."
+          />
+        }
+      />
+
+      <section className="wrap pb-28" aria-labelledby="principles-title">
+        <h2 id="principles-title" className="eyebrow mb-10 text-stone-muted">
+          <T de="Prinzipien" en="Principles" />
+        </h2>
+        <div className="grid grid-cols-1 border-t border-ink/15 md:grid-cols-2">
+          {PRINCIPLES.map((p, i) => (
+            <div
+              key={i}
+              data-reveal="up"
+              style={{ ["--d" as string]: `${(i % 2) * 100}ms` }}
+              className={`border-b border-ink/15 py-12 md:pr-12 ${i % 2 === 1 ? "md:border-l md:pl-12" : ""}`}
+            >
+              <span className="font-display text-sm text-swiss-red">0{i + 1}</span>
+              <h3 className="mt-6 font-display text-big font-medium"><T de={p.title.de} en={p.title.en} /></h3>
+              <p className="mt-4 max-w-md text-lg text-stone-muted"><T de={p.text.de} en={p.text.en} /></p>
+            </div>
+          ))}
         </div>
+      </section>
 
-        {/* Header */}
-        <div className="pb-16 border-b border-neutral-200">
-          <span className="text-xs font-mono uppercase tracking-wider text-neutral-500 block mb-3">
-            [ STUDIO & ETHOS ]
-          </span>
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-normal tracking-tight text-neutral-950 leading-[1.05] max-w-4xl">
-            Engineering digital products with Swiss precision and creative audacity.
-          </h1>
-          <p className="mt-6 text-xl text-neutral-600 max-w-2xl font-normal leading-relaxed">
-            SHAZWERK is an independent software and AI studio based in Zürich and Zug. We bridge the gap between strategic design and complex systems engineering for companies moving from concept to market reality.
-          </p>
-        </div>
-
-        {/* 2-Column Story Sections */}
-        <div className="py-16 space-y-16">
-          {/* Section 01 */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start pb-16 border-b border-neutral-200">
-            <div className="lg:col-span-4">
-              <span className="text-xs font-mono uppercase tracking-wider text-neutral-500 block mb-2">
-                01 / THE CONVICTION
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-neutral-950">
-                Software as high-precision craft.
-              </h2>
-            </div>
-            <div className="lg:col-span-8 space-y-5 text-base sm:text-lg text-neutral-700 leading-relaxed font-normal">
-              <p>
-                We believe that software engineering should mirror the timeless values of Swiss industrial design: functional clarity, understated confidence, and zero tolerance for superficial vanity metrics.
-              </p>
-              <p>
-                Too many agencies build bloated prototypes that collapse the moment real production data hits the database. At SHAZWERK, we design from day one for operational scale, sub-second latency, and complete data ownership.
-              </p>
-            </div>
-          </div>
-
-          {/* Section 02 */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start pb-16 border-b border-neutral-200">
-            <div className="lg:col-span-4">
-              <span className="text-xs font-mono uppercase tracking-wider text-neutral-500 block mb-2">
-                02 / SENIOR ENGINEERING PODS
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-neutral-950">
-                No junior hand-offs or bureaucracy.
-              </h2>
-            </div>
-            <div className="lg:col-span-8 space-y-5 text-base sm:text-lg text-neutral-700 leading-relaxed font-normal">
-              <p>
-                Legacy consultancies sell you a partner and then hand off your project to inexperienced junior developers behind an opaque curtain of project managers.
-              </p>
-              <p>
-                We run as small, lethal pods composed exclusively of senior software architects, full-stack engineers, and interface designers. You speak directly with the makers architecting your platform every single week.
-              </p>
-            </div>
-          </div>
-
-          {/* Section 03 */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start pb-16 border-b border-neutral-200">
-            <div className="lg:col-span-4">
-              <span className="text-xs font-mono uppercase tracking-wider text-neutral-500 block mb-2">
-                03 / DATA SOVEREIGNTY
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-neutral-950">
-                Swiss data confidentiality by design.
-              </h2>
-            </div>
-            <div className="lg:col-span-8 space-y-5 text-base sm:text-lg text-neutral-700 leading-relaxed font-normal">
-              <p>
-                Switzerland’s reputation for institutional privacy is not accidental. We take data sovereignty seriously: private cloud infrastructure, air-gapped LLMs, localized embeddings, and full compliance with the revised Swiss Federal Act on Data Protection (FADP / nDSG) and European GDPR.
-              </p>
-              <p>
-                Your proprietary business logic and client records remain strictly within designated jurisdictions.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Principles Grid */}
-        <div className="pt-8 pb-16">
-          <span className="text-xs font-mono uppercase tracking-wider text-neutral-500 block mb-3">
-            [ GUIDING PRINCIPLES ]
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-normal tracking-tight text-neutral-950 mb-10">
-            What Governs Every Line of Code
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6 sm:p-8">
-              <span className="text-xs font-mono text-neutral-400 block mb-3">01</span>
-              <h3 className="text-xl font-medium text-neutral-950 mb-2">Honesty in Architecture</h3>
-              <p className="text-neutral-600 text-sm leading-relaxed">
-                We never recommend complex microservices when a monolithic Next.js architecture delivers faster, cheaper, and more reliable outcomes for your current business stage.
-              </p>
-            </div>
-
-            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6 sm:p-8">
-              <span className="text-xs font-mono text-neutral-400 block mb-3">02</span>
-              <h3 className="text-xl font-medium text-neutral-950 mb-2">Zero Vendor Lock-In</h3>
-              <p className="text-neutral-600 text-sm leading-relaxed">
-                You own 100% of your source code, deployment scripts, and intellectual property. No closed proprietary CMS platforms or hostage agreements.
-              </p>
-            </div>
-
-            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6 sm:p-8">
-              <span className="text-xs font-mono text-neutral-400 block mb-3">03</span>
-              <h3 className="text-xl font-medium text-neutral-950 mb-2">Performance as a Feature</h3>
-              <p className="text-neutral-600 text-sm leading-relaxed">
-                Every UI interaction should feel instantaneous. We budget milliseconds aggressively across database queries, network payloads, and DOM paint cycles.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* CTA */}
-        <div className="bg-neutral-950 text-white rounded-3xl p-8 sm:p-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div>
-            <h3 className="text-2xl sm:text-3xl font-medium tracking-tight mb-2">
-              Ready to start a collaboration?
-            </h3>
-            <p className="text-neutral-400 text-sm max-w-lg">
-              Let&apos;s discuss your engineering goals and outline how our team can support your product roadmap.
+      <section className="bg-swiss-red py-28 text-white sm:py-40" aria-labelledby="swiss-title">
+        <div className="wrap grid grid-cols-1 gap-12 lg:grid-cols-12">
+          <SwissCross className="h-20 w-20 text-white [&_path]:fill-swiss-red lg:col-span-2" />
+          <div className="lg:col-span-9 lg:col-start-4">
+            <h2 id="swiss-title" className="font-display text-giant font-medium" data-reveal="up">
+              <T de="Warum Swiss made zählt." en="Why Swiss made matters." />
+            </h2>
+            <p className="mt-10 max-w-2xl text-xl leading-relaxed text-white/85">
+              <T
+                de="Die Schweiz steht für Präzision, Verlässlichkeit und Diskretion. Genau das erwarten unsere Kunden auch von ihrer Software: Datenhaltung in der Schweiz, Konformität mit dem revidierten Datenschutzgesetz (nDSG), Verträge nach Schweizer Recht – und Ansprechpartner in derselben Zeitzone."
+                en="Switzerland stands for precision, reliability and discretion. Our clients expect exactly that from their software: Swiss data residency, compliance with the revised Data Protection Act (nDSG), contracts under Swiss law – and people in the same time zone."
+              />
             </p>
           </div>
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-neutral-950 font-medium text-sm hover:bg-neutral-100 transition-colors shrink-0"
-          >
-            <span>Start a conversation</span>
-            <ArrowUpRight className="w-4 h-4" />
-          </Link>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <section className="py-20" aria-label="Branchen">
+        <p className="wrap eyebrow mb-8 text-stone-muted"><T de="Branchen, für die wir arbeiten" en="Industries we work in" /></p>
+        <Marquee speed={45} className="font-display text-[clamp(2.5rem,6vw,6rem)] font-medium tracking-[-0.04em]" items={CLIENT_SECTORS} />
+      </section>
+
+      <section className="wrap flex flex-col items-start gap-8 pb-28 sm:flex-row sm:items-end sm:justify-between">
+        <h2 className="font-display text-huge font-medium" data-reveal="up">
+          <T de="Lernen wir uns kennen." en="Let’s get to know each other." />
+        </h2>
+        <CtaLink href="/contact"><T de="Kontakt aufnehmen" en="Get in touch" /></CtaLink>
+      </section>
+    </>
   );
 }

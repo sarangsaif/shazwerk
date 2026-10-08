@@ -1,226 +1,226 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, Menu, X, Globe } from "lucide-react";
 import { trackClientEvent } from "@/lib/analytics-client";
 import { useLanguage } from "@/context/LanguageContext";
+import { getLenis } from "@/components/motion/SmoothScroll";
+import ZurichClock from "@/components/ui/ZurichClock";
+import { LANDING_PAGES } from "@/lib/landing";
+import { SITE } from "@/lib/content";
+
+const NAV = [
+  { de: "Arbeiten", en: "Work", href: "/work" },
+  { de: "Leistungen", en: "Services", href: "/services" },
+  { de: "Studio", en: "Studio", href: "/about" },
+  { de: "Kontakt", en: "Contact", href: "/contact" },
+];
 
 export default function Header() {
-  const [zurichTime, setZurichTime] = useState("18:00:00");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const { language, setLanguage } = useLanguage();
-
   const isDe = language === "de";
-
-  const navItems = [
-    { label: isDe ? "Arbeiten" : "Work", href: "/work" },
-    { label: isDe ? "Leistungen" : "Services", href: "/services" },
-    { label: isDe ? "Über uns" : "About", href: "/about" },
-    { label: isDe ? "Kontakt" : "Contact", href: "/contact" },
-  ];
+  const [open, setOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setHidden(y > 120 && y > last);
+      last = y;
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    const updateTime = () => {
-      try {
-        const timeStr = new Intl.DateTimeFormat("de-CH", {
-          timeZone: "Europe/Zurich",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-        }).format(new Date());
-        setZurichTime(timeStr);
-      } catch {
-        setZurichTime("18:00:00");
-      }
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  useEffect(() => setOpen(false), [pathname]);
 
   useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [pathname]);
+    const lenis = getLenis();
+    if (open) {
+      lenis?.stop();
+      document.body.style.overflow = "hidden";
+    } else {
+      lenis?.start();
+      document.body.style.overflow = "";
+    }
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  if (pathname?.startsWith("/admin")) return null;
+
+  const switchLang = (lang: "de" | "en") => {
+    setLanguage(lang);
+    trackClientEvent("lang_switch", { lang });
+  };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 pointer-events-none p-3 sm:p-5">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Left floating badge / Logo dock */}
-        <div
-          className={`pointer-events-auto flex items-center gap-3 bg-white/90 backdrop-blur-md border border-neutral-200/80 rounded-full px-4 py-2.5 shadow-sm transition-all duration-300 ${
-            isScrolled ? "shadow-md border-neutral-300/90" : ""
-          }`}
-        >
+    <>
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[90] focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
+      >
+        {isDe ? "Zum Inhalt springen" : "Skip to content"}
+      </a>
+
+      <header
+        className={`fixed inset-x-0 top-0 z-[80] text-white mix-blend-difference transition-transform duration-700 ease-out-expo ${
+          hidden && !open ? "-translate-y-full" : "translate-y-0"
+        }`}
+      >
+        <div className="wrap grid grid-cols-2 items-center py-5 lg:grid-cols-12">
           <Link
             href="/"
+            aria-label="SHAZWERK – Startseite"
             onClick={() => trackClientEvent("nav_click", { destination: "home_logo" })}
-            className="flex items-center gap-2 group"
+            className="col-span-1 flex items-center gap-2 font-display text-lg font-semibold tracking-[-0.04em] lg:col-span-3"
           >
-            <span className="font-semibold text-neutral-900 tracking-tight text-base hover:text-black transition-colors">
-              shazwerk
-            </span>
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-600"></span>
+            <span>SHAZWERK</span>
+            <span className="inline-block h-2 w-2 bg-white" aria-hidden="true" />
           </Link>
 
-          <span className="hidden md:inline-block text-neutral-300">|</span>
-
-          {/* Zurich Time & Status */}
-          <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-neutral-600">
-            <span>Zürich {zurichTime} CET</span>
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          <div className="eyebrow hidden items-center gap-3 lg:col-span-3 lg:flex">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-60" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
             </span>
-            <span className="text-[11px] text-neutral-500 hidden lg:inline">
-              {isDe ? "Studio Verfügbar" : "Studio Online"}
+            <span>
+              Zürich <ZurichClock />
             </span>
           </div>
-        </div>
 
-        {/* Right floating Navigation pill */}
-        <div
-          className={`pointer-events-auto hidden md:flex items-center gap-1.5 bg-white/90 backdrop-blur-md border border-neutral-200/80 rounded-full p-1.5 shadow-sm transition-all duration-300 ${
-            isScrolled ? "shadow-md border-neutral-300/90" : ""
-          }`}
-        >
-          <nav className="flex items-center gap-1">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => trackClientEvent("nav_click", { destination: item.href })}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
-                    isActive
-                      ? "bg-neutral-900 text-white font-semibold shadow-xs"
-                      : "text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
+          <nav aria-label={isDe ? "Hauptnavigation" : "Main navigation"} className="hidden lg:col-span-4 lg:block">
+            <ul className="flex items-center gap-7 text-sm">
+              {NAV.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={() => trackClientEvent("nav_click", { destination: item.href })}
+                    aria-current={pathname === item.href ? "page" : undefined}
+                    className="roll"
+                  >
+                    <span>
+                      <span>{isDe ? item.de : item.en}</span>
+                      <span aria-hidden="true">{isDe ? item.de : item.en}</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </nav>
 
-          {/* Language Switcher */}
-          <div className="flex items-center bg-neutral-100 rounded-full p-0.5 border border-neutral-200 text-[11px] font-mono">
+          <div className="col-span-1 flex items-center justify-end gap-5 lg:col-span-2">
+            <div className="eyebrow flex items-center gap-1" role="group" aria-label="Sprache / Language">
+              <button
+                type="button"
+                onClick={() => switchLang("de")}
+                aria-pressed={isDe}
+                className={isDe ? "opacity-100" : "opacity-50 hover:opacity-100"}
+              >
+                DE
+              </button>
+              <span className="opacity-50">/</span>
+              <button
+                type="button"
+                onClick={() => switchLang("en")}
+                aria-pressed={!isDe}
+                className={!isDe ? "opacity-100" : "opacity-50 hover:opacity-100"}
+              >
+                EN
+              </button>
+            </div>
             <button
               type="button"
-              onClick={() => {
-                setLanguage("en");
-                trackClientEvent("lang_switch", { lang: "en" });
-              }}
-              className={`px-2 py-0.5 rounded-full transition-all ${
-                !isDe
-                  ? "bg-white text-neutral-950 font-semibold shadow-xs"
-                  : "text-neutral-500 hover:text-neutral-900"
-              }`}
+              onClick={() => setOpen((o) => !o)}
+              aria-expanded={open}
+              aria-controls="site-menu"
+              className="group flex items-center gap-3 text-sm"
             >
-              EN
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setLanguage("de");
-                trackClientEvent("lang_switch", { lang: "de" });
-              }}
-              className={`px-2 py-0.5 rounded-full transition-all ${
-                isDe
-                  ? "bg-white text-neutral-950 font-semibold shadow-xs"
-                  : "text-neutral-500 hover:text-neutral-900"
-              }`}
-            >
-              DE
+              <span className="hidden sm:inline">{open ? (isDe ? "Schliessen" : "Close") : isDe ? "Menü" : "Menu"}</span>
+              <span className="relative block h-3 w-7" aria-hidden="true">
+                <span
+                  className={`absolute left-0 top-0 h-px w-full bg-white transition-transform duration-500 ease-out-expo ${
+                    open ? "translate-y-[6px] rotate-45" : ""
+                  }`}
+                />
+                <span
+                  className={`absolute bottom-0 left-0 h-px w-full bg-white transition-transform duration-500 ease-out-expo ${
+                    open ? "-translate-y-[5px] -rotate-45" : "group-hover:scale-x-75 origin-right"
+                  }`}
+                />
+              </span>
+              <span className="sr-only">{isDe ? "Menü umschalten" : "Toggle menu"}</span>
             </button>
           </div>
-
-          <Link
-            href="/contact"
-            onClick={() => trackClientEvent("cta_click", { location: "header_pill" })}
-            className="ml-0.5 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-red-600 text-white hover:bg-red-700 transition-colors shadow-xs"
-          >
-            <span>{isDe ? "Briefing senden" : "Start a brief"}</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
-          </Link>
         </div>
+      </header>
 
-        {/* Mobile controls */}
-        <div className="flex md:hidden items-center gap-2 pointer-events-auto">
-          {/* Mobile Language Switcher */}
-          <div className="flex items-center bg-white/90 backdrop-blur-md rounded-full p-1 border border-neutral-200 text-[11px] font-mono shadow-xs">
-            <button
-              type="button"
-              onClick={() => setLanguage(isDe ? "en" : "de")}
-              className="px-2.5 py-1 rounded-full font-semibold text-neutral-900"
-            >
-              {isDe ? "DE (CH)" : "EN (CH)"}
-            </button>
+      {/* Fullscreen menu */}
+      <div
+        id="site-menu"
+        className={`fixed inset-0 z-[75] bg-ink text-paper transition-[clip-path] duration-[900ms] ease-in-out-quart ${
+          open ? "[clip-path:inset(0_0_0_0)]" : "pointer-events-none [clip-path:inset(0_0_100%_0)]"
+        }`}
+        aria-hidden={!open}
+        // @ts-expect-error -- inert is valid HTML, React 18 types lag behind
+        inert={!open ? "" : undefined}
+      >
+        <div className="wrap flex h-full flex-col justify-between pb-8 pt-28">
+          <nav aria-label={isDe ? "Menü" : "Menu"}>
+            <ul>
+              {[{ de: "Start", en: "Home", href: "/" }, ...NAV].map((item, i) => (
+                <li key={item.href} className="overflow-hidden border-b border-paper/15">
+                  <Link
+                    href={item.href}
+                    className={`group flex items-baseline justify-between py-2 font-display text-[clamp(2.75rem,8vw,7.5rem)] font-medium leading-[1] tracking-[-0.05em] transition-transform duration-700 ease-out-expo ${
+                      open ? "translate-y-0" : "translate-y-full"
+                    }`}
+                    style={{ transitionDelay: open ? `${150 + i * 60}ms` : "0ms" }}
+                  >
+                    <span className="transition-transform duration-500 ease-out-expo group-hover:translate-x-4 group-hover:text-swiss-red">
+                      {isDe ? item.de : item.en}
+                    </span>
+                    <span className="eyebrow text-paper/50">0{i + 1}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="grid gap-8 pt-10 text-sm text-paper/70 md:grid-cols-3">
+            <div>
+              <p className="eyebrow mb-3 text-paper/40">{isDe ? "Schwerpunkte" : "Focus"}</p>
+              <ul className="space-y-1">
+                {LANDING_PAGES.map((p) => (
+                  <li key={p.slug}>
+                    <Link href={`/${p.slug}`} className="link-line hover:text-paper">
+                      {p.eyebrow.replace(" · ", " ")}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="eyebrow mb-3 text-paper/40">Studio</p>
+              <p>
+                {SITE.street}
+                <br />
+                {SITE.zip} {SITE.city}
+              </p>
+            </div>
+            <div className="md:text-right">
+              <p className="eyebrow mb-3 text-paper/40">{isDe ? "Neues Projekt" : "New project"}</p>
+              <a href={`mailto:${SITE.email}`} className="link-line font-display text-2xl text-paper">
+                {SITE.email}
+              </a>
+            </div>
           </div>
-
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2.5 rounded-full bg-white/95 backdrop-blur-md border border-neutral-200 text-neutral-900 shadow-sm"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
         </div>
       </div>
-
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="pointer-events-auto md:hidden fixed inset-x-3 top-20 bg-white/98 backdrop-blur-xl border border-neutral-200 rounded-2xl p-6 shadow-2xl transition-all">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-100 text-xs font-mono text-neutral-500">
-              <span>Zürich {zurichTime} CET</span>
-              <span className="flex items-center gap-1.5 text-emerald-600 font-medium">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
-                {isDe ? "Bereit für Anfragen" : "Available for briefs"}
-              </span>
-            </div>
-
-            <nav className="flex flex-col gap-2 pt-2">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-2xl font-medium tracking-tight text-neutral-900 hover:text-red-600 py-1 transition-colors flex items-center justify-between"
-                >
-                  <span>{item.label}</span>
-                  <ArrowUpRight className="w-5 h-5 text-neutral-400" />
-                </Link>
-              ))}
-            </nav>
-
-            <div className="pt-4 border-t border-neutral-100 flex flex-col gap-3">
-              <Link
-                href="/contact"
-                className="w-full py-3 text-center rounded-xl bg-neutral-950 text-white font-medium text-sm hover:bg-neutral-800 transition-colors"
-              >
-                {isDe ? "Projekt unverbindlich anfragen" : "Get in touch"}
-              </Link>
-              <div className="text-center text-xs text-neutral-500 font-mono">
-                hello@shazwerk.ch · Gotthardstrasse 26, Zürich
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </header>
+    </>
   );
 }

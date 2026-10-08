@@ -1,88 +1,87 @@
-import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Inter, Inter_Tight, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import JsonLd from "@/components/seo/JsonLd";
 import PageViewTracker from "@/components/analytics/PageViewTracker";
+import SmoothScroll from "@/components/motion/SmoothScroll";
+import RevealObserver from "@/components/motion/RevealObserver";
+import Cursor from "@/components/motion/Cursor";
 import { LanguageProvider } from "@/context/LanguageContext";
 
-const inter = Inter({
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const interTight = Inter_Tight({
   subsets: ["latin"],
-  variable: "--font-sans",
+  weight: ["400", "500", "600"],
+  variable: "--font-display",
   display: "swap",
 });
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-serif",
+  display: "swap",
+});
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
-});
+const TITLE = "SHAZWERK – Webagentur & Software Studio Zürich";
+const DESCRIPTION =
+  "SHAZWERK ist eine Webagentur und Software-Studio in Zürich. Wir gestalten und entwickeln Websites, Webapplikationen, Apps und Enterprise AI für Schweizer Unternehmen – mit Hosting in der Schweiz und 100 % Quellcode-Eigentum.";
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F1EFEA" },
+    { media: "(prefers-color-scheme: dark)", color: "#0D0D0D" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://shazwerk.ch"),
   title: {
-    default: "SHAZWERK — Software Agentur Zürich & Digital Product Studio Schweiz",
-    template: "%s | SHAZWERK",
+    default: TITLE,
+    template: "%s | SHAZWERK Zürich",
   },
-  description:
-    "Schweizer Digital Engineering Studio in Zürich. Wir entwickeln massgeschneiderte Webplattformen, anspruchsvolle Software und souveräne Enterprise AI mit Schweizer Präzision und 100% Datensouveränität.",
+  description: DESCRIPTION,
+  applicationName: "SHAZWERK",
   keywords: [
+    "Webagentur Zürich",
+    "Webdesign Agentur Schweiz",
     "Software Agentur Zürich",
     "Softwareentwicklung Schweiz",
-    "Webagentur Zürich",
-    "App Entwicklung Zürich",
-    "Next.js Agentur Schweiz",
-    "AI Agentur Zürich",
-    "Enterprise AI Schweiz",
+    "App Entwicklung Schweiz",
     "Digitalagentur Zürich",
-    "Private LLMs Schweiz nDSG",
-    "Softwareentwicklung Zürich",
-    "FINMA Softwareentwicklung",
-    "Web Application Development Switzerland",
-    "Digital Product Studio Zurich",
-    "Swiss software agency",
+    "Next.js Agentur Schweiz",
+    "Enterprise AI Schweiz",
+    "KI Agentur Zürich",
+    "Website erstellen lassen Zürich",
   ],
   authors: [{ name: "SHAZWERK", url: "https://shazwerk.ch" }],
   creator: "SHAZWERK GmbH",
   publisher: "SHAZWERK GmbH",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
+  category: "technology",
+  formatDetection: { email: false, address: false, telephone: false },
   alternates: {
-    canonical: "https://shazwerk.ch",
-    languages: {
-      "de-CH": "https://shazwerk.ch",
-      "en-CH": "https://shazwerk.ch",
-      "x-default": "https://shazwerk.ch",
-    },
+    canonical: "/",
+    types: { "application/rss+xml": "/feed.xml" },
   },
   openGraph: {
-    title: "SHAZWERK — Software Agentur Zürich & Digital Product Studio Schweiz",
-    description:
-      "Schweizer Softwareentwicklung & souveräne Enterprise AI mit Schweizer Präzision. Next.js, TypeScript, Private LLMs & 100% Datensouveränität.",
-    url: "https://shazwerk.ch",
+    title: TITLE,
+    description: DESCRIPTION,
+    url: "/",
     siteName: "SHAZWERK",
     locale: "de_CH",
-    alternateLocale: ["en_CH"],
+    alternateLocale: ["en_GB"],
     type: "website",
-    images: [
-      {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
-        alt: "SHAZWERK — Software Agentur Zürich & Digital Product Studio Schweiz",
-      },
-    ],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: TITLE }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "SHAZWERK — Software Agentur Zürich & Digital Product Studio Schweiz",
-    description:
-      "Schweizer Softwareentwicklung & souveräne Enterprise AI mit Schweizer Präzision. Next.js, TypeScript, Private LLMs & 100% Datensouveränität.",
-    images: ["/opengraph-image"],
+    title: TITLE,
+    description: DESCRIPTION,
   },
   robots: {
     index: true,
@@ -103,23 +102,31 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang="de-CH"
+      className={`${inter.variable} ${interTight.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
+        {/* Enables reveal animations only when JS runs; content stays visible otherwise. */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
         <JsonLd />
       </head>
-      <body className="min-h-screen flex flex-col bg-white text-neutral-900 font-sans antialiased selection:bg-[#FFE252] selection:text-neutral-900">
+      <body className="flex min-h-screen flex-col bg-paper font-sans text-ink antialiased">
         <LanguageProvider>
+          <SmoothScroll />
+          <RevealObserver />
+          <Cursor />
           <PageViewTracker />
           <Header />
-          <main className="flex-grow">{children}</main>
+          <main id="main" className="flex-grow">
+            {children}
+          </main>
           <Footer />
         </LanguageProvider>
+        <div className="grain" aria-hidden="true" />
       </body>
     </html>
   );
