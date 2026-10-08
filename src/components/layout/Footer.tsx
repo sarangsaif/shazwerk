@@ -7,20 +7,21 @@ import { ArrowUpRight } from "lucide-react";
 import { trackClientEvent } from "@/lib/analytics-client";
 import { useLanguage } from "@/context/LanguageContext";
 import { LANDING_PAGES } from "@/lib/landing";
-import { SITE } from "@/lib/content";
-import ZurichClock from "@/components/ui/ZurichClock";
+import { useContent } from "@/components/cms/ContentProvider";
+import SbbClock from "@/components/ui/SbbClock";
 import Magnetic from "@/components/motion/Magnetic";
 
 export default function Footer() {
   const pathname = usePathname();
   const { language } = useLanguage();
   const isDe = language === "de";
+  const { settings } = useContent();
   const [copied, setCopied] = useState(false);
 
   if (pathname?.startsWith("/admin")) return null;
 
   const copyEmail = () => {
-    navigator.clipboard?.writeText(SITE.email);
+    navigator.clipboard?.writeText(settings.email);
     setCopied(true);
     trackClientEvent("copy_email", { source: "footer" });
     setTimeout(() => setCopied(false), 2200);
@@ -46,7 +47,7 @@ export default function Footer() {
               onClick={copyEmail}
               className="group text-left font-display text-big tracking-[-0.03em]"
             >
-              <span className="link-line">{SITE.email}</span>
+              <span className="link-line">{settings.email}</span>
               <span className="eyebrow mt-2 block text-paper/60">
                 {copied ? (isDe ? "✓ Kopiert" : "✓ Copied") : isDe ? "Klicken zum Kopieren" : "Click to copy"}
               </span>
@@ -71,14 +72,14 @@ export default function Footer() {
         <div>
           <p className="eyebrow mb-4 text-paper/60">Studio</p>
           <address className="not-italic leading-relaxed text-paper/80">
-            {SITE.legalName}
+            SHAZWERK{settings.ownerName ? ` · ${settings.ownerName}` : ""}
             <br />
-            {SITE.street}
+            {settings.street}
             <br />
-            {SITE.zip} {SITE.city}, {isDe ? "Schweiz" : "Switzerland"}
+            {settings.zip} {settings.city}, {isDe ? "Schweiz" : "Switzerland"}
             <br />
-            <a href={`tel:${SITE.phoneE164}`} className="link-line">
-              {SITE.phone}
+            <a href={`tel:${settings.phone.replace(/[^+\d]/g, "")}`} className="link-line">
+              {settings.phone}
             </a>
           </address>
         </div>
@@ -105,10 +106,8 @@ export default function Footer() {
         </nav>
         <div>
           <p className="eyebrow mb-4 text-paper/60">{isDe ? "Ortszeit" : "Local time"}</p>
-          <p className="font-display text-3xl tracking-[-0.03em]">
-            <ZurichClock />
-          </p>
-          <p className="mt-1 text-paper/60">Zürich, CET</p>
+          <SbbClock className="h-28 w-28" />
+          <p className="mt-3 text-paper/60">{settings.city}, CET</p>
         </div>
       </div>
 
@@ -130,8 +129,8 @@ export default function Footer() {
 
       <div className="wrap flex flex-col gap-4 border-t border-paper/15 py-6 text-xs text-paper/60 sm:flex-row sm:items-center sm:justify-between">
         <p>
-          © {new Date().getFullYear()} {SITE.legalName} · UID {SITE.uid} ·{" "}
-          {isDe ? "Webagentur & Software Studio Zürich" : "Web agency & software studio Zurich"}
+          © {new Date().getFullYear()} SHAZWERK ·{" "}
+          {isDe ? `Webdesign & Software Studio ${settings.city}` : `Web design & software studio ${settings.city}`}
         </p>
         <ul className="flex flex-wrap items-center gap-5">
           <li><Link href="/privacy" className="link-line hover:text-paper">{isDe ? "Datenschutz" : "Privacy"}</Link></li>

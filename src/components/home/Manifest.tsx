@@ -1,5 +1,6 @@
 import T from "@/components/i18n/T";
 import ScrollHighlight from "./ScrollHighlight";
+import type { Bi } from "@/lib/content";
 
 const STATS = [
   { value: "4–12", unit: { de: "Wochen", en: "weeks" }, label: { de: "von der Idee bis Go-Live", en: "from idea to launch" } },
@@ -8,7 +9,7 @@ const STATS = [
   { value: "<1", unit: { de: "Sek.", en: "sec" }, label: { de: "Ladezeit, grüne Core Web Vitals", en: "load time, green Core Web Vitals" } },
 ];
 
-export default function Manifest() {
+export default function Manifest({ manifesto }: { manifesto: Bi }) {
   return (
     <section id="manifest" className="wrap py-28 sm:py-40" aria-labelledby="manifest-title">
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
@@ -17,8 +18,8 @@ export default function Manifest() {
         </h2>
         <ScrollHighlight
           className="font-display text-big font-medium lg:col-span-9"
-          de="Wir sind ein unabhängiges Studio aus Zürich. Wir verbinden Schweizer Gestaltung mit moderner Technologie und bauen digitale Produkte, die präzise funktionieren wie ein Uhrwerk – und so gut aussehen, dass man sie zeigen will."
-          en="We are an independent studio from Zurich. We combine Swiss design with modern engineering to build digital products that run with the precision of a watch movement – and look good enough that you want to show them off."
+          de={manifesto.de}
+          en={manifesto.en}
         />
       </div>
 

@@ -7,14 +7,14 @@ import SwissCross from "@/components/ui/SwissCross";
 import { CLIENT_SECTORS, OG_IMAGES } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Studio – Unabhängige Webagentur aus Zürich",
+  title: "Studio – Unabhängige Webagentur aus Winterthur",
   description:
-    "SHAZWERK ist ein unabhängiges Design- und Engineering-Studio in Zürich. Senior-Team, Schweizer Gestaltung, Datenhaltung in der Schweiz und 100 % Quellcode-Eigentum für unsere Kunden.",
+    "SHAZWERK ist ein junges, unabhängiges Design- und Engineering-Studio aus Winterthur. Persönliche Betreuung, Schweizer Gestaltung, Datenhaltung in der Schweiz und 100 % Quellcode-Eigentum für unsere Kunden.",
   alternates: { canonical: "/about" },
   openGraph: {
       images: OG_IMAGES,
     title: "Studio | SHAZWERK Zürich",
-    description: "Unabhängiges Design- und Engineering-Studio in Zürich.",
+    description: "Unabhängiges Design- und Engineering-Studio aus Winterthur.",
     url: "/about",
   },
 };
@@ -28,10 +28,10 @@ const PRINCIPLES = [
     },
   },
   {
-    title: { de: "Senior, nicht gross.", en: "Senior, not big." },
+    title: { de: "Klein, nicht kleinlich.", en: "Small, not small-minded." },
     text: {
-      de: "Kleine Teams aus erfahrenen Designerinnen und Entwicklern. Sie sprechen jede Woche direkt mit den Menschen, die Ihr Produkt bauen.",
-      en: "Small teams of experienced designers and engineers. You talk to the people building your product, every week.",
+      de: "Als junges Studio haben wir keine Projektmanager-Schichten. Sie sprechen jede Woche direkt mit der Person, die Ihr Produkt baut.",
+      en: "As a young studio we have no layers of project managers. Every week you talk directly to the person building your product.",
     },
   },
   {
@@ -55,7 +55,7 @@ export default function AboutPage() {
     <>
       <PageHero
         crumbs={[{ name: "Studio", href: "/about" }]}
-        eyebrow={<T de="Studio · Zürich" en="Studio · Zurich" />}
+        eyebrow={<T de="Studio · Winterthur" en="Studio · Winterthur" />}
         lines={[
           <T key="a" de="Schweizer Gestaltung." en="Swiss design." />,
           <span key="b" className="font-serif font-normal italic text-stone-muted">
@@ -64,8 +64,8 @@ export default function AboutPage() {
         ]}
         lead={
           <T
-            de="SHAZWERK ist ein unabhängiges Studio für Design und Engineering an der Gotthardstrasse in Zürich. Wir arbeiten für Schweizer KMU, Scale-ups und Konzerne, die digital nicht Mittelmass sein wollen."
-            en="SHAZWERK is an independent design and engineering studio on Gotthardstrasse in Zurich. We work for Swiss SMEs, scale-ups and enterprises that refuse to be average online."
+            de="SHAZWERK ist ein junges, unabhängiges Studio für Design und Engineering aus Winterthur. Wir arbeiten für KMU, Start-ups und Unternehmen in der Region Zürich und der ganzen Schweiz, die digital nicht Mittelmass sein wollen."
+            en="SHAZWERK is a young, independent design and engineering studio from Winterthur. We work for SMEs, start-ups and companies around Zurich and across Switzerland that refuse to be average online."
           />
         }
       />

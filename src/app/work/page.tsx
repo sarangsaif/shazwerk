@@ -4,7 +4,8 @@ import { ArrowUpRight } from "lucide-react";
 import T from "@/components/i18n/T";
 import PageHero from "@/components/page/PageHero";
 import ProjectPoster from "@/components/ui/ProjectPoster";
-import { PROJECTS, SITE, OG_IMAGES } from "@/lib/content";
+import { SITE, OG_IMAGES } from "@/lib/content";
+import { getPublishedProjects } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Referenzen & Projekte – Websites, Software & AI aus Zürich",
@@ -19,7 +20,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function WorkPage() {
+export default async function WorkPage() {
+  const PROJECTS = await getPublishedProjects();
   const listSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",

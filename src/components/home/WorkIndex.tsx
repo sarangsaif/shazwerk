@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import { PROJECTS } from "@/lib/content";
+import { useContent } from "@/components/cms/ContentProvider";
 import ProjectPoster from "@/components/ui/ProjectPoster";
 import { trackClientEvent } from "@/lib/analytics-client";
 
@@ -12,6 +12,7 @@ import { trackClientEvent } from "@/lib/analytics-client";
 export default function WorkIndex() {
   const { language } = useLanguage();
   const isDe = language === "de";
+  const { projects: PROJECTS } = useContent();
   const [active, setActive] = useState<number | null>(null);
   const floatRef = useRef<HTMLDivElement>(null);
   const pos = useRef({ x: 0, y: 0, cx: 0, cy: 0 });

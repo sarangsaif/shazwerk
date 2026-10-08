@@ -19,11 +19,41 @@ export interface LandingPage {
   cta: string;
 }
 
-const CITIES = ["Zürich", "Zug", "Basel", "Bern", "Luzern", "St. Gallen", "Winterthur", "Genf"];
+const CITIES = ["Winterthur", "Zürich", "Frauenfeld", "Schaffhausen", "St. Gallen", "Zug", "Basel", "Bern", "Luzern"];
 
 export const AREA_SERVED = CITIES;
 
 export const LANDING_PAGES: LandingPage[] = [
+  {
+    slug: "webagentur-winterthur",
+    metaTitle: "Webagentur Winterthur – Webdesign & Webentwicklung",
+    metaDescription:
+      "Webagentur in Winterthur für Webdesign, Websites, Webapplikationen und SEO. Persönlich, schnell und mit Schweizer Hosting – für KMU, Start-ups und Unternehmen in Winterthur und Umgebung.",
+    keywords: ["Webagentur Winterthur", "Webdesign Winterthur", "Website erstellen lassen Winterthur", "Webentwicklung Winterthur", "SEO Winterthur"],
+    eyebrow: "Webagentur · Winterthur",
+    h1: "Webagentur Winterthur.",
+    h1Accent: "Persönlich und präzise.",
+    lead: "Wir sind ein junges Studio aus Winterthur und gestalten Websites und Webapplikationen für Unternehmen aus der Region – mit kurzen Wegen, festen Preisen und Hosting in der Schweiz.",
+    serviceName: "Webdesign & Webentwicklung Winterthur",
+    pillars: [
+      { title: "Lokal & persönlich", text: "Ein Ansprechpartner von der ersten Idee bis zum Go-Live. Treffen in Winterthur oder per Video – wie es Ihnen passt." },
+      { title: "Design, das auffällt", text: "Individuelles Webdesign im Schweizer Stil statt Baukasten-Vorlage – damit Ihr Unternehmen im Gedächtnis bleibt." },
+      { title: "Gefunden werden", text: "Technisches SEO, lokale Einträge und schnelle Ladezeiten, damit Kundinnen und Kunden aus Winterthur Sie bei Google finden." },
+    ],
+    bodyTitle: "Eine Website für Ihr Unternehmen in Winterthur",
+    body: [
+      "Ob Handwerksbetrieb, Praxis, Restaurant, Start-up oder Industrie-KMU: Ihre Website ist oft der erste Kontakt mit neuen Kundinnen und Kunden. Sie muss schnell laden, auf dem Handy perfekt funktionieren und klar zeigen, warum man gerade Sie anfragen sollte.",
+      "Als Webagentur in Winterthur bauen wir genau solche Websites – individuell gestaltet, technisch sauber und für Google optimiert. Sie erhalten einen festen Preis pro Meilenstein und behalten 100 % der Rechte an Design und Code.",
+    ],
+    checklist: ["Individuelles Webdesign", "Optimiert für Smartphones", "Lokales SEO für Winterthur", "Google Business Profil", "Hosting in der Schweiz", "Pflege & Support"],
+    faq: [
+      { q: "Was kostet eine Website in Winterthur?", a: "Das hängt von Umfang und Funktionen ab. Nach einem kostenlosen Erstgespräch erhalten Sie ein verbindliches Festpreis-Angebot." },
+      { q: "Können wir uns persönlich treffen?", a: "Ja, gerne in Winterthur oder Umgebung – oder per Videocall, wenn das für Sie einfacher ist." },
+      { q: "Helfen Sie auch bei Google und lokalen Einträgen?", a: "Ja. Wir richten technisches SEO, strukturierte Daten und Ihr Google Business Profil ein, damit Sie in Winterthur besser gefunden werden." },
+    ],
+    projects: ["alpine-dynamics", "helvetia-biosystems"],
+    cta: "Erstgespräch vereinbaren",
+  },
   {
     slug: "webagentur-zuerich",
     metaTitle: "Webagentur Zürich – Websites & Webplattformen mit Next.js",
@@ -43,7 +73,7 @@ export const LANDING_PAGES: LandingPage[] = [
     bodyTitle: "Warum Unternehmen in Zürich mit uns ihre Website neu bauen",
     body: [
       "Eine Website ist heute der erste Eindruck, der wichtigste Vertriebskanal und oft das Herz der Kundenbeziehung. Trotzdem setzen viele Agenturen auf schwere Baukästen, die langsam laden, schlecht ranken und sich kaum weiterentwickeln lassen.",
-      "Als Webagentur in Zürich verbinden wir Schweizer Gestaltung mit moderner Technologie. Jede Seite wird individuell entworfen, mit Next.js umgesetzt und auf Schweizer Servern betrieben. Das Ergebnis: Websites, die Besucher beeindrucken, bei Google sichtbar sind und mit Ihrem Unternehmen wachsen.",
+      "Von Winterthur aus arbeiten wir für Unternehmen in Zürich und der ganzen Deutschschweiz. Wir verbinden Schweizer Gestaltung mit moderner Technologie. Jede Seite wird individuell entworfen, mit Next.js umgesetzt und auf Schweizer Servern betrieben. Das Ergebnis: Websites, die Besucher beeindrucken, bei Google sichtbar sind und mit Ihrem Unternehmen wachsen.",
     ],
     checklist: ["Individuelles Design statt Template", "Mehrsprachig (de-CH, fr-CH, it-CH, en)", "Hosting in der Schweiz", "Barrierefrei nach WCAG 2.2", "Tracking ohne Cookie-Banner möglich", "100 % Quellcode-Eigentum"],
     faq: [
@@ -88,7 +118,7 @@ export const LANDING_PAGES: LandingPage[] = [
     slug: "software-agentur-zuerich",
     metaTitle: "Software Agentur Zürich – Individuelle Softwareentwicklung",
     metaDescription:
-      "Software Agentur in Zürich für individuelle Softwareentwicklung, Webapplikationen und Prozessautomatisierung. Senior-Team, Festpreise pro Meilenstein, 100 % Quellcode-Eigentum und Hosting in der Schweiz.",
+      "Software Agentur in Zürich für individuelle Softwareentwicklung, Webapplikationen und Prozessautomatisierung. persönliche Betreuung, Festpreise pro Meilenstein, 100 % Quellcode-Eigentum und Hosting in der Schweiz.",
     keywords: ["Software Agentur Zürich", "Softwareentwicklung Zürich", "Individualsoftware Schweiz", "Softwareentwicklung Schweiz", "Software Firma Zürich"],
     eyebrow: "Softwareentwicklung · Zürich",
     h1: "Software Agentur Zürich.",
@@ -96,7 +126,7 @@ export const LANDING_PAGES: LandingPage[] = [
     lead: "Individualsoftware für Prozesse, die Standardlösungen nicht abbilden: Webapplikationen, interne Tools, Schnittstellen und die Modernisierung gewachsener Systeme.",
     serviceName: "Individuelle Softwareentwicklung",
     pillars: [
-      { title: "Senior-Team", text: "Keine Juniors, kein Offshoring. Sie arbeiten direkt mit den Personen, die Ihre Software architektonisch verantworten." },
+      { title: "Direkter Draht", text: "Kein Offshoring, keine Projektmanager-Schichten. Sie arbeiten direkt mit der Person, die Ihre Software baut." },
       { title: "Festpreis pro Meilenstein", text: "Klare Etappen, klare Kosten. Jeden Freitag eine lauffähige Version auf Staging." },
       { title: "Ihr Code, Ihre Daten", text: "100 % IP-Übertragung, dokumentierte Architektur und Hosting in Schweizer Rechenzentren." },
     ],

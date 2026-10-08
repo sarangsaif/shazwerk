@@ -3,12 +3,13 @@ import T from "@/components/i18n/T";
 import PageHero from "@/components/page/PageHero";
 import ContactForm from "@/components/page/ContactForm";
 import ZurichClock from "@/components/ui/ZurichClock";
-import { SITE, OG_IMAGES } from "@/lib/content";
+import { SITE, OG_IMAGES, toE164 } from "@/lib/content";
+import { getContent } from "@/lib/cms";
 
 export const metadata: Metadata = {
-  title: "Kontakt – Projekt anfragen bei der Webagentur in Zürich",
+  title: "Kontakt – Projekt anfragen bei der Webagentur in Winterthur",
   description:
-    "Projekt anfragen bei SHAZWERK in Zürich: Website, Software, App oder Enterprise AI. Kostenloses Erstgespräch und Antwort innerhalb eines Werktags. Gotthardstrasse 26, 8002 Zürich.",
+    "Projekt anfragen bei SHAZWERK in Winterthur: Website, Software, App oder Enterprise AI. Kostenloses Erstgespräch und Antwort innerhalb eines Werktags. Neuwiesenstrasse 18, 8400 Winterthur.",
   alternates: { canonical: "/contact" },
   openGraph: {
       images: OG_IMAGES,
@@ -18,7 +19,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { settings: st } = await getContent();
   const schema = {
     "@context": "https://schema.org",
     "@type": "ContactPage",
@@ -46,28 +48,28 @@ export default function ContactPage() {
         <aside className="space-y-10 text-lg lg:col-span-4">
           <div>
             <p className="eyebrow mb-3 text-stone-muted">E-Mail</p>
-            <a href={`mailto:${SITE.email}`} className="link-line font-display text-2xl tracking-[-0.02em]">
-              {SITE.email}
+            <a href={`mailto:${st.email}`} className="link-line font-display text-2xl tracking-[-0.02em]">
+              {st.email}
             </a>
           </div>
           <div>
             <p className="eyebrow mb-3 text-stone-muted"><T de="Telefon" en="Phone" /></p>
-            <a href={`tel:${SITE.phoneE164}`} className="link-line font-display text-2xl tracking-[-0.02em]">
-              {SITE.phone}
+            <a href={`tel:${toE164(st.phone)}`} className="link-line font-display text-2xl tracking-[-0.02em]">
+              {st.phone}
             </a>
           </div>
           <div>
             <p className="eyebrow mb-3 text-stone-muted">Studio</p>
             <address className="not-italic">
-              {SITE.legalName}
+              SHAZWERK{st.ownerName ? ` · ${st.ownerName}` : ""}
               <br />
-              {SITE.street}
+              {st.street}
               <br />
-              {SITE.zip} {SITE.city}
+              {st.zip} {st.city}
             </address>
           </div>
           <div>
-            <p className="eyebrow mb-3 text-stone-muted"><T de="Ortszeit Zürich" en="Local time Zurich" /></p>
+            <p className="eyebrow mb-3 text-stone-muted"><T de={`Ortszeit ${st.city}`} en={`Local time ${st.city}`} /></p>
             <p className="font-display text-2xl"><ZurichClock /></p>
           </div>
           <ul className="space-y-2 border-t border-ink/15 pt-8 text-base text-stone-muted">

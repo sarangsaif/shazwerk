@@ -1,37 +1,34 @@
 import crypto from "crypto";
 import { cookies } from "next/headers";
 
-const ADMIN_SECRET = process.env.ADMIN_SECRET || "shazwerk_jwt_secret_ch_2026_production";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Ïmpega@1122";
+/**
+ * Admin auth. Credentials come only from environment variables:
+ *   ADMIN_PASSWORD – the portal password (required in production)
+ *   ADMIN_SECRET   – optional signing secret; derived from the password when unset
+ * In local development "admin" works when ADMIN_PASSWORD is not set.
+ */
 const COOKIE_NAME = "shazwerk_admin_session";
+const IS_PROD = process.env.NODE_ENV === "production";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || (IS_PROD ? "" : "admin");
+const ADMIN_SECRET =
+  process.env.ADMIN_SECRET ||
+  crypto.createHash("sha256").update(`shazwerk-session:${ADMIN_PASSWORD}`).digest("hex");
+
+export function adminConfigured(): boolean {
+  return ADMIN_PASSWORD.length > 0;
+}
 
 export function verifyPassword(password: string): boolean {
-  if (!password) return false;
-  
-  // Primary timing-safe buffer comparison
-  const inputBuf = Buffer.from(password);
-  const targetBuf = Buffer.from(ADMIN_PASSWORD);
-  
-  if (inputBuf.length === targetBuf.length && crypto.timingSafeEqual(inputBuf, targetBuf)) {
-    return true;
-  }
-
-  // Also safely verify normalized variant (e.g. keyboard typing 'Impega@1122' vs 'Ïmpega@1122')
-  const altPassword = ADMIN_PASSWORD.startsWith("Ï") 
-    ? "I" + ADMIN_PASSWORD.slice(1) 
-    : "Ï" + ADMIN_PASSWORD.slice(1);
-  const altBuf = Buffer.from(altPassword);
-  if (inputBuf.length === altBuf.length && crypto.timingSafeEqual(inputBuf, altBuf)) {
-    return true;
-  }
-
-  return false;
+  if (!adminConfigured() || typeof password !== "string" || !password) return false;
+  const a = crypto.createHash("sha256").update(password).digest();
+  const b = crypto.createHash("sha256").update(ADMIN_PASSWORD).digest();
+  return crypto.timingSafeEqual(a, b);
 }
 
 export function createSessionToken(): string {
   const payload = {
     role: "admin",
-    exp: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days
+    exp: Date.now() + 7 * 24 * 60 * 60 * 1000,
     nonce: crypto.randomBytes(16).toString("hex"),
   };
   const str = Buffer.from(JSON.stringify(payload)).toString("base64url");
@@ -40,26 +37,24 @@ export function createSessionToken(): string {
 }
 
 export function verifySessionToken(token: string): boolean {
+  if (!adminConfigured()) return false;
   try {
-    const parts = token.split(".");
-    if (parts.length !== 2) return false;
-    const [payloadStr, signature] = parts;
-    const expectedSig = crypto.createHmac("sha256", ADMIN_SECRET).update(payloadStr).digest("base64url");
-    if (signature !== expectedSig) return false;
-
+    const [payloadStr, signature] = token.split(".");
+    if (!payloadStr || !signature) return false;
+    const expected = crypto.createHmac("sha256", ADMIN_SECRET).update(payloadStr).digest("base64url");
+    const a = Buffer.from(signature);
+    const b = Buffer.from(expected);
+    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return false;
     const payload = JSON.parse(Buffer.from(payloadStr, "base64url").toString("utf-8"));
-    if (Date.now() > payload.exp) return false;
-    return payload.role === "admin";
+    return payload.role === "admin" && Date.now() < payload.exp;
   } catch {
     return false;
   }
 }
 
 export function isAdminAuthenticated(): boolean {
-  const cookieStore = cookies();
-  const token = cookieStore.get(COOKIE_NAME)?.value;
-  if (!token) return false;
-  return verifySessionToken(token);
+  const token = cookies().get(COOKIE_NAME)?.value;
+  return token ? verifySessionToken(token) : false;
 }
 
 export { COOKIE_NAME };

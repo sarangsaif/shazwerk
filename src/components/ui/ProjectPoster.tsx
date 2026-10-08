@@ -14,6 +14,19 @@ export default function ProjectPoster({
   label?: boolean;
 }) {
   const { hue, motif, num, client } = project;
+
+  if (project.image) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={project.image}
+        alt={`${client} – Projekt`}
+        loading="lazy"
+        className={`${className} object-cover`}
+        style={{ backgroundColor: hue }}
+      />
+    );
+  }
   const dark = hue === "#141414";
   const bg = dark ? "#141414" : hue;
   const fg = "#F1EFEA";

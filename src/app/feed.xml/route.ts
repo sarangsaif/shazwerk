@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { PROJECTS } from "@/lib/content";
+import { getPublishedProjects } from "@/lib/cms";
 import { LANDING_PAGES } from "@/lib/landing";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const PROJECTS = await getPublishedProjects();
   const baseUrl = "https://www.shazwerk.ch";
   const now = new Date().toUTCString();
 

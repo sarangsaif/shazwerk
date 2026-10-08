@@ -1,17 +1,20 @@
 import React from "react";
-import { SITE, SERVICES } from "@/lib/content";
+import { SITE, SiteContent, toE164 } from "@/lib/content";
 import { AREA_SERVED } from "@/lib/landing";
 
 /** Site-wide structured data: Organization, ProfessionalService (local business) and WebSite. */
-export default function JsonLd() {
+export default function JsonLd({ content }: { content: SiteContent }) {
   const baseUrl = SITE.url;
+  const st = content.settings;
+  const phone = toE164(st.phone);
+  const sameAs = [st.social.linkedin, st.social.instagram, st.social.github].filter(Boolean);
 
   const address = {
     "@type": "PostalAddress",
-    streetAddress: SITE.street,
-    addressLocality: SITE.city,
-    postalCode: SITE.zip,
-    addressRegion: "ZH",
+    streetAddress: st.street,
+    addressLocality: st.city,
+    postalCode: st.zip,
+    addressRegion: st.canton,
     addressCountry: "CH",
   };
 
@@ -20,8 +23,8 @@ export default function JsonLd() {
     "@type": "Organization",
     "@id": `${baseUrl}/#organization`,
     name: SITE.name,
-    legalName: SITE.legalName,
     url: baseUrl,
+    ...(st.ownerName ? { founder: { "@type": "Person", name: st.ownerName } } : {}),
     logo: {
       "@type": "ImageObject",
       url: `${baseUrl}/logo.png`,
@@ -29,19 +32,18 @@ export default function JsonLd() {
       height: 512,
     },
     image: `${baseUrl}/opengraph-image`,
-    email: SITE.email,
-    telephone: SITE.phoneE164,
-    vatID: `${SITE.uid} MWST`,
+    email: st.email,
+    telephone: phone,
     address,
     contactPoint: {
       "@type": "ContactPoint",
-      telephone: SITE.phoneE164,
-      email: SITE.email,
+      telephone: phone,
+      email: st.email,
       contactType: "sales",
       areaServed: ["CH", "LI", "DE", "AT"],
-      availableLanguage: ["de", "en", "fr"],
+      availableLanguage: ["de", "en"],
     },
-    sameAs: ["https://github.com/sarangsaif/shazwerk"],
+    ...(sameAs.length ? { sameAs } : {}),
     knowsAbout: [
       "Webdesign",
       "Webentwicklung",
@@ -60,18 +62,18 @@ export default function JsonLd() {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "@id": `${baseUrl}/#localbusiness`,
-    name: "SHAZWERK – Webagentur & Software Studio Zürich",
+    name: `SHAZWERK – Webagentur ${st.city}`,
     url: baseUrl,
     image: `${baseUrl}/opengraph-image`,
     logo: `${baseUrl}/logo.png`,
-    telephone: SITE.phoneE164,
-    email: SITE.email,
+    telephone: phone,
+    email: st.email,
     priceRange: "CHF CHF CHF",
     currenciesAccepted: "CHF, EUR",
     parentOrganization: { "@id": `${baseUrl}/#organization` },
     address,
-    geo: { "@type": "GeoCoordinates", latitude: 47.3686, longitude: 8.5392 },
-    hasMap: "https://www.google.com/maps/search/?api=1&query=Gotthardstrasse+26+8002+Z%C3%BCrich",
+    geo: { "@type": "GeoCoordinates", latitude: st.geo.lat, longitude: st.geo.lng },
+    hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${st.street}, ${st.zip} ${st.city}`)}`,
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
@@ -87,7 +89,7 @@ export default function JsonLd() {
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Leistungen",
-      itemListElement: SERVICES.map((s) => ({
+      itemListElement: content.services.map((s) => ({
         "@type": "Offer",
         itemOffered: {
           "@type": "Service",
@@ -105,7 +107,7 @@ export default function JsonLd() {
     "@id": `${baseUrl}/#website`,
     url: baseUrl,
     name: SITE.name,
-    alternateName: "SHAZWERK Webagentur Zürich",
+    alternateName: "SHAZWERK Webagentur Winterthur",
     publisher: { "@id": `${baseUrl}/#organization` },
     inLanguage: "de-CH",
   };

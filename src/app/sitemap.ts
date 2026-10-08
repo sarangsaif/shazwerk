@@ -1,8 +1,10 @@
 import { MetadataRoute } from "next";
-import { PROJECTS, SITE } from "@/lib/content";
+import { SITE } from "@/lib/content";
+import { getPublishedProjects } from "@/lib/cms";
 import { LANDING_PAGES } from "@/lib/landing";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const PROJECTS = await getPublishedProjects();
   const lastModified = new Date();
   const entry = (path: string, priority: number, changeFrequency: "weekly" | "monthly" | "yearly") => ({
     url: `${SITE.url}${path}`,

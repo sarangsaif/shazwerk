@@ -394,3 +394,17 @@ details[open] .faq-icon {
     animation: none;
   }
 }
+
+/* ---------- Sound toggle equaliser ---------- */
+@keyframes sound-bar {
+  0%,
+  100% {
+    height: 3px;
+  }
+  50% {
+    height: 16px;
+  }
+}
+.sound-bar {
+  animation: sound-bar 1.1s ease-in-out infinite;
+}

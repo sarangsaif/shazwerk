@@ -1,79 +1,83 @@
-import React from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import LegalPage from "@/components/page/LegalPage";
+import { getContent } from "@/lib/cms";
 
 export const metadata: Metadata = {
-  title: "Datenschutzerklärung (nDSG / DSGVO)",
-  description:
-    "Datenschutzerklärung der SHAZWERK GmbH gemäss revidiertem Schweizer Bundesgesetz über den Datenschutz (revDSG / nDSG) und EU-DSGVO.",
-  alternates: {
-    canonical: "/privacy",
-  },
+  title: "Datenschutzerklärung",
+  description: "Wie SHAZWERK Personendaten auf dieser Website bearbeitet – nach Schweizer Datenschutzgesetz (DSG) und DSGVO.",
+  alternates: { canonical: "/privacy" },
 };
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const { settings: st } = await getContent();
   return (
-    <div className="text-ink min-h-screen pt-40 pb-24 px-6 sm:px-10 lg:px-16">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-xs font-mono text-neutral-500 hover:text-neutral-950 transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Studio</span>
-          </Link>
-        </div>
+    <LegalPage crumb="Datenschutz" href="/privacy" title="Datenschutz­erklärung" updated="Oktober 2026">
+      <section>
+        <h2>1. Verantwortlich</h2>
+        <p>
+          SHAZWERK{st.ownerName ? `, ${st.ownerName}` : ""}, {st.street}, {st.zip} {st.city}, Schweiz.
+          <br />
+          Kontakt für Datenschutzfragen: <a href={`mailto:${st.email}`}>{st.email}</a>
+        </p>
+        <p>
+          Wir bearbeiten Personendaten nach dem Schweizer Bundesgesetz über den Datenschutz (DSG) und, soweit
+          anwendbar, nach der EU-Datenschutz-Grundverordnung (DSGVO).
+        </p>
+      </section>
 
-        <div className="pb-12 mb-12 border-b border-neutral-200">
-          <span className="text-xs font-mono uppercase tracking-wider text-neutral-500 block mb-3">
-            [ COMPLIANCE // SWISS FADP & GDPR ]
-          </span>
-          <h1 className="text-3xl sm:text-5xl font-normal tracking-tight text-neutral-950 leading-tight mb-4">
-            Datenschutzerklärung (Privacy Policy)
-          </h1>
-          <p className="text-xs font-mono text-neutral-500">
-            Swiss Federal Act on Data Protection (nDSG / FADP) & European GDPR standard. Updated: September 2026.
-          </p>
-        </div>
+      <section>
+        <h2>2. Besuchsstatistik auf dieser Website</h2>
+        <p>
+          Um zu verstehen, wie unsere Website genutzt wird, und um sie zu verbessern, erfassen wir mit einer eigenen
+          Statistiklösung (ohne Google Analytics oder Werbenetzwerke) bei jedem Besuch:
+        </p>
+        <ul>
+          <li>IP-Adresse sowie daraus abgeleitetes Land, Region und Stadt</li>
+          <li>Gerätetyp, Betriebssystem, Browser, Bildschirmgrösse und Spracheinstellung</li>
+          <li>aufgerufene Seiten, Verweildauer, Scrolltiefe und Herkunft (Referrer, Kampagnenparameter)</li>
+          <li>Klicks auf Links und Schaltflächen (Text und Ziel des angeklickten Elements)</li>
+          <li>eine zufällige Besucher-ID und Sitzungs-ID</li>
+        </ul>
+        <p>
+          Die Besucher-ID speichern wir in einem eigenen Cookie (<code>_sw_vid</code>, Laufzeit 12 Monate) und im
+          lokalen Speicher Ihres Browsers, damit wiederkehrende Besuche erkannt werden. Wir verwenden diese Daten
+          ausschliesslich für eigene Auswertungen, geben sie nicht weiter und verknüpfen sie nur dann mit Ihrer
+          Person, wenn Sie uns über das Kontaktformular schreiben. Gespeichert werden jeweils nur die letzten
+          rund 15&apos;000 Ereignisse; ältere werden automatisch gelöscht.
+        </p>
+        <p>
+          Sie können Cookies in Ihrem Browser jederzeit löschen oder blockieren. Die Website funktioniert auch ohne.
+        </p>
+      </section>
 
-        <div className="space-y-10 text-base text-neutral-700 leading-relaxed font-normal">
-          <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6 sm:p-8">
-            <h2 className="text-xl font-medium text-neutral-950 mb-3">1. Data Controller</h2>
-            <p className="mb-3">
-              SHAZWERK operates <span className="font-mono text-neutral-900">https://shazwerk.ch</span> and <span className="font-mono text-neutral-900">https://www.shazwerk.ch</span>. We process personal data responsibly, transparently, and in strict accordance with the Swiss Federal Act on Data Protection (nDSG / FADP) and European GDPR.
-            </p>
-            <div className="font-mono text-xs text-neutral-600 space-y-1">
-              <div>SHAZWERK GmbH</div>
-              <div>Gotthardstrasse 26 · 8002 Zürich, Switzerland</div>
-              <div>Contact: privacy@shazwerk.ch · +41 44 820 90 10</div>
-            </div>
-          </div>
+      <section>
+        <h2>3. Kontaktformular und E-Mail</h2>
+        <p>
+          Wenn Sie uns schreiben, bearbeiten wir Ihre Angaben (Name, Unternehmen, E-Mail, Telefon, Nachricht), um
+          Ihre Anfrage zu beantworten und ein mögliches Projekt vorzubereiten. Wir löschen die Daten, wenn sie dafür
+          nicht mehr nötig sind, spätestens nach zwei Jahren ohne weiteren Kontakt.
+        </p>
+      </section>
 
-          <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6 sm:p-8">
-            <h2 className="text-xl font-medium text-neutral-950 mb-3">
-              2. Privacy-Conscious Telemetry (Zero-Cookie & No Fingerprinting)
-            </h2>
-            <p className="mb-3">
-              We reject invasive tracking networks. Our website employs a first-party, zero-cookie telemetry architecture:
-            </p>
-            <ul className="list-disc pl-5 space-y-1.5 text-sm text-neutral-600">
-              <li>No persistent tracking cookies or cross-site ad identifiers are stored on your device.</li>
-              <li>No canvas fingerprinting, battery profiling, or device probing.</li>
-              <li>IP addresses are processed ephemerally at the server edge solely for regional routing, and are never written to database storage.</li>
-              <li>Aggregated metrics are limited to broad device categories, page views, and direct referrers.</li>
-            </ul>
-          </div>
+      <section>
+        <h2>4. Hosting und Dienstleister</h2>
+        <p>
+          Die Website wird bei Vercel Inc. (USA) betrieben, Statistik- und Formulardaten speichern wir bei Upstash
+          (Datenbank). Dabei können Daten in Länder ausserhalb der Schweiz, auch in die USA, übermittelt werden.
+          Wir stützen uns dafür auf die Standardvertragsklauseln der EU-Kommission bzw. das Swiss-U.S. Data Privacy
+          Framework. Schriften werden von unserem eigenen Server geladen, nicht von Google.
+        </p>
+      </section>
 
-          <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6 sm:p-8">
-            <h2 className="text-xl font-medium text-neutral-950 mb-3">3. Project Inquiries & Your Rights</h2>
-            <p className="text-sm text-neutral-600">
-              Inquiry data submitted through our contact form is used solely to evaluate technical feasibility and prepare bilateral non-disclosure agreements or commercial proposals. You maintain complete statutory rights to access, rectification, and deletion of your data under Swiss law by emailing <span className="font-mono text-neutral-900">privacy@shazwerk.ch</span>.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+      <section>
+        <h2>5. Ihre Rechte</h2>
+        <p>
+          Sie können jederzeit Auskunft über Ihre bei uns gespeicherten Daten verlangen sowie deren Berichtigung,
+          Löschung oder Herausgabe fordern und der Bearbeitung widersprechen. Schreiben Sie uns dazu an{" "}
+          <a href={`mailto:${st.email}`}>{st.email}</a>. Sie haben zudem das Recht, sich beim Eidgenössischen
+          Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB) zu beschweren.
+        </p>
+      </section>
+    </LegalPage>
   );
 }
