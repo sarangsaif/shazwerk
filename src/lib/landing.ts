@@ -28,7 +28,7 @@ export const LANDING_PAGES: LandingPage[] = [
     slug: "webagentur-winterthur",
     metaTitle: "Webagentur Winterthur – Webdesign & Webentwicklung",
     metaDescription:
-      "Webagentur in Winterthur für Webdesign, Websites, Webapplikationen und SEO. Persönlich, schnell und mit Schweizer Hosting – für KMU, Start-ups und Unternehmen in Winterthur und Umgebung.",
+      "Webagentur in Winterthur: individuelles Webdesign, schnelle Websites und lokales SEO für KMU und Start-ups. Persönlich, zum Festpreis, Hosting in der Schweiz.",
     keywords: ["Webagentur Winterthur", "Webdesign Winterthur", "Website erstellen lassen Winterthur", "Webentwicklung Winterthur", "SEO Winterthur"],
     eyebrow: "Webagentur · Winterthur",
     h1: "Webagentur Winterthur.",
@@ -58,7 +58,7 @@ export const LANDING_PAGES: LandingPage[] = [
     slug: "webagentur-zuerich",
     metaTitle: "Webagentur Zürich – Websites & Webplattformen mit Next.js",
     metaDescription:
-      "Webagentur in Zürich für hochwertige Websites, Portale und Webapplikationen. Award-würdiges Design, Next.js, Top Core Web Vitals und SEO von Anfang an. Jetzt Erstgespräch vereinbaren.",
+      "Webagentur für Zürich: hochwertige Websites und Webapplikationen mit Next.js – schnell, barrierefrei und bei Google sichtbar. Jetzt Erstgespräch vereinbaren.",
     keywords: ["Webagentur Zürich", "Webentwicklung Zürich", "Website erstellen lassen Zürich", "Next.js Agentur Schweiz", "Webagentur Schweiz"],
     eyebrow: "Webagentur · Zürich",
     h1: "Webagentur Zürich für Websites,",
@@ -86,9 +86,9 @@ export const LANDING_PAGES: LandingPage[] = [
   },
   {
     slug: "webdesign-agentur-schweiz",
-    metaTitle: "Webdesign Agentur Schweiz – Preisgekröntes Design, Swiss Style",
+    metaTitle: "Webdesign Agentur Schweiz – Webdesign im Swiss Style",
     metaDescription:
-      "Webdesign Agentur in der Schweiz für Art Direction, UI/UX und Design Systems. Klare Typografie, präzises Raster und Interaktionen auf Award-Niveau – für Marken in Zürich, Basel, Bern und Genf.",
+      "Webdesign im Schweizer Stil: Art Direction, UI/UX und Design Systems mit klarer Typografie und präzisem Raster – für KMU in Winterthur, Zürich und der Schweiz.",
     keywords: ["Webdesign Agentur Schweiz", "Webdesign Zürich", "UX Agentur Schweiz", "UI Design Agentur Zürich", "Design System Agentur"],
     eyebrow: "Webdesign · Schweiz",
     h1: "Webdesign Agentur Schweiz.",
@@ -103,7 +103,7 @@ export const LANDING_PAGES: LandingPage[] = [
     bodyTitle: "Gestaltung, die verkauft – nicht nur gefällt",
     body: [
       "Gutes Webdesign ist kein Selbstzweck. Es führt Besucher zur richtigen Information, schafft Vertrauen und macht aus Interesse eine Anfrage. Deshalb beginnt jedes Projekt bei uns mit Zielen und Nutzern, nicht mit Moodboards.",
-      "Unsere Wurzeln liegen in der Schweizer Grafik von Müller-Brockmann und Hofmann: Raster, Hierarchie, Weissraum. Kombiniert mit flüssigen Animationen und mutiger Typografie entstehen Websites auf Awwwards-Niveau, die gleichzeitig schnell laden und barrierefrei bleiben.",
+      "Unsere Wurzeln liegen in der Schweizer Grafik von Müller-Brockmann und Hofmann: Raster, Hierarchie, Weissraum. Kombiniert mit flüssigen Animationen und mutiger Typografie entstehen Websites, die gleichzeitig schnell laden und barrierefrei bleiben.",
     ],
     checklist: ["Art Direction & Bildsprache", "Motion Design & Micro-Interactions", "Responsive bis 4K", "Barrierefreiheit WCAG 2.2 AA", "Design Tokens in Figma & Code", "Usability-Tests mit Nutzern"],
     faq: [
@@ -118,7 +118,7 @@ export const LANDING_PAGES: LandingPage[] = [
     slug: "software-agentur-zuerich",
     metaTitle: "Software Agentur Zürich – Individuelle Softwareentwicklung",
     metaDescription:
-      "Software Agentur in Zürich für individuelle Softwareentwicklung, Webapplikationen und Prozessautomatisierung. persönliche Betreuung, Festpreise pro Meilenstein, 100 % Quellcode-Eigentum und Hosting in der Schweiz.",
+      "Individuelle Softwareentwicklung für Zürich und Winterthur: Webapplikationen, interne Tools und Automatisierung – zum Festpreis und mit 100 % Code-Eigentum.",
     keywords: ["Software Agentur Zürich", "Softwareentwicklung Zürich", "Individualsoftware Schweiz", "Softwareentwicklung Schweiz", "Software Firma Zürich"],
     eyebrow: "Softwareentwicklung · Zürich",
     h1: "Software Agentur Zürich.",
@@ -148,7 +148,7 @@ export const LANDING_PAGES: LandingPage[] = [
     slug: "app-entwicklung-schweiz",
     metaTitle: "App Entwicklung Schweiz – iOS, Android & Web Apps",
     metaDescription:
-      "App Entwicklung in der Schweiz: native und plattformübergreifende Apps für iOS, Android und Web. Von der Idee über UX und Entwicklung bis zum Store-Release – aus Zürich.",
+      "App-Entwicklung in der Schweiz: Apps für iOS, Android und Web aus einer Codebasis – von der Idee über UX und Entwicklung bis zum Store-Release.",
     keywords: ["App Entwicklung Schweiz", "App Agentur Zürich", "App entwickeln lassen Schweiz", "iOS Android Entwicklung Schweiz", "React Native Agentur"],
     eyebrow: "App-Entwicklung · Schweiz",
     h1: "App Entwicklung Schweiz.",
@@ -178,7 +178,7 @@ export const LANDING_PAGES: LandingPage[] = [
     slug: "enterprise-ai-schweiz",
     metaTitle: "Enterprise AI Schweiz – Private LLMs & nDSG-konforme KI",
     metaDescription:
-      "Enterprise AI aus Zürich: private Sprachmodelle, RAG-Wissenssuche und KI-Agenten, betrieben in Schweizer Rechenzentren. nDSG- und FINMA-konform, ohne Datenabfluss ins Ausland.",
+      "Enterprise AI aus der Schweiz: private Sprachmodelle, KI-Wissenssuche und Agenten in Schweizer Rechenzentren – DSG-konform, ohne Datenabfluss.",
     keywords: ["Enterprise AI Schweiz", "KI Agentur Zürich", "Private LLM Schweiz", "AI Agentur Schweiz", "nDSG konforme KI", "RAG Schweiz"],
     eyebrow: "Enterprise AI · Schweiz",
     h1: "Enterprise AI Schweiz.",

@@ -6,6 +6,7 @@ import SelectedWork from "@/components/home/SelectedWork";
 import ServicesList from "@/components/home/ServicesList";
 import Process from "@/components/home/Process";
 import Faq from "@/components/home/Faq";
+import CheckBand from "@/components/home/CheckBand";
 import { getContent } from "@/lib/cms";
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default async function HomePage() {
       <SelectedWork />
       <ServicesList services={services} />
       <Process />
+      <CheckBand />
       <Faq items={faq} />
     </>
   );

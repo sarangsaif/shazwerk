@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +19,7 @@ export default function AdminLoginPage() {
       const res = await fetch("/api/admin/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ username, password }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Anmeldung fehlgeschlagen.");
@@ -40,6 +41,23 @@ export default function AdminLoginPage() {
         </div>
         <h1 className="font-display text-4xl font-medium tracking-[-0.03em]">Anmelden</h1>
         <div>
+          <label htmlFor="admin-username" className="eyebrow mb-2 block text-paper/60">
+            Benutzername
+          </label>
+          <input
+            id="admin-username"
+            type="text"
+            autoComplete="username"
+            autoCapitalize="none"
+            spellCheck={false}
+            required
+            autoFocus
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full border-0 border-b border-paper/30 bg-transparent px-0 py-3 text-xl text-paper focus:border-paper focus:outline-none focus:ring-0"
+          />
+        </div>
+        <div>
           <label htmlFor="admin-password" className="eyebrow mb-2 block text-paper/60">
             Passwort
           </label>
@@ -48,7 +66,6 @@ export default function AdminLoginPage() {
             type="password"
             autoComplete="current-password"
             required
-            autoFocus
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full border-0 border-b border-paper/30 bg-transparent px-0 py-3 text-xl text-paper focus:border-paper focus:outline-none focus:ring-0"

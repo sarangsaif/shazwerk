@@ -3,6 +3,7 @@ import { Inter, Inter_Tight, Instrument_Serif, JetBrains_Mono } from "next/font/
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import QuickContact from "@/components/layout/QuickContact";
 import JsonLd from "@/components/seo/JsonLd";
 import PageViewTracker from "@/components/analytics/PageViewTracker";
 import SmoothScroll from "@/components/motion/SmoothScroll";
@@ -28,9 +29,9 @@ const instrumentSerif = Instrument_Serif({
 });
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
-const TITLE = "SHAZWERK – Webagentur Winterthur & Zürich | Websites, Software, AI";
+const TITLE = "SHAZWERK – Webagentur Winterthur & Zürich";
 const DESCRIPTION =
-  "SHAZWERK ist ein Webdesign- und Software-Studio aus Winterthur für die Region Zürich und die ganze Schweiz. Wir gestalten und entwickeln Websites, Webapplikationen, Apps und Enterprise AI für Schweizer Unternehmen – mit Hosting in der Schweiz und 100 % Quellcode-Eigentum.";
+  "Webdesign- und Software-Studio aus Winterthur: Websites, Apps und KI für Schweizer KMU – schnell, bei Google sichtbar und in der Schweiz gehostet.";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -130,6 +131,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {children}
           </main>
           <Footer />
+          <QuickContact />
           </ContentProvider>
         </LanguageProvider>
         <div className="grain" aria-hidden="true" />

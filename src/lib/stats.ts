@@ -79,6 +79,7 @@ export interface Stats {
   languages: Count[];
   clicks: ClickRow[];
   ctaClicks: Count[];
+  siteChecks: Count[];
   sessions: SessionSummary[];
   liveSessions: SessionSummary[];
 }
@@ -134,6 +135,7 @@ export function computeStats(all: AnalyticsEvent[], inquiries: number, rangeDays
   const oses = new Map<string, number>();
   const langs = new Map<string, number>();
   const ctas = new Map<string, number>();
+  const checks = new Map<string, number>();
   const clickMap = new Map<string, ClickRow>();
   const visitors = new Set<string>();
   const hours = new Array(24).fill(0);
@@ -221,6 +223,10 @@ export function computeStats(all: AnalyticsEvent[], inquiries: number, rangeDays
       }
       default: {
         if (e.event_type === "form_submit_success") s.converted = true;
+        if (e.event_type === "site_check" && label) {
+          tally(checks, `${label} · ${e.meta?.score ?? "?"}/100`);
+          s.journey.push({ t: e.timestamp, type: "site_check", path: e.path, label: `${label} (${e.meta?.score ?? "?"}/100)` });
+        }
         if (e.cta_id && e.event_type !== "pageview") tally(ctas, `${e.event_type}: ${e.cta_id}`);
         if (["form_submit_success", "form_submit_error", "copy_email", "lang_switch", "sound_toggle"].includes(e.event_type)) {
           s.journey.push({ t: e.timestamp, type: e.event_type, path: e.path, label });
@@ -313,6 +319,7 @@ export function computeStats(all: AnalyticsEvent[], inquiries: number, rangeDays
     languages: top(langs),
     clicks: Array.from(clickMap.values()).sort((a, b) => b.count - a.count).slice(0, 100),
     ctaClicks: top(ctas, 15),
+    siteChecks: top(checks, 30),
     sessions: finished.slice(0, 200),
     liveSessions: live,
   };

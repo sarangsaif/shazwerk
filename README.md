@@ -56,16 +56,25 @@ Bilingual inline copy uses `<T de="…" en="…" />`.
 - **Einstellungen** – email notifications for new inquiries
 - Raw events as CSV: `/api/admin/export`
 
+## Lead generation
+
+- `/website-check` – free automated audit (speed, mobile, Google, security, optional Lighthouse). Visitors request a personal improvement plan; it arrives as an inquiry with the full findings.
+- `/ratgeber` – SEO guide articles for Swiss SMEs (`src/lib/articles.ts`)
+- Floating WhatsApp button using the phone number from the CMS
+
 Data lives in **Upstash Redis** (`src/lib/store.ts`). Without it, a local JSON file in `./data` is used, which does **not** persist on Vercel.
 
 ## Environment Variables (Vercel → Settings → Environment Variables)
 
-```env
-# Required: admin portal password
-ADMIN_PASSWORD=your_secure_admin_passphrase
+Admin login: a built-in account (password stored only as a scrypt hash). To change it, set:
 
-# Optional: session signing secret (derived from the password when unset)
-ADMIN_SECRET=long_random_string
+```env
+# Optional: override the built-in admin login
+ADMIN_USERNAME=your_username
+ADMIN_PASSWORD=your_secure_password
+
+# Optional: Google PageSpeed API key for Lighthouse scores in the website check
+PAGESPEED_API_KEY=...
 
 # Set automatically by Vercel → Storage → Upstash for Redis
 KV_REST_API_URL=...
@@ -103,7 +112,6 @@ npm run start
 2. In Vercel:
    - Import repository `sarangsaif/shazwerk`.
    - Ensure Framework Preset is **Next.js**.
-   - Set environment variable `ADMIN_PASSWORD` to your chosen admin passphrase.
    - Storage → Create Database → **Upstash for Redis** (free) → connect it to this project.
    - Attach custom domain `shazwerk.ch` and verify DNS records (A record pointing to `76.76.21.21` or CNAME `cname.vercel-dns.com`).
 

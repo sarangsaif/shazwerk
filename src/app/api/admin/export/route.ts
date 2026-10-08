@@ -16,7 +16,7 @@ function cell(v: unknown) {
 
 /** All raw events as CSV (newest first). */
 export async function GET() {
-  if (!isAdminAuthenticated()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!(await isAdminAuthenticated())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const events = await getAnalyticsEvents();
   const lines = [[...COLS, "label", "href", "utm"].join(",")];
   for (const e of events) {

@@ -7,7 +7,7 @@ import { storeBackend } from "@/lib/store";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Admin", robots: { index: false, follow: false } };
 
-export default function AdminPage() {
-  if (!isAdminAuthenticated()) redirect("/admin/login");
+export default async function AdminPage() {
+  if (!(await isAdminAuthenticated())) redirect("/admin/login");
   return <AdminPortal storeBackend={storeBackend} />;
 }

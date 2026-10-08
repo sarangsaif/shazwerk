@@ -104,6 +104,7 @@ export function Overview({ stats }: { stats: Stats }) {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Panel title="Aufrufe nach Uhrzeit (Schweiz)"><HourStrip hours={stats.hours} /></Panel>
+        <Panel title="Geprüfte Websites (Website-Check)"><BarList rows={stats.siteChecks} empty="Noch keine Website-Checks" /></Panel>
         <Panel title="Meistgeklickt"><BarList rows={stats.clicks.slice(0, 10).map((c) => ({ key: `${c.label} · ${c.path}`, count: c.count }))} /></Panel>
       </div>
     </div>
@@ -118,6 +119,7 @@ const STEP_LABEL: Record<string, string> = {
   copy_email: "E-Mail kopiert",
   lang_switch: "Sprache gewechselt",
   sound_toggle: "Sound umgeschaltet",
+  site_check: "Website geprüft",
 };
 
 function Journey({ s }: { s: SessionSummary }) {
