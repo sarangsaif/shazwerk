@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description:
     "Datenschutzerklärung der SHAZWERK GmbH gemäss revidiertem Schweizer Bundesgesetz über den Datenschutz (revDSG / nDSG) und EU-DSGVO.",
   alternates: {
-    canonical: "https://shazwerk.ch/privacy",
+    canonical: "/privacy",
   },
 };
 

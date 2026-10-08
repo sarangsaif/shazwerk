@@ -16,25 +16,26 @@ export default function WorkIndex() {
   const floatRef = useRef<HTMLDivElement>(null);
   const pos = useRef({ x: 0, y: 0, cx: 0, cy: 0 });
 
-  useEffect(() => {
-    let raf = 0;
-    const tick = () => {
-      const p = pos.current;
-      p.cx += (p.x - p.cx) * 0.12;
-      p.cy += (p.y - p.cy) * 0.12;
-      const rot = Math.max(-8, Math.min(8, (p.x - p.cx) * 0.04));
-      if (floatRef.current) {
-        floatRef.current.style.transform = `translate3d(${p.cx}px, ${p.cy}px, 0) translate(-50%, -50%) rotate(${rot}deg)`;
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
+  const raf = useRef(0);
+
+  const tick = () => {
+    const p = pos.current;
+    p.cx += (p.x - p.cx) * 0.12;
+    p.cy += (p.y - p.cy) * 0.12;
+    const rot = Math.max(-8, Math.min(8, (p.x - p.cx) * 0.04));
+    if (floatRef.current) {
+      floatRef.current.style.transform = `translate3d(${p.cx}px, ${p.cy}px, 0) translate(-50%, -50%) rotate(${rot}deg)`;
+    }
+    raf.current = Math.abs(p.x - p.cx) + Math.abs(p.y - p.cy) > 0.5 ? requestAnimationFrame(tick) : 0;
+  };
+
+  useEffect(() => () => cancelAnimationFrame(raf.current), []);
 
   const onMove = (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse") return;
     pos.current.x = e.clientX;
     pos.current.y = e.clientY;
+    if (!raf.current) raf.current = requestAnimationFrame(tick);
   };
 
   return (
@@ -51,7 +52,7 @@ export default function WorkIndex() {
               onClick={() => trackClientEvent("nav_click", { destination: `/work/${p.slug}` })}
               className="group grid grid-cols-12 items-center gap-4 py-6 sm:py-9"
             >
-              <span className="eyebrow col-span-2 text-paper/40 sm:col-span-1">{p.num}</span>
+              <span className="eyebrow col-span-2 text-paper/60 sm:col-span-1">{p.num}</span>
               <span className="col-span-10 sm:col-span-6">
                 <span
                   className={`block font-display text-big font-medium transition-all duration-700 ease-out-expo group-hover:translate-x-3 ${
@@ -60,7 +61,7 @@ export default function WorkIndex() {
                 >
                   {p.client}
                 </span>
-                <span className="mt-1 block text-sm text-paper/50">{isDe ? p.title.de : p.title.en}</span>
+                <span className="mt-1 block text-sm text-paper/60">{isDe ? p.title.de : p.title.en}</span>
               </span>
               <span className="col-span-6 col-start-3 text-sm text-paper/60 sm:col-span-3 sm:col-start-auto">
                 {isDe ? p.sector.de : p.sector.en} · {p.location}

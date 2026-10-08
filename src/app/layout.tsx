@@ -40,7 +40,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://shazwerk.ch"),
+  metadataBase: new URL("https://www.shazwerk.ch"),
   title: {
     default: TITLE,
     template: "%s | SHAZWERK Zürich",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     "KI Agentur Zürich",
     "Website erstellen lassen Zürich",
   ],
-  authors: [{ name: "SHAZWERK", url: "https://shazwerk.ch" }],
+  authors: [{ name: "SHAZWERK", url: "https://www.shazwerk.ch" }],
   creator: "SHAZWERK GmbH",
   publisher: "SHAZWERK GmbH",
   category: "technology",

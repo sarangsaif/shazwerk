@@ -184,7 +184,7 @@ export default function Header() {
                     <span className="transition-transform duration-500 ease-out-expo group-hover:translate-x-4 group-hover:text-swiss-red">
                       {isDe ? item.de : item.en}
                     </span>
-                    <span className="eyebrow text-paper/50">0{i + 1}</span>
+                    <span className="eyebrow text-paper/60">0{i + 1}</span>
                   </Link>
                 </li>
               ))}
@@ -193,7 +193,7 @@ export default function Header() {
 
           <div className="grid gap-8 pt-10 text-sm text-paper/70 md:grid-cols-3">
             <div>
-              <p className="eyebrow mb-3 text-paper/40">{isDe ? "Schwerpunkte" : "Focus"}</p>
+              <p className="eyebrow mb-3 text-paper/60">{isDe ? "Schwerpunkte" : "Focus"}</p>
               <ul className="space-y-1">
                 {LANDING_PAGES.map((p) => (
                   <li key={p.slug}>
@@ -205,7 +205,7 @@ export default function Header() {
               </ul>
             </div>
             <div>
-              <p className="eyebrow mb-3 text-paper/40">Studio</p>
+              <p className="eyebrow mb-3 text-paper/60">Studio</p>
               <p>
                 {SITE.street}
                 <br />
@@ -213,7 +213,7 @@ export default function Header() {
               </p>
             </div>
             <div className="md:text-right">
-              <p className="eyebrow mb-3 text-paper/40">{isDe ? "Neues Projekt" : "New project"}</p>
+              <p className="eyebrow mb-3 text-paper/60">{isDe ? "Neues Projekt" : "New project"}</p>
               <a href={`mailto:${SITE.email}`} className="link-line font-display text-2xl text-paper">
                 {SITE.email}
               </a>

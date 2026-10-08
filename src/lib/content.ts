@@ -4,7 +4,7 @@
 export const SITE = {
   name: "SHAZWERK",
   legalName: "SHAZWERK GmbH",
-  url: "https://shazwerk.ch",
+  url: "https://www.shazwerk.ch",
   email: "hello@shazwerk.ch",
   phone: "+41 44 820 90 10",
   phoneE164: "+41448209010",

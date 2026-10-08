@@ -5,7 +5,7 @@ import { LANDING_PAGES } from "@/lib/landing";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const baseUrl = "https://shazwerk.ch";
+  const baseUrl = "https://www.shazwerk.ch";
   const now = new Date().toUTCString();
 
   const pubDate = "Thu, 08 Oct 2026 08:00:00 GMT";

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Impressum (Rechtliche Angaben)",
   description: "Gesetzliches Schweizer Impressum und Unternehmensangaben der SHAZWERK GmbH.",
   alternates: {
-    canonical: "https://shazwerk.ch/imprint",
+    canonical: "/imprint",
   },
 };
 

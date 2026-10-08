@@ -25,7 +25,7 @@ const config: Config = {
           redDark: "#B8050F",
         },
         stone: {
-          muted: "#6B6A66",
+          muted: "#5E5D59",
         },
         // Legacy tokens (admin console)
         mimosa: {

@@ -32,7 +32,7 @@ export default function Footer() {
     <footer className="relative overflow-hidden bg-ink text-paper">
       {showCta && (
         <section className="wrap border-b border-paper/15 pb-20 pt-28 sm:pt-40" aria-labelledby="footer-cta">
-          <p className="eyebrow mb-8 text-paper/50">{isDe ? "Neues Projekt" : "New project"}</p>
+          <p className="eyebrow mb-8 text-paper/60">{isDe ? "Neues Projekt" : "New project"}</p>
           <h2 id="footer-cta" className="font-display text-giant font-medium" data-reveal="up">
             {isDe ? "Haben Sie ein Vorhaben?" : "Got something in mind?"}
             <br />
@@ -45,10 +45,9 @@ export default function Footer() {
               type="button"
               onClick={copyEmail}
               className="group text-left font-display text-big tracking-[-0.03em]"
-              aria-label={isDe ? `E-Mail ${SITE.email} kopieren` : `Copy email ${SITE.email}`}
             >
               <span className="link-line">{SITE.email}</span>
-              <span className="eyebrow mt-2 block text-paper/50">
+              <span className="eyebrow mt-2 block text-paper/60">
                 {copied ? (isDe ? "✓ Kopiert" : "✓ Copied") : isDe ? "Klicken zum Kopieren" : "Click to copy"}
               </span>
             </button>
@@ -70,7 +69,7 @@ export default function Footer() {
 
       <div className="wrap grid grid-cols-2 gap-10 py-16 text-sm md:grid-cols-4">
         <div>
-          <p className="eyebrow mb-4 text-paper/40">Studio</p>
+          <p className="eyebrow mb-4 text-paper/60">Studio</p>
           <address className="not-italic leading-relaxed text-paper/80">
             {SITE.legalName}
             <br />
@@ -84,7 +83,7 @@ export default function Footer() {
           </address>
         </div>
         <nav aria-label="Footer">
-          <p className="eyebrow mb-4 text-paper/40">{isDe ? "Navigation" : "Navigate"}</p>
+          <p className="eyebrow mb-4 text-paper/60">{isDe ? "Navigation" : "Navigate"}</p>
           <ul className="space-y-1.5 text-paper/80">
             <li><Link href="/work" className="link-line">{isDe ? "Arbeiten" : "Work"}</Link></li>
             <li><Link href="/services" className="link-line">{isDe ? "Leistungen" : "Services"}</Link></li>
@@ -93,7 +92,7 @@ export default function Footer() {
           </ul>
         </nav>
         <nav aria-label={isDe ? "Schwerpunkte" : "Focus areas"}>
-          <p className="eyebrow mb-4 text-paper/40">{isDe ? "Schwerpunkte" : "Focus"}</p>
+          <p className="eyebrow mb-4 text-paper/60">{isDe ? "Schwerpunkte" : "Focus"}</p>
           <ul className="space-y-1.5 text-paper/80">
             {LANDING_PAGES.map((p) => (
               <li key={p.slug}>
@@ -105,11 +104,11 @@ export default function Footer() {
           </ul>
         </nav>
         <div>
-          <p className="eyebrow mb-4 text-paper/40">{isDe ? "Ortszeit" : "Local time"}</p>
+          <p className="eyebrow mb-4 text-paper/60">{isDe ? "Ortszeit" : "Local time"}</p>
           <p className="font-display text-3xl tracking-[-0.03em]">
             <ZurichClock />
           </p>
-          <p className="mt-1 text-paper/50">Zürich, CET</p>
+          <p className="mt-1 text-paper/60">Zürich, CET</p>
         </div>
       </div>
 
@@ -129,7 +128,7 @@ export default function Footer() {
         </svg>
       </div>
 
-      <div className="wrap flex flex-col gap-4 border-t border-paper/15 py-6 text-xs text-paper/50 sm:flex-row sm:items-center sm:justify-between">
+      <div className="wrap flex flex-col gap-4 border-t border-paper/15 py-6 text-xs text-paper/60 sm:flex-row sm:items-center sm:justify-between">
         <p>
           © {new Date().getFullYear()} {SITE.legalName} · UID {SITE.uid} ·{" "}
           {isDe ? "Webagentur & Software Studio Zürich" : "Web agency & software studio Zurich"}
@@ -138,7 +137,7 @@ export default function Footer() {
           <li><Link href="/privacy" className="link-line hover:text-paper">{isDe ? "Datenschutz" : "Privacy"}</Link></li>
           <li><Link href="/imprint" className="link-line hover:text-paper">Impressum</Link></li>
           <li><a href="/feed.xml" className="link-line hover:text-paper">RSS</a></li>
-          <li><Link href="/admin/login" rel="nofollow" className="text-paper/30 hover:text-paper/60">Staff</Link></li>
+          <li><Link href="/admin/login" rel="nofollow" className="text-paper/60 hover:text-paper">Staff</Link></li>
         </ul>
       </div>
     </footer>
