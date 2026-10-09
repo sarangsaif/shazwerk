@@ -9,8 +9,7 @@ import { del, getJSON, setJSON } from "./store";
  * built-in account below. The repository is public, so the built-in password is stored only as a
  * salted scrypt hash.
  *
- * Sessions are random tokens stored server-side (only their SHA-256 hash is kept), so nothing in
- * this code can be used to forge a session.
+ * Sessions are signed with a secret that is not in the repository (see below).
  */
 const COOKIE_NAME = "shazwerk_admin_session";
 const SESSION_TTL = 7 * 24 * 60 * 60;
@@ -42,24 +41,39 @@ export function verifyCredentials(username: string, password: string): boolean {
   return userOk && passOk;
 }
 
-const sessionKey = (token: string) => `sw:session:${crypto.createHash("sha256").update(token).digest("hex")}`;
+/**
+ * Sessions are HMAC-signed tokens, so every serverless function can verify them without shared
+ * storage. The key is ADMIN_SECRET when set, otherwise a random key generated at build time
+ * (see next.config.js) – a new deploy therefore signs everyone out.
+ */
+const SESSION_SECRET = process.env.ADMIN_SECRET || process.env.BUILD_SESSION_SECRET || crypto.randomBytes(32).toString("hex");
 
-export async function createSession(): Promise<string> {
-  const token = crypto.randomBytes(32).toString("base64url");
-  await setJSON(sessionKey(token), { exp: Date.now() + SESSION_TTL * 1000 }, SESSION_TTL);
-  return token;
+function sign(data: string) {
+  return crypto.createHmac("sha256", SESSION_SECRET).update(data).digest("base64url");
 }
 
-export async function destroySession(token?: string) {
-  if (token) await del(sessionKey(token));
+export async function createSession(): Promise<string> {
+  const payload = Buffer.from(
+    JSON.stringify({ u: process.env.ADMIN_USERNAME || DEFAULT_USERNAME, exp: Date.now() + SESSION_TTL * 1000, n: crypto.randomBytes(8).toString("hex") })
+  ).toString("base64url");
+  return `${payload}.${sign(payload)}`;
+}
+
+export async function destroySession(_token?: string) {
+  // Stateless tokens: logging out removes the cookie.
 }
 
 export async function isAdminAuthenticated(): Promise<boolean> {
   const token = cookies().get(COOKIE_NAME)?.value;
-  if (!token || token.length < 20) return false;
+  if (!token) return false;
+  const [payload, sig] = token.split(".");
+  if (!payload || !sig) return false;
+  const expected = Buffer.from(sign(payload));
+  const given = Buffer.from(sig);
+  if (expected.length !== given.length || !crypto.timingSafeEqual(expected, given)) return false;
   try {
-    const session = await getJSON<{ exp: number }>(sessionKey(token));
-    return !!session && Date.now() < session.exp;
+    const data = JSON.parse(Buffer.from(payload, "base64url").toString("utf-8"));
+    return Date.now() < data.exp;
   } catch {
     return false;
   }
