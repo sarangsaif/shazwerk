@@ -1,5 +1,12 @@
+const crypto = require("crypto");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Random per-build key for signing admin sessions. Only read by server code (src/lib/auth.ts),
+  // so it never ships to the browser and never appears in the repository.
+  env: {
+    BUILD_SESSION_SECRET: crypto.randomBytes(32).toString("hex"),
+  },
   reactStrictMode: true,
   poweredByHeader: false,
   headers: async () => [
